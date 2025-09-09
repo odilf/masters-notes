@@ -1,0 +1,8 @@
+use flake
+
+EDITOR="
+	open -a safari http://127.0.0.1:23635/
+	& SAFARI_PID=$!
+	hx $1
+	kill $SAFARI_PID
+"

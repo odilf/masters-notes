@@ -1,0 +1,5 @@
+[editor]
+text-width = 100
+soft-wrap.enable = true
+soft-wrap.wrap-at-text-width = true
+

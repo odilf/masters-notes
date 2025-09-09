@@ -1,0 +1,4 @@
+- Grade
+  - Exam: 40%
+  - Continuous assessment: 60%
+    - 10%: 
