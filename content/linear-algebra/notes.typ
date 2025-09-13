@@ -174,3 +174,5 @@ Generally, we don't care about exact results such as the above because, as we se
 
  So, finally, can calculate that $-b - s tilde O(10^(-3))$ we see that $O(10^3) / O(10^(-3)) emach = O(10^6) emach tilde O(1)$. This means the result is very bad. 
 ]
+
+
