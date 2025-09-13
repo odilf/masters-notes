@@ -1,7 +1,7 @@
 #import "../format.typ": *
 
 #show: notes(
-  subtitle: [Approximating functions by "simpler" other functions of some specified type.]
+  subtitle: [Approximating functions by "simpler" other functions of some specified type.],
 )[Advanced Methods in Applied Analysis]
 
 = Motivating examples
@@ -17,7 +17,7 @@ $ P_n (x) = sum_(k=0)^n (f^((k)) (x)) / (k!) x^k $
 
 #theorem("Taylor's")[
   Given an interval $I subset RR$ around $a$ and $f: I -> RR$ being $C^infinity$.
-  If a constant $C_k > 0$ exists such that $|f^((k))(x)| <= C_k$ (i.e., any point of any $k^"th"$ derivative of $f$ is bounded by $C_k$). 
+  If a constant $C_k > 0$ exists such that $|f^((k))(x)| <= C_k$ (i.e., any point of any $k^"th"$ derivative of $f$ is bounded by $C_k$).
 
   Then, the residual of the polynomial $P_n (x)$ around $x = a$ is bounded by
   $ |f(x) - P_n (x)| <= C_k (x - a)^(k + 1) / (k + 1)! $
@@ -50,9 +50,11 @@ If $f$ is "nice" then we can use the theory of Fourier series.
 #theorem("Fourier series")[
   Suppose $f : R -> R$ is $2 pi$ periodic and that $f$ is differentiable and continuous. Then the Fourier series of $f$ converges to $f$ pointwise.
 
-  $ lim_(n -> infinity) 1/2 a_0 + sum_(k=0)^n
+  $
+    lim_(n -> infinity) 1/2 a_0 + sum_(k=0)^n
     underbrace(a_k cos(k x) + b_k sin(k x), "n"^"th" "order partial sum")
-   = f(x) $
+    = f(x)
+  $
 
   where
 
@@ -74,10 +76,12 @@ Clearly, $P_n$ isn't the best. Here's a counterexample:
 
 #example[counterexample][
   $f: [-1, 1] -> R$ given by
-  $ f(x) = cases(
-    e^(-1/x^2) space "if" space x in [-1, 0) union (0, 1),
-    0 space "if" space x = 0
-  ) $
+  $
+    f(x) = cases(
+      e^(-1/x^2) space "if" space x in [-1, 0) union (0, 1),
+      0 space "if" space x = 0
+    )
+  $
 
   The problem here is that the derivatives at 0 are always going to be 0. This also happens with the other term $f^((k)) (x) = q_k (1/x) e^(-1/x^2)$ which is $0$ at $x = 0$, so it's differentiable.
 
@@ -153,7 +157,7 @@ In the first example, the definition of "good" was that the "distance" between $
 #example[
   $X = C([-1, 1])$ and $d(f, g) = ||f - g||_infinity$
 
-  $f(x) = e^x$ and $P_n (x) = sum_(k = 0)^n 1/k! x^k$. Then, we know that $||f - P_n||_infinity $ converges to $0$.
+  $f(x) = e^x$ and $P_n (x) = sum_(k = 0)^n 1/k! x^k$. Then, we know that $||f - P_n||_infinity$ converges to $0$.
 ]
 
 #definition[
@@ -196,7 +200,7 @@ The idea is that a compact space has no "punctures" or "missing endpoints", i.e.
 
   Where the coefficients satisfy: $|a_k| <= 1$
 
-  And to clarify: $p(x) = sum_(k = 0) ^n a_k x^k$
+  And to clarify: $p(x) = sum_(k = 0)^n a_k x^k$
 
   *Question*: is this _compact_?
 
@@ -213,12 +217,13 @@ The idea is that a compact space has no "punctures" or "missing endpoints", i.e.
   Therefore there exists a subsequence $tilde(p)_j$ such that $tilde(a)_(j,k) -> a_(infinity,k) in [-1, 1] forall k in NN$ (where $tilde(p)_j$ represents a number of subsequence operators nesting).
 
   We still have to check that this makes $p$ itself converges.
-  
-  $ d(tilde(p)_j, p_infinity) = integral_(-1)^1 |tilde(p)_j (x) - p_infinity (x)| d x 
-  \ <= integral_(-1)^1 sum_(k=0)^n | tilde(a)_(j,k) - a_(infinity,k)| |x|^k d x 
-  \ <= integral_(-1)^1 sum_(k=0)^n |tilde(a)_(j,k) - a_(infinity,k)|  d x 
-  \ <= 2 sum_(k=0)^n |tilde(a)_(j,k) - a_(infinity,k)| 
-  \ = 0
+
+  $
+    d(tilde(p)_j, p_infinity) = integral_(-1)^1 |tilde(p)_j (x) - p_infinity (x)| d x
+    \ <= integral_(-1)^1 sum_(k=0)^n | tilde(a)_(j,k) - a_(infinity,k)| |x|^k d x
+    \ <= integral_(-1)^1 sum_(k=0)^n |tilde(a)_(j,k) - a_(infinity,k)| d x
+    \ <= 2 sum_(k=0)^n |tilde(a)_(j,k) - a_(infinity,k)|
+    \ = 0
   $
 
   Indeed, it converges.
@@ -241,7 +246,9 @@ The idea is that a compact space has no "punctures" or "missing endpoints", i.e.
 
   We can also invoke the triangle inequality, where for any $n$, $d(p, q_infinity) <= d(p, q_n^*) + d(q_n^*, q_infinity)$. If we take the limit as $n -> infinity$ we get
 
-  $ d(p, q_infinity) &<= underbrace(d(p, q_infinity^*), delta) + underbrace(d(q_infinity^*, q_infinity), 0) = delta $
+  $
+    d(p, q_infinity) &<= underbrace(d(p, q_infinity^*), delta) + underbrace(d(q_infinity^*, q_infinity), 0) = delta
+  $
 
   So $d(p, q_infinity) <= delta$ and $d(p, q_infinity) >= delta$ so $d(p, q_infinity) = delta$. $p_infinity$ exists and is a best approximation.
 ]
@@ -259,8 +266,8 @@ These two live in spaces that have extra structures, which can be useful to spel
 #definition[
   A _normed linear space_ $(X, ||dot||)$ where $X$ is a linear spce and $||dot||$ is a _norm_.
 
-  A _norm_ is a function $||dot|| : X -> [0 infinity)$ such that:
-  + $||f||$ > 0 unless $f = 0$ (0-element)
+  A _norm_ is a function $||dot|| : X -> [0, infinity)$ such that:
+  + $||f||$ > 0 unless $f = 0$ (positive definite)
   + $||lambda f|| = ||lambda|| ||f||$ for $lambda in RR$ (or $CC$) (homogeneity)
   + $||f + g|| <= ||f|| + ||g||$ (triangle inequality)
 ]
@@ -299,7 +306,7 @@ We can prove this but we need more definitions.
 ]
 
 #theorem[
-  Any continuous map $phi : X -> Y$ sends compact sets to compact set
+  Any continuous map $phi : X -> Y$ sends compact sets to compact sets.
 
   If $K subset X$ is compact, then $phi(K) = { phi(x) : x in K }$ is compact.
 ] <continuous-sends-compact-compact>
@@ -313,13 +320,14 @@ We can prove this but we need more definitions.
 
   Claim: $phi$ is continuous. Let's take a sequence $(lambda)_k$ that converges to $lambda$. We need to check that $phi((lambda)_k)$ converges to $phi(lambda)$, so in turn we need to show that $||phi((lambda)_k) - phi(lambda))||$ goes to $0$ as $k -> infinity$.
 
-  $ ||phi((lambda)_k) - phi(lambda)|| &= ||sum_j (lambda_j)_k q_j sum lambda_j g_j||
+  $
+    ||phi((lambda)_k) - phi(lambda)|| &= ||sum_j (lambda_j)_k q_j sum lambda_j g_j||
     \ &= ||sum_j (lambda_j)_k - lambda_j) q_j||
     \ &<= sum_j ||((lambda_j)_k - lambda_j) g_j||
     \ &<= sum_j ||((lambda_j)_k - lambda_j)|| ||g_j||
     \ &<= sum_j ||((lambda_j)_k - lambda_j)|| ||g_j||
     \ &<= ||(lambda_j)_k - lambda_j|| n R " where " ||g_j|| <= R forall j=1,..n
-    \ &= 0 dot n R 
+    \ &= 0 dot n R
     \ &= 0
   $
 
@@ -334,8 +342,8 @@ We can prove this but we need more definitions.
 #definition[
   An _inner-product space_ is a tuple $(X, innerproduct(dot, dot))$ is a linear space $X$ with an inner product which is a function $innerproduct(dot, dot): X times X -> RR$ (or $CC$) such that:
   + $innerproduct(f, f) > 0$ unless $f = 0$ (positive-definite)
-  + $innerproduct(f,g) = innerproduct(g,f)$ (or $innerproduct(f,g) = overline(innerproduct(g, f))$) (symmetry)
-  + $innerproduct(alpha f + beta g, h) = alpha innerproduct(f, h) + beta innerproduct(g, h)$ for $alpha, beta in RR "or" CC $ (linearity)
+  + $innerproduct(f, g) = innerproduct(g, f)$ (or $innerproduct(f, g) = overline(innerproduct(g, f))$) (symmetry)
+  + $innerproduct(alpha f + beta g, h) = alpha innerproduct(f, h) + beta innerproduct(g, h)$ for $alpha, beta in RR "or" CC$ (linearity)
 
   #example[
     - $X = RR^n$ and $innerproduct(x, y) = x_1 y_1 + ... + x_n y_n$
@@ -349,10 +357,10 @@ We can prove this but we need more definitions.
 #theorem[
   Given an inner-product space $(X, innerproduct(dot, dot))$ and two elements $f,g in X$ with a normed defined as $||f|| = sqrt(innerproduct(f, f))$:
 
-  + $|innerproduct(f,g)| <= ||f|| ||g||$ (Cauchy-Schwarz)
+  + $|innerproduct(f, g)| <= ||f|| ||g||$ (Cauchy-Schwarz)
   + $||f + g|| <= ||f|| + ||g||$ (triangle inequality)
   + $||f + g||^2 + ||f - g||^2 = 2||f||^2 + 2||g||^2$ (parallelogram law)
-  + If $||innerproduct(f,g)|| = 0$ then $||f + g||^2 = ||f||^2 + ||g||^2$ (Pythagoras)
+  + If $||innerproduct(f, g)|| = 0$ then $||f + g||^2 = ||f||^2 + ||g||^2$ (Pythagoras)
 ]
 
 #definition[
@@ -378,27 +386,31 @@ We can prove this but we need more definitions.
 
   Notice that $g - f$ is orthogonal to any $g_k$:
 
-  $ innerproduct(f - g, g_k) &= innerproduct(f, g_k) - innerproduct(g, g_k)
-    \ &= c_k - innerproduct(sum_j c_j g_j, g_k)
-    \ &= c_k - sum_j innerproduct(c_j g_j, g_k)
-    \ &= c_k - sum_j c_j innerproduct(g_j, g_k)
-    \ &= c_k - c_k
-    \ &= 0
+  $
+    innerproduct(f - g, g_k) & = innerproduct(f, g_k) - innerproduct(g, g_k) \
+                             & = c_k - innerproduct(sum_j c_j g_j, g_k) \
+                             & = c_k - sum_j innerproduct(c_j g_j, g_k) \
+                             & = c_k - sum_j c_j innerproduct(g_j, g_k) \
+                             & = c_k - c_k \
+                             & = 0
   $
 
-  $ innerproduct(f - g, h) = 0 quad forall h = a_1 g-1 + ... + a_n g_n in "span"(g_1, ..., g_n) $
+  $
+    innerproduct(f - g, h) = 0 quad forall h = a_1 g-1 + ... + a_n g_n in "span"(g_1, ..., g_n)
+  $
 
   Remember the Pythagorean theorem.
 
-  $ ||h - f||^2 &= ||(h - g) + (g - f)||^2
-    \ &= ||h - g||^2 + ||g - f||^2
-    \ & >= ||g - f||^2
-    \ => ||h - f|| &>= ||g - f||
+  $
+     ||h - f||^2 & = ||(h - g) + (g - f)||^2 \
+                 & = ||h - g||^2 + ||g - f||^2 \
+                 & >= ||g - f||^2 \
+    => ||h - f|| & >= ||g - f||
   $
 
   This proves that $g$ is _some_ minimum but we want to prove it's the _only_ minimum.
 
   We can check where $g$ is unique by realizing that equality happens only when $||h - g|| = 0$ by the definition of the norm.
 
-  Therefore $g$ is the unique best approximation. 
+  Therefore $g$ is the unique best approximation.
 ]

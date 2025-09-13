@@ -1,5 +1,5 @@
 {
-  description = "All of the thoughts worth writing down";
+  description = "Notes for my Master's course on Computational and Applied Mathematics at UC3M";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
@@ -25,6 +25,7 @@
             pkgs.typstyle
 
             pkgs.jujutsu
+            pkgs.just
           ];
         };
 
