@@ -239,3 +239,111 @@ Let's properly define conditioning:
 
   This is a property of the _function itself_. It has nothing to do with any algorithm you use to compute it.
 ]
+
+#definition[Condition number][
+  The _condition number_ $kappa$
+  quantifies the conditioning of a function $f$ by expressing the rate of change of $y$ with respect to $x$.
+
+  It is defined as
+
+  $
+    kappa & = sup "relative change in output"/"relative change in input" \
+          & = lim_(delta -> 0) sup_(norm(Delta x) / norm(x) <= delta)
+            (norm(f(x + Delta x) - f(x)) div norm(f(x))) /
+            ((norm(x + Delta x - x)) div norm(x))
+  $
+
+  More concretely in words, it is the maximum ratio of how further $f(x)$ can go away. So, for a region around $x$ how much bigger is the region around $f(x)$, as the size around $x$ goes to zero.
+
+  This is conceptually approximately to the forward error divided by backward error, even though it isn't strictly the case.
+
+  If $f(x)$ is differentiable then $kappa_f (x)$ can be equivalently defined as
+
+  #todo[proper jacobian $J$]
+  $ k_f(x) = norm(x) / norm(f) norm(J_f) $
+
+  Where $J$ is the Jacobian.
+
+  Small $kappa$ is well-conditioned (good), large $kappa$ is ill-conditioned (bad).
+]
+
+We also have the absolute conditional number which are:
+
+$
+  kappa_f^"abs"(x) = lim_(delta -> 0) sup_(norm(Delta x <= delta)) norm(f(x + Delta x) - f(x)) / norm(x + Delta x - x)
+$
+
+and for differentiable functions $f$:
+
+$ kappa_f^"abs" = norm(J_f) $
+
+#example[11][
+  We have $f : RR \\ { 0 } -> RR : x -> f(x) = 1/x$
+
+  $f$ is differentiable, so we can do the Jacobian.
+
+  $ J_f = (dif f) / (dif x) (x) = -1/x^2 $
+
+  So the absolute condition number is:
+
+  $ kappa_f^"abs" = norm(-1/x^2) = |-1/x^2| = 1/(|x^2|) $
+
+  For $x -> 0$, $kappa_f^"abs" -> infinity$ so $f$ in absolute terms is ill-conditioned.
+
+  For relative errors,
+
+  $ kappa_f = (|x|)/(|f(x)|) dot |1/x^2| = (|x|) / (|1/x|) dot |1/x^2| = 1 $.
+
+  Therefore $f$ is well-conditioned in relative terms.
+
+  To see how it works, for $x = 10^(-6)$ and $tilde(x) = 10^(-6) + 10^(-10)$ we have the absolute error equation:
+
+  $
+    (|1/x - 1/tilde(x)) / (|x - tilde(x)|) = 1/(10^(-12) + 10^(-16)) approx 10^12
+  $
+
+  which is a large error, but in relative terms:
+
+  $
+    (|1/x - 1/tilde(x)| div |1/x|) / (|x - tilde(x)| div |x|) = 10^12 dot 10^(-6) / 10^6 = 1
+  $
+
+  which is now not such a large error.
+]
+
+#example[13][
+  For $ f : RR^2 -> RR : mat(x; y) |-> x - y $
+
+  The absolute conditioning number is
+
+  $
+    kappa_infinity^"abs" = norm(J_f)_infinity = norm(mat((diff f)/(diff x), (diff f)/(diff y)))_infinity = norm(mat(1, -1))_infinity = |1| + |-1| = 2
+  $
+
+  $ kappa_1^"abs" = norm(J_f)_1 = max(|1|, |-1|) = 1 $
+
+  Depending on the norm you use (this comes up later).
+
+  Here you can tell that if the absolute error is constant, the relative error will explode for very small $x$ (but will decrease for big $x$). This is generally undesirable because you often want to do accurate computations with small numbers.
+
+  We can just compute the relative conditioning number:
+
+  $ kappa_1 = norm(mat(x; y))_1/(|x - y|) norm(J_f)_1 = (|x| + |y|)/(|x - y|) $
+
+  so $kappa_1$ is large when $x - y$ is small.
+
+  This explains why subtracting two similar numbers you lose the precision.
+]
+
+#example[14][
+  #todo[Fill in]
+]
+
+#example[15][
+  Just plugs in numbers for 14 #todo[?]
+]
+
+#example[16][
+  #todo[Fill in]
+]
+

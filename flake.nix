@@ -15,18 +15,27 @@
       in
 
       {
-        devShells.default = pkgs.mkShell {
-          packages = [
-            pkgs.marksman
-            pkgs.typos-lsp
+        devShells = {
+          default = pkgs.mkShell {
+            packages = [
+              pkgs.marksman
+              pkgs.typos-lsp
 
-            pkgs.typst
-            pkgs.tinymist
-            pkgs.typstyle
+              pkgs.typst
+              pkgs.tinymist
+              pkgs.typstyle
 
-            pkgs.jujutsu
-            pkgs.just
-          ];
+              pkgs.jujutsu
+              pkgs.just
+            ];
+          };
+
+          ci = pkgs.mkShell {
+            packages = [
+              pkgs.typst
+              pkgs.just
+            ];
+          };
         };
 
         formatter = pkgs.nixfmt-rfc-style;

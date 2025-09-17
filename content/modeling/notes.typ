@@ -146,14 +146,14 @@ How do dominoes fall? Specifically, how fast does the wave move (not each indivi
 
   for i in range(N) {
     let x = i * (w + d)
-    let r = calc.min(-(70deg - calc.pow(i, 3) * 0.2deg), 0deg)
+    let r = calc.min(-(70deg - calc.pow(i, 3.05) * 0.2deg), 0deg)
     group({
       translate(x: x)
       rotate(z: r)
       rect((-w, 0), (0, h), stroke: none)
 
       if i == N - 1 {
-        line((-d, h / 3), (0, h / 3), mark: (symbol: "|"), name: "d")
+        line((-d - w, h / 3), (-w, h / 3), mark: (symbol: "|"), name: "d")
         content(
           ("d.start", 50%, "d.end"),
           padding: .1,
@@ -709,8 +709,6 @@ $
   (dif x)/f(x) = dif t \
   integral^x_x_0 (dif u)/f(x) = t - t_0 = G(x, x_0)
 $
-
-
 
 #phase-space(calc.sin)
 

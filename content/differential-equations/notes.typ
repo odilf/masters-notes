@@ -314,12 +314,11 @@ We can pose it as a matrix:
 
 $
   A = 1/h^2 mat(
-    -2, 1, 0, 0, ..., 0, 0, 0;
-    1, 0, 0, ..., 0, 0, 0, 0;
-    0, 0, ..., 0, 0, 0, 0, 0;
-    dots.v, dots.v, dots.v, dots.v, dots.v, dots.v, dots.v, dots.v;
-    0, 0, 0, ..., 0, 0, 0, 1;
-    0, 0, 0, ..., 0, 0, 1, -2
+    -2, 1, 0, 0, dots.down;
+    1, 0, 0, dots.down, 0;
+    0, 0, dots.down, 0, 0;
+    0, dots.down, 0, 0, 1;
+    dots.down, 0, 0,  1, -2
   )
 $
 
@@ -348,4 +347,99 @@ $
 
 Where $A arrow(u) = "rhs"$. We solve for $arrow(u)$ to get the values.
 
+== Error analysis
+
 What is the error $E_j = U_j - u(x_j)$?
+
+For the example of $u'' = f(x)$ for $x in [0, 1)$ and $u(0) = alpha$, $u(1) = beta$.
+
+Let's take the _local truncation error_:
+
+$
+  tau_j = 1/h^2 underbrace((u(x_(j-1)) -2u(x_j) + u(x_(j+1))), "FD-2") - underbrace(f(x_j), u''(x_j))
+$
+
+And if we take the Taylor series:
+
+$
+  tau_j & = u''(x_j) + 1/12 h^2 u^(("iv"))(x_j) + O(h^4) - f(x_j) \
+        & = 1/12 h^2 u^(("iv"))(x_j) + O(h^4)
+$
+
+How to go from this to the global error $E_j$?
+
+Let's take the exact vector
+
+$
+  arrow(hat(U)) = mat(u(x_1); dots.v; u(x_n))
+$
+
+which implies that $arrow(tau) = A arrow(hat(U)) - arrow(F) => A arrow(hat(U)) = arrow(F) + arrow(tau)$
+
+We have from before $A arrow(U) = arrow(F)$. If we subtract each other we have:
+
+$
+  A underbrace((U - arrow(hat(U))), E) = -arrow(tau)
+$
+
+From we can extract that the error $E_j = U_j - u(x_j)$ is $E = U - arrow(U)$. This can also be written as:
+
+$ A arrow(E) = -arrow(tau) $
+
+The error vectors and the local truncation errors are related in this way. So, in the example $1/h^2 (E_(j-1) - 2E_j + E_(j + 1)) = -tau_j$. Another way to put it is that $e'' = -tau$.
+
+At the boundary, for $j=1$, $1/h^2(E_0 - 2E_1 + E_2)$, where $E_0$ is $0$ because we enforce the boundary conditions. That is, at the boundaries:
+
+$ E_0 = E_(m+1) = 0 $
+
+Then, to answer the original question, for a given $h$ we have $A^h E^h = -tau^h$. If $A$ is invertible, we have that $E^h = -(A^h)^(-1) tau^h$.
+
+#todo[what dis $arrow.b$]
+$ norm(E^h) = norm((A^h)^(-1) tau^h) <= norm((A^h)^(-1)) dot norm(tau^h) overparen(=, ?)C h^2 $
+
+This $C h^2$ is just what we get numerically in the specific example, that the error decreases quadratically with $h$. We should be able to show this numerically, so it's what we need to show.
+
+We have that $norm(tau^h) = O(h^2)$ through the Taylor series. We would need to have that $norm(A^h)^(-1) = O(1)$ to make the formula above coincide.
+
+Let's try to see that $norm(A^h)^(-1) = O(1)$. But first, let's define a few things:
+
+#definition[Stability][
+  Given a numerical scheme $A^h U^h = F^h$, it is _stable_ if for any $h < h_0 << 1$, the matrix $A^h$ is invertible and the norm of the inverse is bounded by some constant:
+
+  $ norm((A^h)^(-1)) <= C $
+]
+
+#definition[Consistency][
+  Given a numerical scheme $A^h U^h = F^h$, it is _consistent_ if  the local truncation error goes to $0$ as $h$ goes to $0$, i.e.:
+
+  $ norm(tau^h) -> 0 space "as" space h -> 0 $
+]
+
+#definition[Convergence][
+  Given a numerical scheme $A^h U^h = F^h$, it is _convergent_ if the error goes to $0$ as $h$ goes to zero, i.e.:
+
+  $ norm(E^h) -> 0 space "as" space h -> 0 $
+]
+
+#theorem[
+  Consistency and stability implies convergence.
+
+  That is, a scheme that is consistent and stable is also necessarily convergent.
+]
+
+
+Let's try to find if $norm((A^h)^(-1)) = O(1)$. This is true if the scheme is _stable_. To find if it is stable we are going to use the _edge_ norm, where $norm(A)_2 = rho(A) = max_(1<=p<=m)|lambda_p|$ where $lambda_p$ are the eigenvalues.
+
+We want to compute $norm(A^(-1))_2 = rho(A^(-1)) = max |lambda_p^(-1)| = (min|lambda_p|)^(-1)$.
+
+We take the eigengrid function: $u_j^p = sin(p pi j h)$ for $j = 1,...,m$. This works because
+
+$ A u_j^p & = 1/h^2 (u^p_(j-1) u^p_j u^p_(j+1)) \ &= lambda_p u^p_j \ &= underbrace(2/h^2(cos(p pi h) - 1), lambda_p) u^p_j $
+
+#todo[Homework: check this $arrow.t$]
+
+Since we have the eigenvalues, we can see that the smallest absolute eigenvalue is $lambda_1 = 2/h^2 (cos(pi h) - 1)$ which we can Taylor expand to
+
+$ lambda_1 = 2/h^2 (-1/2 pi^2 h^2 + O(h^4)) = -pi^2 + O(h^2) $
+
+So $norm(A^(-1))_2 = 1/pi^2$ as $h -> 0$. This is the result we were expecting.

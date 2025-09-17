@@ -1,6 +1,8 @@
 build-all:
-    for file in `ls content/**/*`; do \
-        echo "$file" && \
-        mkdir -p "build/$(dirname "$file")" && \
-        typst compile "$file/notes.typ" "build/$file.pdf" --root content; \
+    mkdir -p "build" && \
+    cd content && \
+    for subject in `ls .`; do \
+        if [[ $subject != *.typ ]] then \
+            typst compile "$subject/notes.typ" "../build/$subject.pdf" --root .; \
+        fi \
     done
