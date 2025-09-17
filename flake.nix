@@ -27,6 +27,9 @@
 
               pkgs.jujutsu
               pkgs.just
+
+              pkgs.pnpm_9
+              pkgs.nodejs_24
             ];
           };
 

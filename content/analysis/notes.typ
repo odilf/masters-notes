@@ -338,9 +338,8 @@ We can prove this but we need more definitions.
   Claim: $M$ is compact. #todo[prove it]
 ]
 
-#let innerproduct(x, y) = $lr(angle.l #x, #y angle.r)$
 #definition[
-  An _inner-product space_ is a tuple $(X, innerproduct(dot, dot))$ is a linear space $X$ with an inner product which is a function $innerproduct(dot, dot): X times X -> RR$ (or $CC$) such that:
+  An _inner-product space_ is a tuple $(X, innerproduct(dot, dot))$ with an inner product which is a function $innerproduct(dot, dot): X times X -> RR$ (or $CC$) such that:
   + $innerproduct(f, f) > 0$ unless $f = 0$ (positive-definite)
   + $innerproduct(f, g) = innerproduct(g, f)$ (or $innerproduct(f, g) = overline(innerproduct(g, f))$) (symmetry)
   + $innerproduct(alpha f + beta g, h) = alpha innerproduct(f, h) + beta innerproduct(g, h)$ for $alpha, beta in RR "or" CC$ (linearity)
@@ -355,7 +354,7 @@ We can prove this but we need more definitions.
 ]
 
 #theorem[
-  Given an inner-product space $(X, innerproduct(dot, dot))$ and two elements $f,g in X$ with a normed defined as $||f|| = sqrt(innerproduct(f, f))$:
+  Given an inner-product space $(X, innerproduct(dot, dot))$ and two elements $f,g in X$ with a norm defined as $||f|| = sqrt(innerproduct(f, f))$:
 
   + $|innerproduct(f, g)| <= ||f|| ||g||$ (Cauchy-Schwarz)
   + $||f + g|| <= ||f|| + ||g||$ (triangle inequality)
@@ -369,7 +368,7 @@ We can prove this but we need more definitions.
   If $G = { g_1, ..., g_n }$ is a set such that $innerproduct(g_i, g_j) = 0$ if $i != j$ then $G$ is an _orthogonal_ set. If $innerproduct(g_i, g_j) = delta_(i,j)$ then $G$ is _orthonormal_.
 ]
 
-#theorem[Gramm-Schmidt][
+#theorem[Gram-Schmidt][
   Any set of linearly independent vectors $G = { g_1, ..., g_n }$ can be used to construct an orthonormal set.
 ]
 

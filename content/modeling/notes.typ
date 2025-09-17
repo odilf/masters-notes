@@ -481,12 +481,12 @@ It's a good idea to figure out typical lengths in your problem and non-dimension
         ylim: (auto, L * 1.1),
         lq.plot(
           t,
-          t.map(t => calc.pow(t, gamma * (t - 0))),
+          t => calc.pow(t, gamma * (t - 0)),
           label: "Exponential",
         ),
         lq.plot(
           t,
-          t.map(t => L / (1 + calc.exp(-k * (t - t0)))),
+          t => L / (1 + calc.exp(-k * (t - t0))),
           label: "Logistic",
         ),
       )
@@ -619,11 +619,11 @@ $
 This system is linear. Some other systems are not linear.
 
 #let phase-space(f, phase-args: none, ..plots) = lq.diagram(
-  width: 11cm,
+  // width: 11cm,
   height: 7cm,
   lq.quiver(
-    lq.linspace(-4, 4, num: 20),
-    lq.linspace(-4, 4, num: 20),
+    lq.linspace(-4, 4, num: 30),
+    lq.linspace(-4, 4, num: 30),
     (x, xp) => {
       let y = f(x)
       let norm = calc.norm(xp, y)
@@ -759,13 +759,11 @@ The most important point in a one-dimensional phase plane is that they only have
 
   #lq.diagram(
     ylim: (-2, 2),
-    {
-      let x = lq.linspace(-calc.pi / 2, calc.pi / 2, num: 100)
       lq.plot(
-        x,
-        x.map(x => calc.tan(x)),
+        lq.linspace(-calc.pi / 2, calc.pi / 2, num: 100),
+        x => calc.tan(x),
       )
-    },
+    ,
 
     lq.vlines(-calc.pi / 2, calc.pi / 2, stroke: red),
   )
@@ -805,7 +803,7 @@ The most important point in a one-dimensional phase plane is that they only have
 
 You want your dynamical systems to be robust. Small changes to initial conditions should not drastically change the results.
 
-Let's look at _saddle-node bifurcation_ (which is sometimes called in different ways).
+== Saddle-node bifurcation
 
 The proptotypical example is $dot(x) = r + x^2$. This has two fixed points when $r < 0$(one positive and one negative), at $r = 0$ you have a half-stable fixed point and at $r > 0$ you have no fixed points.
 
@@ -833,8 +831,8 @@ We can look at this in a _bifurcation diagram_:
   let x = lq.linspace(-3, 0, num: 200)
   lq.diagram(
     xlim: (auto, 2),
-    lq.plot(x, x.map(r => -calc.sqrt(-r)), mark: none, label: "stable"),
-    lq.plot(x, x.map(r => calc.sqrt(-r)), mark: none, label: "unstable"),
+    lq.plot(x, r => -calc.sqrt(-r), mark: none, label: "stable"),
+    lq.plot(x, r => calc.sqrt(-r), mark: none, label: "unstable"),
   )
 }
 
@@ -846,12 +844,9 @@ $ dot(x) = r - x - e^(-x) $
 
 The fixed points are at $r - x - e^(-x) = 0$ but this equation is transcendental. We can just plot $x^*(r)$ and we get $r' = 1 - e^(-x)$ and $r' = 0 => x = 0$.
 
-#{
-  let x = lq.linspace(-2, 5)
-  lq.diagram(
-    lq.plot(x, x.map(x => x + calc.exp(-x))),
-  )
-}
+#lq.diagram(
+  lq.plot(lq.linspace(-2, 5), x => x + calc.exp(-x)),
+)
 
 Which are the stable branches?
 
@@ -881,3 +876,238 @@ These last equations #todo[somehow] get which side is unstable and which is stab
 
 All saddle-node bifurcations follows the normal form of $dot(x) = r plus.minus x^2$.
 
+=== Generalizing saddle-node bifurcations
+
+To put this in more general terms, sadle-node bifurcation happens when we have an expression for a derivative $dot(x) = f(x, r)$, with some values $x^*$ and $r_c$. We can taylor expand $f$ around $x^*, r_c$:
+
+$
+  f(x, r) & = underbrace(f(x^*, r_c), 0) \
+  & + underbrace((diff f)/(diff x) (x^*, r_c), 0) (x - x^*) \
+  & + underbrace((diff f)/(diff r)(x^*, r_c), a) (r - r_c) \
+  & + underbrace(1/2 (diff^2 f)/(diff x^2), b) (x^*, r_c) (x - x^*)^2 \
+  & + underbrace((diff^2 f)/(diff x diff r)(x^*, r_c), c) (r - r_c)(x - x^*) \
+  & = a Delta r + b (Delta x)^2 + c Delta r Delta x \
+  & = b (Delta x + c/(2b) Delta r)^2 - c^2/4d (Delta r)^2 + a Delta r
+$
+
+We do the following change of variables:
+
+$
+  y = sqrt(|b|)(Delta x + c/2b Delta r) quad s = a Delta r - c^2/4b (Delta r)^2 \
+  tau = t / sqrt(|b|)
+$
+
+And we get
+
+$ dot(y) = sqrt(|b|) dot(x) => dot(x) = (dif y) / (dif tau) $
+
+And the bifurcation is at $ (dif y) / (dif tau) = s + y^2 + ... $
+
+That is, for an arbitrary function of the form $dot(x) = f(x, r)$, if it has a saddle-node bifurcation it will be in this "normal form" of $dot(x) = s plus.minus x^2$ (maybe with different variables).
+
+== Transcritical bifurcation
+
+This happens when you have the same fixed point that changes between stable and unstable depending on the parameter. For $r x - x^2$ we always have $0$ as a stable point but it is stable for $r < 0$, unstable for $r > 0$ and half-stable for $r = 0$.
+
+Unsurprisingly, $r x - x^2$ is the normal form of the transcritical bifurcation.
+
+#for (r, rmath) in ((-2, $-2$), (0, $$), (2, $2$)) {
+  figure(
+    phase-space(x => r * x - x * x),
+    caption: [Phase space of $dot(x) = #rmath x - x^2$],
+  )
+}
+
+This bifurcation can be seen in solid-state lasers. A very simple effective model of a laser is the following. We define $n$ as the number of photons at a time $t$, and we have $N$ the number of excited atoms, and we have a "gain coefficient" $G$. Finally, there is a "loss proportion" $k$ which has units of inverse time, which represents the average lifetime of a photon in the cavity. The relevant equation is:
+
+$ dot(n) = G n N - k n $
+
+We also need an equation of the number of excited atoms $N$ based on the number of photons, which is:
+
+$ N = N_0 - alpha n $
+
+Putting it all together, we get
+
+$
+  dot(n) & = G n(N_0) - k n \
+         & = (G N_0 - k) n - alpha G
+$
+
+This is the normal form of the transcritical bifurcation, so we have that at $N_0 < k/G$ the stable point is $n^* = 0$ and for $N_0 > k/G$ the stable point is $n^* = G(N_0 - k) / (G alpha)$. This shows that below a certain threshold, you have no laser emission, but after the threshold the emmissions can grow.
+
+== Pitchfork bifurcation
+
+This is one of the most interesting and typical bifurcations. We get it from the normal form $dot(x) = r x - x^3$. We generally see these bifurcations from systems that have symmetry (we can see that the normal form the change of variable $x -> -x$ leaves it unchanged).
+
+
+#for (r, rmath) in ((-2, $-2$), (0, $$), (2, $2$)) {
+  figure(
+    phase-space(x => r * x - x * x * x),
+    caption: [Phase space of $dot(x) = #rmath x - x^2$],
+  )
+}
+
+This bifurcation has always fixed points at $x^* = 0$, but for $r <= 0$ it is stable and otherwise it is unstable. The interesting point is that at $r > 0$ we suddenly get two stable points, at symmetric points since the equation is symmetric.
+
+#{
+  let mx = lq.linspace(-3, 0, num: 2)
+  let x = lq.linspace(0, 3, num: 25)
+  lq.diagram(
+    width: 10cm,
+    height: 5cm,
+    lq.plot(mx, x => 0, label: [stable]),
+    lq.plot(x, x => 0, label: [unstable]),
+    lq.plot(x, x => calc.pow(x, 1 / 3), label: [stable]),
+    lq.plot(x, x => -calc.pow(x, 1 / 3), label: [stable]),
+  )
+}
+
+Once you cross the zero point, we say that the system breaks symmetry because it has to choose one of the two paths. This is what happens with the Higgs Boson! In physics it's called a _second order phase transition_. We also see it in a 2D icing system.
+
+The zero point is a _supercritical pitchfork bifurcation_. We call it _supercritical_ because the bifurcation happens _after_ the critical point itself.
+
+=== Potential for pitchfork bifurcation
+
+$ dot(x) = r x - x^3 = - (dif V) / (dif x) => V(x) = -r x^2/2 + x^4/4 $
+
+#{
+  let x = lq.linspace(-1.5, 1.5, num: 20)
+  let v(x, r) = -r * calc.pow(x, 2) / 2 + calc.pow(x, 4) / 4
+  lq.diagram(
+    lq.plot(x, x => v(x, -1), label: $r=-1$),
+    lq.plot(x, x => v(x, 0), label: $r=0$),
+    lq.plot(x, x => v(x, 1), label: $r=1$),
+  )
+}
+
+The one for positive $r$ is sometimes called a double well potential in physics #todo[i think].
+
+#example[
+  $ dot(x) = r tanh(x) - x $
+
+  The bifurcation happens at
+
+  $ r = x / tanh(x) $
+
+  Remember the definition of $tanh$:
+
+  $ tanh(x) = (e^x - e^(-x)) / (e^x + e^(-x)) = (e^(2x) - 1) / (e^(2x) + 1) $
+
+  #lq.diagram(
+    lq.plot(lq.linspace(-5, 5), calc.tanh),
+  )
+
+  So the stable points are:
+
+  #lq.diagram(
+    lq.plot(lq.linspace(-5, 5), x => x / calc.tanh(x)),
+  )
+
+  We can do it analytically by first Taylor expanding:
+
+  $ tanh(x) = x - x^3/3 + O(x^4) $
+
+  So the initial equation becomes:
+
+  $
+    dot(x) = r x - r/3 x^3 - x + ... \
+    = (r - 1) x - r/3 x^3 + ...
+  $
+
+  So the bifurcation is when $r - 1 - r/3 x^2 = 0$, so $ x^* = plus.minus sqrt((r - 1)/(3r)) $
+]
+
+== Subcritical pitchfork
+
+Normal form has $dot(x) = r x + x^3$, which is the same as the transcritical but positive instead of negative.
+
+// #for (r, rmath) in ((-2, $-2$), (0, $$), (2, $2$)) {
+//   figure(
+//     phase-space(x => r * x + calc.pow(x, 3)),
+//     caption: $r=#r$
+//   )
+// }
+
+We can analyze it through the potential, $V(x) = - r x^2/2 - x^4/4$. This looks like this:
+
+#for (r, rmath) in ((-2, $-2$), (0, $$), (2, $2$)) {
+  figure(
+    lq.diagram(
+      lq.plot(
+        lq.linspace(-1, 1),
+          x => -r * calc.pow(x, 2) / 2 - calc.pow(x, 4) / 4,
+      ),
+    ),
+    caption: [$-#rmath x^2/2 - x^4/4$],
+  )
+}
+
+This is the opposite as the supercritical pitchfork, because the $x^3$ term is now #emph[de]stabailizing. This becomes unstable after some threshold and goes to infinity, so this system is _unphysical_.
+
+To correct this system we need a negative correction term, so we get
+
+$ dot(x) = r x + x^3 - x^5 $
+
+The minimum term we can introduce is $x^5$ because if we were to put a $x^4$ term, the system would no longer be symmetrical. We could also have a constant in front of $x^5$ but it turns out we can redefine our variables to convert it back to this normal form.
+
+The stable points of the new formula are $x^* = 0$ and the solutions of $r =-x^2 + x^4$.
+
+#lq.diagram(
+  xlabel: $x$,
+  ylabel: $r$,
+  lq.plot(
+    lq.linspace(-1.2, 1.2),
+    x => -calc.pow(x, 2) + calc.pow(x, 4),
+  ),
+)
+
+We want to find the minima, so we get $r' = -2x = 4x^3 = 0 => x = 0 "or" x = plus.minus 1/sqrt(2)$.
+
+#todo[TODO: do diagram]
+// #{
+//   let r = lq.linspace(-3, 3, num: 20)
+//   lq.diagram(
+//     ylabel: $x^*$,
+//     xlabel: $r$,
+//     lq.plot((-2, 2), (0, 0)),
+//     lq.plot(r, r.map(r => -1/calc.sqrt(calc.abs(r))))
+//   )
+// }
+
+In physics, this is a _discontinious phase transition_ (sometimes also called 1st order transition). This happens in liquid to gas transition, where the density of the system from gas to liquid has a discontinious jump.
+
+
+== Imperfect bifurcation
+
+$ dot(x) = h + r x - x^3 $
+
+This system is not exactly symmetrical because you have to negate $h$ as well as $x$.
+
+The fixed points are at $r x - x^3 = -h$.
+
+#figure({
+  let x = lq.linspace(-2, 2)
+  lq.diagram(
+    lq.plot(x, x => 2 * x - calc.pow(x, 3)),
+    lq.hlines(1.8, stroke: gray, label: $-h$),
+  )
+})
+
+#todo[I totally missed this]
+
+In the region between $h = 2(r/3)^(3/2)$ and $h = -2(r/3)^(3/2)$ we have three solutions, otherwise we have only one.
+
+This is kind of hard to analyze.
+
+One idea is to first fix the imperfection parameter $h$. To see what happens we can change variables.
+
+We have $h + r x - x^3 = 0$. We take $r = 3 (h/2)^(2/3) rho$ and $x^* = (h/2)^(1/3) xi$. We end up with:
+
+$
+  h + 3 (h/2)^(2/3) rho (h/2)^(1/3) xi - (h/2) xi^3 = 0 \
+  h + 3/2 h rho xi - h/2 xi^3 = 0 \
+  2 + 3rho xi - xi^3 = 0
+$
+
+
+If instead we fix $r$, we can do a different change of variables, $h = 2(r/3)^(3/2) gamma$ and $x^* = (r/3)^(1/2) eta$. The equation we end up is $2 gamma + 3 eta - eta^3 = 0$

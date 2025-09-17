@@ -318,7 +318,7 @@ $
     1, 0, 0, dots.down, 0;
     0, 0, dots.down, 0, 0;
     0, dots.down, 0, 0, 1;
-    dots.down, 0, 0,  1, -2
+    dots.down, 0, 0, 1, -2
   )
 $
 
@@ -395,7 +395,9 @@ $ E_0 = E_(m+1) = 0 $
 Then, to answer the original question, for a given $h$ we have $A^h E^h = -tau^h$. If $A$ is invertible, we have that $E^h = -(A^h)^(-1) tau^h$.
 
 #todo[what dis $arrow.b$]
-$ norm(E^h) = norm((A^h)^(-1) tau^h) <= norm((A^h)^(-1)) dot norm(tau^h) overparen(=, ?)C h^2 $
+$
+  norm(E^h) = norm((A^h)^(-1) tau^h) <= norm((A^h)^(-1)) dot norm(tau^h) overparen(=, ?)C h^2
+$
 
 This $C h^2$ is just what we get numerically in the specific example, that the error decreases quadratically with $h$. We should be able to show this numerically, so it's what we need to show.
 
@@ -434,7 +436,11 @@ We want to compute $norm(A^(-1))_2 = rho(A^(-1)) = max |lambda_p^(-1)| = (min|la
 
 We take the eigengrid function: $u_j^p = sin(p pi j h)$ for $j = 1,...,m$. This works because
 
-$ A u_j^p & = 1/h^2 (u^p_(j-1) u^p_j u^p_(j+1)) \ &= lambda_p u^p_j \ &= underbrace(2/h^2(cos(p pi h) - 1), lambda_p) u^p_j $
+$
+  A u_j^p & = 1/h^2 (u^p_(j-1) u^p_j u^p_(j+1)) \
+          & = lambda_p u^p_j \
+          & = underbrace(2/h^2(cos(p pi h) - 1), lambda_p) u^p_j
+$
 
 #todo[Homework: check this $arrow.t$]
 

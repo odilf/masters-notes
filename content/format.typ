@@ -1,6 +1,6 @@
 #import "@preview/libra:0.1.0": balance
 #import "@preview/ctheorems:1.1.3": *
-#import "@preview/lilaq:0.4.0" as lq
+#import "@preview/lilaq:0.5.0" as lq
 
 #let preview-args = json(bytes(sys.inputs.at("x-preview", default: "{}")))
 
@@ -29,6 +29,7 @@
 
   // Lilaq dark mode
   show: lq.theme.moon
+  show: lq.set-diagram(width: 100%, height: 6cm)
 
   it
 }
@@ -122,11 +123,16 @@
 )
 #let proof = thmproof("proof", "Proof")
 
+
+#let lq = lq
+
+// Convenience functions
 #let todo = body => text(fill: red)[*#sym.angle.l #body #sym.angle.r*]
 #let faint(..args) = text(fill: white.transparentize(50%), ..args)
 
+// Convenience math definitions
 #let dx = $dif x$
-#let lq = lq
+#let innerproduct(x, y) = $lr(angle.l #x, #y angle.r)$
 
 
 #show: exercises[]
