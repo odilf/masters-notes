@@ -449,3 +449,90 @@ Since we have the eigenvalues, we can see that the smallest absolute eigenvalue 
 $ lambda_1 = 2/h^2 (-1/2 pi^2 h^2 + O(h^4)) = -pi^2 + O(h^2) $
 
 So $norm(A^(-1))_2 = 1/pi^2$ as $h -> 0$. This is the result we were expecting.
+
+== Increasing accuracy
+
+What we did is $F D 2$ which has an order 2 error. How to get more accurate solutions?
+
+=== Larger stencils
+
+One option is to use more points. We can use 5 points (with 4 points we are still stuck at order 2) to get order 4 accuracy. Using a symmetric 5-point stencil we get the following:
+
+$ u''(x_j) approx 1/(12h^2)( -u_(j-2) + 16 u_(j-1) - 30 u_j + 16 u_(j+1) - u_(j + 2)) $
+The problem with this is that at the boundary we would be missing some points. The easiest way to work around the missing point is to do a semi forward stencil on the closest boundaries (that is, one back and three forward). The thing is that this still works out to order 4, so we can do one back and _four_ forward, and this does get order 4 accuracy.
+
+$ u''(x_j) approx 1/(12h^2) (10 u_0 - 15 u_1 - 4u_2 + 14u_3 - 6u_4 + u_5) $.
+
+The problem with this is that we have bigger stencils and it also breaks matrix symmetry.
+
+=== Extrapolation methods
+
+Another option to increase accuracy is using extrapolation methods. The idea is that we can compute a solution on $hat(h) = h/2$. Then, if before we had
+
+$ U_j = u(x_j) + c_2 h^2 + c_4 h^4 + c_6 h^6 + ... $
+
+Now we would have
+
+$ V_(2j) = u(x_j) + c_2 (h/2)^2 + c_4 (h/2)^4 + c_6 (h/2)^6 + ... $
+
+So now we want to find $a, b$ such that $hat(U)_j = a U_j + b V_(2j) = O(h^4)$:
+
+
+$
+  hat(U)_j & = a U_j + b V_(2j) \
+           & = a (u(x_j) + c_2 h^2 + O(h^4)) + b (u(x_j) + C_2/4 h^2 + O(h^4)) \
+           & = a (u(x_j) + c_2 h^2 + O(h^4)) + b (u(x_j) + C_2/4 h^2 + O(h^4)) \
+           & = a u(x_j) + a c_2 h^2  + b u(x_j) + b C_2/4 h^2 + O(h^4) \
+           & = (a + b) u(x_j) + (a + b/4) c_2 h^2  + O(h^4) .
+$
+
+And this implies that we want $ cases(a + b = 1, a + b/4 = 0) $. This results in solution $a = -1/3$ and $b = 1/3$.
+
+#faint[This interpolation can always happen with these simple schemes.]
+
+You can kep repeating interpolation to increase the order.
+
+
+=== Deferred corrections
+
+And yet another method of increasing accuracy is using _deferred corrections_.
+
+$ A E = - Tau $
+
+$ E_j = U_j - hat(U)_j $
+
+$ tau_j = 1/12 h^2 u^(("iv")) + O(h^4) $
+
+
+The problem we want to solve is $u'' = f$,
+
+$ A arrow(U) = arrow(F) quad w | "FD2": 1/h^2 underbrace((u_(j-1) - 2u_j + u_(j+1)), hat(U)_j) = f(x_j) + 1/12 h^2 u^(("iv")) + O(h^4) $
+
+And $ A arrow(hat(U)) = arrow(F) + arrow(Tau)$.
+
+To do higher order methods we want to decrease the global error for which we want to decrease the local truncation error #todo[?]. Using $u'' = f$:
+
+$ A arrow(U) = f(x_j) + 1/12 h^2 f''(x_j) + O(h^4) $
+
+The right hand side is generally $f(x_j)$ but we can make it the entire $f(x_j) + 1/12 h^2 f''(x_j)$ term in deferred corrections.
+
+So instead of solving the original $F$ we are going to take $arrow(F)$ such that $(arrow(F))_j = f(x_j) + 1/12 h^2 f''(x_j)$. Since we take this right hand side, the local truncation error becomes $tau_j = O(h^4)$ since the $1/12 h^2 u^(("iv"))(x)$ term cancels out. The global error also decreases like this. If $f$ is infinitely differentiable you can keep doing this forever, for the problem $u'' = f$.
+
+
+#todo[A bunch of things happened that I didn't write down.]
+
+#faint[This is 2.16 (Nonlinear equations) from _LeVeque_.]
+
+We can take the pendulum problem, which is:
+
+$ dot.double(theta) = g sin(theta) $
+
+Let's remove the constants to get
+
+$ (dif^2 theta) / (dif t^2) = sin(theta) $
+
+The finite difference discretization is:
+
+$ 1/(Delta + 2) (theta_(i - 1) - 2 theta_i + theta_(i + 1)) + sin(theta_i) = 0 $
+
+$ G(theta) = arrow(0) quad theta in RR^m $

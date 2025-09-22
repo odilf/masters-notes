@@ -231,9 +231,7 @@ The idea is that a compact space has no "punctures" or "missing endpoints", i.e.
 
 #theorem[Existence of the "best approximation"][
   Given a metric space $(X, d)$ and a compact subspace $K subset X$, then there exists a point in $K$ of minimal distance to any other $X$.
-
-
-]
+] <theorem-existence-of-best-approximation>
 
 #proof[
   Let $delta = inf { d(p, q) : q in K }$ (the largest lower bound for distance to a point $q$ in $K$). Since $d$ is positive-definite the infimum exists because it can be $0$. It is a general property of infimums that there exists a sequence $q_n$ in $K$ such that $lim_(n->infinity) d(p, q_n) = delta$ #faint[(because, handwavey-ly, the infimum is either on the set where the convergent sequence is obvious or it is right on the edge of the set where you can get arbitrarily close to the infimum)].
@@ -295,7 +293,7 @@ The following definitions are less important.
 
 #theorem[
   In a normed linear space $(X, ||dot||)$, every closed, bounded, finite-dimensional $F subset X$ is _compact_.
-] <compact-normed-linear-spaces>
+] <theorem-closed-bounded-finite-compact>
 
 We can prove this but we need more definitions.
 
@@ -311,7 +309,7 @@ We can prove this but we need more definitions.
   If $K subset X$ is compact, then $phi(K) = { phi(x) : x in K }$ is compact.
 ] <continuous-sends-compact-compact>
 
-#proof[of @compact-normed-linear-spaces][
+#proof[of @theorem-closed-bounded-finite-compact][
   Let $F$ satisfy the theorem conditions (closed, bounded, finite-dimensional).
 
   For $F$ to be finite-dimensional it means that there are some linearly independent vectors $q_n$ the span of which $F$ is a subset (i.e., for every $f in F$ there exist some coefficients $lambda_n$ such that $f = sum lambda_j q_j$)
@@ -412,4 +410,161 @@ We can prove this but we need more definitions.
   We can check where $g$ is unique by realizing that equality happens only when $||h - g|| = 0$ by the definition of the norm.
 
   Therefore $g$ is the unique best approximation.
+]
+
+
+We would like to have more general approximations, with other kinds of spaces with less restrictions. To do this we need to introduce more definitions:
+
+#definition[Convexity][
+  $K$ is _convex_ if for all $f,g in K$ we have $theta f + (1-theta)g in K$.
+
+  $theta f + (1-theta)g$ is a line parametrization of $g -> f$ so a set is convex if the line between any two points in a set is also entirely inside the set.
+
+  An equivalent definition is that $k$ is convex if for all $f_1, ..., f_n$ we have
+
+  $ sum_(i=1)^n theta_i f_i in K $
+
+  when $theta_i >= 0$ such that $sum_(i=1)^n theta_i = 1$.
+
+  The above is called a _convex linear combination_.
+]
+
+#definition[Convex hull][
+  The _convex hull_ of a set $A subset X$ of a linear space $X$ is defined as:
+
+  $ cal(H)(A) = { g = sum_(i=1)^m theta_i f_i : m in NN, theta_i >= 0, sum_(i=1)^m theta_i = 1, f_1,...,f_m in A } $
+
+  In words, $cal(H)$ is the set of all convex linear combinations of elements in $A$.
+]
+
+#theorem[The convex hull of any set is convex.]
+
+#theorem[Carathéodory][
+  For an $n$-dimensional linear space $X$, and a subset $A subset X$, then every element $f in cal(H)$  can be written as $f = sum_(i=0)^n theta_i f_i$ (where $theta_i$ and $f_i$ satisfy the previous conditions).
+]
+
+#proof[
+  Let $g in cal(H)$. $g = sum_(i=0)^k theta_i f_i$ where $f_0,...,f_k in A, theta_i >= 0, sum_(i=0)^n theta_i = 1$. Assume $k$ is minimal with this property, so that $theta_i > 0$.
+
+  Claim: We can do this with $k <= n$.
+
+  Assume, $k > n$.
+
+  $ sum_(i=0)^k theta_i g_i = sum_(i=0)^k (theta_i f_i - theta_i g) = g - (sum_(i=0)^k) = 0 $
+
+  We have a set ${ g_1, ..., g_k }$ which has at least $n+1$ elements since they have $k+1$ elements and $k>=n$. These are, then, linearly dependent since the dimension of the space is $n$.
+
+  Therefore, there exist constants $alpha_i$ such that $alpha_1 g_1 + ... + alpha_k g_k = 0$.
+
+  Defining $alpha_0 = 0$, for any $lambda in RR$ we can consider the sum:
+
+  $ sum_(i=0)^k (theta_i - lambda alpha_i) g_i = underbrace(sum_(i=0)^k theta_i g_i, 0) - underbrace(lambda sum_(i=0)^k alpha_i g_i, 0) = 0 $
+
+  We can cleverly choose $lambda$ to get results. Namely, we can choose $lambda = alpha_i/theta_i$ for the $i$ that corresponds with the minimal $theta_i$, which makes $theta_i - lambda alpha_i = 0$ and keeps all other $theta_i - lambda alpha_i$ nonnegative. The combination is still non-trivial since $theta_0 - lambda alpha_0 = theta_0 > 0$.
+
+  We can use this to create a new linear combination that produces $g$. Given that $g_i = f_i - g$, we have:
+
+  $ sum_(i=0)^k (theta_i - lambda alpha_i) g_i = sum_(i=0)^k (theta_i - lambda alpha_i)(f_i - g) = sum_(i=0)^k (theta_i - lambda alpha_i)f_i - g sum_(i=0)^k (theta_i - lambda alpha_i) $
+
+  We can divide by the sum that multiplies $g$, since it's positive, so:
+
+  $ g & = 1/(sum_(i=0)^k (theta_i - lambda alpha_i)) sum_(i=0)^k (theta_i - lambda alpha_i) f_i
+  \   & = sum_(i=0)^k (
+    (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j)) f_i
+  ) $
+
+  This is a convex combination. The sum of the coefficients is:
+
+  $ sum_(i=0)^k ( (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j))) = 1 $
+
+  We know also that all coefficients are nonnegative.
+
+  The thing is that at least one of the coefficients $theta_i - lambda alpha_i$ is $0$, so $k$ cannot be minimal if $k > n$! Therefore, for $k$ to be minimal we need that $k <= n$.
+]
+
+#corollary[
+  For a linear space $X$ of dimension $n$ and a compact subset $A subset X$. Then $cal(H)(A)$ is compact.
+]
+
+#proof[
+  Take any sequence $(f_k)_k subset cal(H)(A)$. Then,
+
+  $ f_k = sum_(i=0)^n theta_(k i) f_(k i)$ where $theta_(k i) >= 0$, $sum_(k=0)^n theta_(k i)$ and $f_i in A$.
+
+  Since $A$ is compact, there is a convergent subsequence of the $(f_k)^*$ such that $(f_(k i))_k$ converges to some limit $f_i$ as $k -> oo$.
+
+  Once having taken this limit, we can also do this for $theta_i$ since they're contained in $[0, 1]$ which is clearly compact. So, $(f_k)^(**)$ such that $theta_(k i) -> theta_i$.
+
+  The converging limit should be
+
+  $ f = sum_(i=0)^n theta_i f_i $
+
+  We have to show that this is convex. This is simple since $f_i in A$, $theta_i >= 0$ because all $theta_(k i)$ are positive, and $lim_(k->oo) sum_(i=0)^n theta_(k i) = 1 = sum_(i=0)^n lim_(k->oo) theta_(k i) = 1$. So $f$ is indeed convex and thus is in the convex hull.
+
+  Therefore, every sequence has a subsquence that converges to an element of a set, so the convex hull $cal(H)$ is compact.
+]
+
+#theorem[Existence][
+  Let $(X, norm(dot))$ be a normed linear space. Given a subset $A subset X$ which is finite dimensional then there exists a $g in A$ which is "a" best approximation to $f$, such that $norm(f - h) = inf_(h in A) norm(f - h)$
+]
+
+#proof[
+  Let $f_0 in A$. Consider the set $S = { h in A : norm(h - f) <= norm(f_0 - f )}$.
+
+  We want to use @theorem-existence-of-best-approximation. We need to prove, then, that $S$ is compact. Using @theorem-closed-bounded-finite-compact, proving that $S$ is closed, bounded and finite-dimensional, then $S$ is compact.
+
+  - Finite-dimensional: Trivial, given in premise. #sym.checkmark
+  - Bounded: $S$ is bounded since $norm(h - f) <= norm(f_0 - f)$ #sym.checkmark
+  - Closed: Let $(f_k)_k$ be a convergent sequence in $S$ with $f_k -> tilde(f)$ as $k -> oo$.
+    $norm(tilde(f) - f) = norm(lim_(k->oo) f_k - f) = lim_(k->oo) norm(f_k - f) <= lim_(k->oo) norm(f_0 - f) = norm(f_0 - f)$ so $tilde(f) in S$.
+
+    Therefore, $S$ is compact by @theorem-closed-bounded-finite-compact.
+]
+
+#example[
+  Let $X$ be the space of sequences $(x_n)_n subset RR$ that converge to $0$. This becomes a normed linear space with the following norm:
+
+  $ norm((x_n)) = max_n |x_n| $
+
+  Let $A$ be the subspace of sequences $(x_n)$ such that $sum_(k=1)^oo 2^(-k) x_n = 0$.
+
+  Pick any $(y_n)_n in.not A$. Then $sum_(k=1)^oo 2^(-k) y_k = lambda != 0$ and in fact, without loss of generality, $lambda > 0$.
+
+  #underline[Claim]: the minimal distance of $A$ to $(y_n)_n$ is at most $lambda$.
+
+  Consider sequences:
+  - $x_((1)) = -2/1 (lambda, 0, 0, ...) + y$
+  - $x_((2)) = -4/3 (lambda, lambda, 0, ...) + y$
+  - $x_((n)) = -2^n/(2^n-1) (underbrace(lambda\, lambda\, ...\, lambda, n), 0, ...) + y$
+  Where $y = (y_1, y_2, y_3, ...)$
+
+  Then the norm $norm(x_((n)) - y)$ is:
+
+  $ norm(x_((n)) - y) & = -2^n/2^(n-1) (underbrace(lambda\, lambda\, ...\, lambda, n), 0, ...) + y
+  \ & = 2^n/(2^n-1) lambda -> lambda "as" n -> oo
+   $
+
+  $ sum_(k=1)^oo 2^(-k) x_((n), k)
+    & = sum_(k=1)^oo - (2^n 2^(-k))/(2^n - 1) + sum_(k=1)^oo 2^(-k) y_k \
+    & = -(2^n)/(2^n - 1)(1 - 2^(-n)) lambda = -lambda + lambda = 0 $
+
+  Suppose, to reach a contradiction, that there exists $(z_n)_n in A$ such that $norm((z_n) - (y_n)) <= lambda$. Consider $n$ such that $|z_k - y_k| <= 1/2 lambda$. This can happen because all sequences in $A$ converge to $0$. Then,
+
+  $ lambda = sum_(k=1)^oo 2^(-k) y_k
+    & = sum_(k=1)^n 2^(-k)(y_k - z_k) \
+    & <=^(triangle "ineq.") sum_(k=1)^oo 2^(-k) |y_k - z_k| \
+    & = sum_(k=1)^(n-1) 2^(-k) |y_k - z_k| + sum_(k=n)^oo 2^(-k) |y_k - z_k| \
+    & <= sum_(k=1)^(n-1) 2^(-k) norm((y_k) - (z_k)) + sum_(k=n)^oo 2^(-k) 1/2 lambda \
+  $
+
+  Now we use the asssumption that $norm((z_n) - (y_n)) <= lambda$,
+
+  $
+    & <= lambda(sum_(k=1)^(n-1) 2^(-k)) + 1/2lambda(sum_(k=n)^oo 2^(-k)) \
+    & = (1 - 2^(-n)) lambda < lambda \
+  $
+
+  and we reach a contradiction!
+
+  Therefore, for any $(z_n) in A$ we have $norm((z_n) - (y_n)) > lambda$. We can come arbitrarily close to $lambda$ with elements of $A$ but we can never reach it.
 ]

@@ -1111,3 +1111,118 @@ $
 
 
 If instead we fix $r$, we can do a different change of variables, $h = 2(r/3)^(3/2) gamma$ and $x^* = (r/3)^(1/2) eta$. The equation we end up is $2 gamma + 3 eta - eta^3 = 0$
+
+=== Example: Bead on a rotating wire
+
+We have a bead in a wire where that wire is rotating in a vertical axis.
+
+#todo[Make picture?]
+
+The equations we get are
+
+$ m r dot.double(phi) = -m g sin phi + m rho omega^2 cos theta - b r phi' $
+
+For the time being, we assume $b = 0$.
+
+$ rho = r sin phi $
+
+$ dot.double(phi) = -g/gamma sin phi + omega^2 sin phi cos phi = g/gamma sin phi (gamma cos phi - 1) $
+
+$ gamma = (omega^2 r) / g $
+
+The equlibrium points are at $ phi^* = 0$,$phi^* = pi$ and $cos phi = 1/gamma$ if $gamma >= 1$
+
+We can do taylor expansion of $sin phi (gamma cos phi - 1)$:
+
+$ sin phi (gamma cos phi - 1) \
+   & = gamma/2 sin (2phi) - sin phi & = gamma/2 (2phi - 4/3 phi^3) - phi + phi^3/6 + O(phi^4) \
+  & = (gamma - 1) phi + (1 - 4gamma)/6 phi^3 + O(phi^4)
+$
+
+We get this equation eventually:
+
+$ dot.double(phi) = mu phi + nu phi^3 $
+
+With $mu = g/r(gamma - 1)$ and $nu = (1-4gamma)/6 dot g/gamma$
+
+This is an important equation. It is _Duffing's oscillator_. It is a non-linear "spring" so to say. This equation has $phi$/$-phi$ symmetry, just like the original. 
+We want to study the _overamped_ limit. We have this equation.
+
+$ r dot.double(phi) + (b r)/(m g) dot(phi) = -sin phi + gamma sin phi cos phi = sin phi (gamma cos phi - 1) $
+
+We can introduce _scales of time_. For instance, $t = T tau$ so that $tau$ is dimensionless. The equation above becomes:
+
+$ r dot.double(phi) + (b r)/(m g) dot(phi) = r/(g T^2) (dif^2 phi) / (dif tau^2) + (b r) / (m g T) (dif phi) / (dif tau) $
+
+Again, we are interested in the overdamped limit, so it makes sense to make the term that we want to be primary to $1$, that is:
+
+$ (b r) / (m g T) = 1 => T = (b r) / (m g) $
+
+And then, using our new expression for $T$ in the other term:
+
+$ epsilon = (r m^2 g^2) / (g b^2 r^2) = (m^2 g) / (b^2 r) $
+
+So that:
+
+$ r dot.double(phi) + (b r)/(m g) dot(phi) = epsilon (dif^2 phi) / (dif tau^2) + (dif phi) / (dif tau) $
+
+To get the overdamped limit, we take $epsilon = 0$. Then, we have:
+
+$ (dif phi) / (dif tau) = sin phi (gamma cos phi - 1) = f(phi) $
+
+
+#for gamma_val in (0.3, 3) {
+  figure(
+    phase-space(phi => calc.sin(phi) * (gamma_val * calc.cos(phi) - 1)),
+    caption: [$(dif phi) / (dif tau) = sin(phi) (gamma cos(phi) - 1)$, $gamma = #gamma_val$]
+  )
+}
+
+#let bifurcation-diagram(f) = [];
+
+#bifurcation-diagram((phi, gamma) => calc.sin(phi) * (gamma * calc.cos(phi) - 1))
+
+A problem with what we have done is that we have moved from a first order diferential equation to a second order diferential equation. Namely, a second order ODE needs an extra boundary condition than a first order ODE. Here, we can just calculate the derivative at $tau=0$ which is unlikely to be the one measured.
+
+To resolve this, we need to introduce a _singular perturbation_. This is very interesting but we won't get into it in too much detail.
+
+Applied to our problem, the singular perturbation is obtained by getting adding some force. We first introduce a new variable, $Omega = (dif phi) / (dif tau)$. Then, we get
+
+$ epsilon (dif Omega)/(dif tau) + (dif phi)/(dif tau) = F(phi) $
+
+The equations we have now are
+$ cases(
+  (dif phi) / (dif tau) = Omega,
+  (dif Omega) / (dif tau) = 1/epsilon (f(phi) - Omega)
+) $
+
+=== Example: Budworm outbreak
+
+This is similar to the logistic function.
+
+$ dot(N) = R N (1 - N/K) - p(N) $
+
+Where $ p(N) = -(B N^2)/(A^2 + N^2)$
+
+Let's solve it.
+
+We take $x = N/A$ so $N = A x$ and then
+
+$ A dot(x) = R A x (1- A/K x) - B x^2/(x+x^2) $
+
+Then
+
+$ A/B dot(x) = (R A) / B x (1 - A/K x) - x^2/(1 + x^2) $
+
+Rescale time:
+
+$ t = T tau => A/b dot(x) = A/(B T) (dif x)/(dif tau) $
+
+$ r = (R A)/B, k = K/A $
+
+And we get the equation:
+
+$ (dif x)/(dif tau) = r x (1 - x/k) - x^2/(1 + x^2) $
+
+The fixed points of this equation are $x^* = 0$ and $r(1-x/k) = x/(1 + x^2)$. This is nice because we have a) reduced the number of parameters and b) instead of having to check a very hard elliptic curve, we only need to check a line with $x^2/(1+x^2)$
+

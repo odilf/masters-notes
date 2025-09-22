@@ -347,3 +347,211 @@ $ kappa_f^"abs" = norm(J_f) $
   #todo[Fill in]
 ]
 
+== Matrix norms
+
+#definition[
+  A norm for a vector is a function $norm(dot) : FF^(m times n) -> FF$ where
+
+  + $norm(A) >= 0$ and $norm(A) = 0$ if $A = 0$.
+  + $norm(alpha A) = |alpha| norm(A)$
+  + $norm(A + B) <= norm(A) + norm(B)$
+
+  Furthermore, the norm is _consistent_ if:
+
+  (iv) $norm(A B) = norm(A) dot norm(B)$
+]
+
+#example[
+  For a matrix $A = [a_(i j)]_(i j) in FF^(m times n)$, a few common norms are:
+
+  + 1-norm: $norm(A)_1 = max_(j=1,..,n) sum_(i=1)^m |a_(i j)|$
+  + $oo$-norm: $norm(A)_oo = max_(i=1,..,n) sum_(j=1)^m |a_(i j)|$
+  + Frobenius norm $norm(A)_F = sqrt(sum_(i,j) |a_(i,j)|^2)$
+  + 2-norm (also called spectral norm): $norm(A)_2 = max { sqrt(lambda) | lambda "is an eigenvalue of" A^* A }$
+
+  It might be surprising that the last one is also a norm, but the eigenvalues of $A^* A$ are real and positive.
+
+  And the norms for the identity matrix of size $m times m$ are:
+
+  - $norm(I)_1 = 1$
+  - $norm(I)_oo = 1$
+  - $norm(I)_2 = 1$
+  - $norm(I)_F = sqrt(m)$
+]
+
+
+We are going to see the _induced matrix norm_, which essentially asks what is the longest increase in length for a vector $v in FF^m$ under the transformation $v |-> A v$?
+
+Mathematically:
+
+$ norm(A) = sup_(N in FF^m) norm(A v)/norm(v) = sup_(norm(v) = 1) norm(A v) $
+
+
+
+This basically delegates the norm to a vector norm. If a norm can be written in this form it is an induced matrix norm.
+
+#theorem[
+  Let $norm(dot)_alpha$ and $norm(dot)_beta$ be two matrix norms in a finitie-dimensional vector space, then there exist two constants $C_m$ and $C_n$ such that we can bound
+
+  $ C_m norm(x)_alpha <= norm(x)_beta <= C_n norm(x)_alpha $
+
+  This essentially says that all norms are the same up to a constant.
+]
+
+#definition[
+  The _spectral radius_ of a matrix $A$ is $f(A) = max { |lambda| : lambda "is an eigenvalue of" A }$.
+]
+
+= Directo methods for solving systems of equations
+
+A system of linear equations can be written as $A x = b$ where we assume the system has one unique solution, which means that $A^(-1)$ exists. Note that you should _never_ calculate $A^(-1)$ for this purpose, since it's one of the worst ways to solve the system. Inteuiteely, it's because calculating $A^(-1)$ gives you a way to get every possible solution, but you can be more accurate by looking at just one solution in particular.
+
+So let's try to solve the system with some directo method. We will somehow get a value $hat(x)$ that approximates $x$.
+
+We want to quantify the forward error, which would be $norm(x - hat(x)) = norm(e)$. However, we only have the bckward error, which is $A e = A x - A hat(x) = b - A hat(x) = r$. $r$ is also called the _residual_.
+
+We want, then, to connect $norm(e)$ and $norm(r)$. I
+
+Let's look at an example, with:
+
+$ A = mat(1, 1; 1, 1+epsilon) quad b = mat(2; 2+epsilon) quad x = mat(1; 1) $
+
+Image we get the computed value $hat(x) = mat(2; 0)$. Then the error is $e = x - hat(x) = mat(-1; 1)$. The relative error is
+
+$ norm(e)_oo/norm(x)_oo = 1/1 = 1 $
+
+The residual norm is
+$ norm(r)_oo = norm(A x - A hat(x))_oo = norm(mat([0, epsilon))_oo = epsilon])) $
+
+So, we have a large relative forward error but we have a very small relative backwar error. Uh oh.
+
+We should be able to connect these two via the condition number, since $norm(e) <= kappa norm(r)$.
+
+So, what is the condition number $kappa$?
+
+If we do a normwise perturbation with $norm(Delta A) <= alpha norm(A)$ for some small $alpha$, we get
+
+$hat(A) = mat() $
+
+
+=== Normwise conditioning
+
+So the normwise conditioning is
+
+$
+  & r = A(x - hat(x)) \
+  <=> & r = b - A hat(x) \
+  <=> & A hat(x) = b - r \
+  <=> & hat(x) = A^(-1)(b - r) \
+  <=> & e = x - hat(x) \
+  <=> & x - A^(-1) b + A^(-1)r \
+  <=> & e = A^(-1) r \
+$
+
+So $e = Delta x = A^(-1) r$.
+
+If we do a perturbation to $b$ getting $b + Delta b$
+
+So $A hat(x) = b + Delta b$ which is a solution for $x + Delta x$..
+
+$ r = A (x - hat(x) &= A (x - x - Delta x)) $
+
+#todo[There is more stuff here]
+
+If you keep on doing calculations you will reach that the reason we get such a difference in the forward and backward errors is because of the conditioning number. We arrive at the relation:
+
+$ norm(Delta x) / (2norm(x)) <= norm(A) norm(A^(-1)) norm(Delta b)/norm(b) $
+
+We need the conditioning number, which we get as $kappa(A) = norm(A) norm(A^(-1))$ so, given $norm(A) approx 1$ and $norm(A^(-1)) approx 2/epsilon$ we get:
+
+$ 1 <= 2/epsilon epsilon/2 = 1 $
+
+Indeed, the conditioning number relates the forward and backward error.
+
+Generally:
+
+$ norm(Delta x)/norm(x) <= underbrace(norm(A) norm(A^(-1)), kappa(A)) ( norm(Delta A)/norm(A) + norm(Delta b)/norm(b) )$
+
+for small perturbations $Delta A$ and $Delta b$.
+
+=== Componentwise conditioning
+
+Given $A <= B$ elementwise (so $a_(i j) <= _(i j)$)
+
+Assume perturbation to A of size $|Delta A| <= epsilon |A|$
+Assume no perturbation on $b$.
+
+We get
+
+$ norm(Delta x) / norm(x + Delta x) <= epsilon norm(A^(-1)) norm(A) $
+
+== Direct methods
+
+A direct method does $k$ steps and then provides an approximation. 
+
+=== Gaussian elimination
+
+Goal: Solve $A x = b$, given $A$ and $b$.
+
+Step 1: transform to an equivalent system
+
+$ T x = b' $
+
+Where $T$ has some "simple" structure. For example, make $T$ triangular.
+
+Step 2: Solve simpler system
+
+In the case of triangular, we have:
+
+$
+  T x = mat(
+    t_(1 1), t_(1, 2), t_(1, 3), dots, t_(1, n);
+    0, t_(2, 2), t_(2, 3), dots, t_(2, n);
+    0, 0, t_(3, 3), dots, t_(3, n);
+    0, 0, 0, dots.down, dots.v;
+    0, 0, 0, t_(m-1. m-1), t_(m-1, m)
+    0, 0, 0, 0, t_(m, m)
+  )
+$
+
+To get the solution, we start at the bottom and work our way up. We start with $x_m = b'm / t_(m, m)$. Then we move on to $t_(m-1,m_1) x_(m-1) + t_(m-1, m) x_m = b'_(m-1)$ and since we know $x_m$ we plug it in so we get $x_(m-1) = (t_(m-1, m) b'm) / (t_(m-1, m-1) t_(m,m))$, and so on.A
+
+The algorithm (in floating point) goes as follows, then:
+
+Input: Triangular $T$ and vector $b'$ where $T$ and $b$ can be rpresented exactly in floating point.
+
+We want to output $x$ such that $T x = b'$.
+
+The algorithm is:
+
+```python
+def solve_triangular(T, b):
+  m = len(b)
+  assert T.shape == (m, m)
+
+  x[-1] = b[-1] / t[-1][-1]
+  for i in range(m-2, 0, step=-1):
+    x[i] = b[i]
+    for j in range(i + 1, m)
+      x[i] -= t[i][i + j] * x[i + j]
+```
+
+This backward solution algorithm computes the solution to $T x = b'$ with a backward error of $(T + Delta T) hat(x) = b$ where $|Delta T| <= (n epsilon + O(epsilon^2))|T|$. Hence, the backward error is small and the algorithm is backward stable.
+
+Awesomesauce. The problem is that we haven't looked at how to convert any arbitrary matrix problem to a triangular one! So let's do that.
+
+
+Transforming $A$ into an upper triangular matrix $T$ can be done via $Pi_i L_i A = T$., where $L_i$ is a matrix that performs performs the elementary row operation $"row"_i <- "row"_i + alpha "row"_j$. This matrix is very simple and extremely easily invertible. This way, we can eliminate all elements below the diagonal, column by column below.
+
+So we get $(Pi_i L_i) A = U$ so $A = L^(-1) U$, where $Pi_i L_i$ is lower triangular and $U$ is upper triangular.
+
+This is $L U$ or $L R$ decomposition.
+
+Note that this doesn't always exists. The $L u$ factorization exists iff $A(1:j, 1:j)$ is invertile for $j=1, ..., n$. That is, that every submatrix of $A$ starting from $1,1$ is invertible.
+
+This is a pretty strong condition (read: bad) but it can be mitigated.
+
+
+== Iterative methods
+
+At every step it provides at every step an approximation that gets better. This process can be infinite.
