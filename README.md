@@ -1,6 +1,6 @@
 My notes for Master in Computational and Applied Mathematics from Carlos III University.
 
-The notes are for edition 2025-26.
+The notes are for edition 2025-26. You can get them [here](https://github.com/odilf/masters-notes/releases/latest)
 
 These are provided with no warranty, they might have mistakes or be misleading. If you find an error though, feel free to create an issue in the repository or submit a PR!
 
