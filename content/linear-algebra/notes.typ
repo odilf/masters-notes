@@ -421,7 +421,9 @@ Image we get the computed value $hat(x) = mat(2; 0)$. Then the error is $e = x -
 $ norm(e)_oo/norm(x)_oo = 1/1 = 1 $
 
 The residual norm is
-$ norm(r)_oo = norm(A x - A hat(x))_oo = norm(mat([0, epsilon))_oo = epsilon])) $
+$
+  norm(r)_oo = norm(A x - A hat(x))_oo = norm(mat([0, epsilon))_oo = epsilon]))
+$
 
 So, we have a large relative forward error but we have a very small relative backwar error. Uh oh.
 
@@ -431,7 +433,7 @@ So, what is the condition number $kappa$?
 
 If we do a normwise perturbation with $norm(Delta A) <= alpha norm(A)$ for some small $alpha$, we get
 
-$hat(A) = mat() $
+$hat(A) = mat()$
 
 
 === Normwise conditioning
@@ -439,7 +441,7 @@ $hat(A) = mat() $
 So the normwise conditioning is
 
 $
-  & r = A(x - hat(x)) \
+      & r = A(x - hat(x)) \
   <=> & r = b - A hat(x) \
   <=> & A hat(x) = b - r \
   <=> & hat(x) = A^(-1)(b - r) \
@@ -454,7 +456,7 @@ If we do a perturbation to $b$ getting $b + Delta b$
 
 So $A hat(x) = b + Delta b$ which is a solution for $x + Delta x$..
 
-$ r = A (x - hat(x) &= A (x - x - Delta x)) $
+$ r = A (x - hat(x) & = A (x - x - Delta x)) $
 
 #todo[There is more stuff here]
 
@@ -470,13 +472,13 @@ Indeed, the conditioning number relates the forward and backward error.
 
 Generally:
 
-$ norm(Delta x)/norm(x) <= underbrace(norm(A) norm(A^(-1)), kappa(A)) ( norm(Delta A)/norm(A) + norm(Delta b)/norm(b) )$
+$norm(Delta x)/norm(x) <= underbrace(norm(A) norm(A^(-1)), kappa(A)) ( norm(Delta A)/norm(A) + norm(Delta b)/norm(b) )$
 
 for small perturbations $Delta A$ and $Delta b$.
 
 === Componentwise conditioning
 
-Given $A <= B$ elementwise (so $a_(i j) <= _(i j)$)
+Given $A <= B$ elementwise (so $a_(i j) <=_(i j)$)
 
 Assume perturbation to A of size $|Delta A| <= epsilon |A|$
 Assume no perturbation on $b$.
@@ -487,7 +489,7 @@ $ norm(Delta x) / norm(x + Delta x) <= epsilon norm(A^(-1)) norm(A) $
 
 == Direct methods
 
-A direct method does $k$ steps and then provides an approximation. 
+A direct method does $k$ steps and then provides an approximation.
 
 === Gaussian elimination
 
@@ -551,7 +553,77 @@ Note that this doesn't always exists. The $L u$ factorization exists iff $A(1:j,
 
 This is a pretty strong condition (read: bad) but it can be mitigated.
 
+=== Improving error by swapping rows
+Let's take $ A = mat(epsilon, 1; 1, 1) $
+
+We decompose it into $ L = mat(1, 0; 1/epsilon, 1) quad U = mat(epsilon, 1; 0, 1- 1/epsilon) $
+
+We lose precision on the $1 - 1/epsilon$ to get essentially just $1/epsilon$. The backward error is then:
+
+$
+  A - L U = mat(epsilon, 1; 1, 1) - mat(epsilon, 1; 1, 0) = mat(0, 0; 0, 1)
+$
+
+The error is then $norm(A - L U)_oo / norm(A)_oo = 1/2$ which is kind of huge. What we can do to solve this? We can swap rows.
+
+We take a row swapping matrix $P$ such that $P A = mat(0, 1; 1, 0) mat(epsilon, 1; 1, 1) = mat(1, 1; epsilon, 1)$. This makes it so that the pivot is now the largest number instead of the smaller, which is what we generally aim to do.
+
+So, $P^(-1) A = mat(1, 1; epsilon, 1)$, $L^(-1) P^(-1) A = mat(1, 0; -epsilon, 1) mat(1, 1; epsilon, 1) = mat(1, 1; 0, 1 - epsilon)$. We now lose the precision in the $1 - epsilon$ so we get just $1$ in the corner. The backward error is now:
+
+$
+  A - L U = [epsilon, 1+epsilon; 1, 1]
+$
+
+So $ norm(A - L U)_oo / norm(A)_oo = epsilon/2 $
+
+This is much better.
+
+=== Existence of $P L U$ (partial pivoting)
+
+Any invertible matric $A$ has a $P L U$ factorization.
+
+Not all matrices have have $L U$ factorizations, for example $mat(0, 1; 1, 0)$ has no $L U$ factorization because the subblock $0$ is singular.
+
+We can ask if $P L U$ is a backwards stable algorithm. Thing is, no one knows. This is an open problem, but there is no matrix from any kind of application we use where $P L U$ fails.
+
+#theorem[
+  Let $A$ be invertible and $hat(L)$, $hat(U)$ be computed by the algorithm above.
+
+  Thene, there exists an error $E$ such that:
+
+  $
+    A + E = hat(L) hat(U)
+  $
+
+  with $|E| <= (n emach + O(emach^2)) |hat(L)| |hat(U)|$.
+]
+
+#theorem[
+  For $lim. "sys" A x = b$, $(A + Delta A) hat(x) = b$ with $|Delta A| <= (3n emach + O(emach^2)) |hat(L)| |hat(U)|$
+]
+
+#definition[Growth factor][
+  The _growth factor_ $g_"pp"$ of a matrix $A$ is defined as:
+
+  $
+    g_"pp" (A) = (max_(i j)|hat(U)(i, j)|)/(max_(i j)|A(i, j)|)
+  $
+]
+
+This is useful for a bunch of stuff. For example:
+
+$
+  norm(hat(U))_oo/n <= max|hat(U)_(i j)| <= g_"pp" (A) max_(i j)|A(i, j)| <= g_"pp"(A) norm(A)_oo
+$
+
 
 == Iterative methods
 
 At every step it provides at every step an approximation that gets better. This process can be infinite.
+
+Summary: we take $A = L U$ and we solve
+
+$
+  L U x = b => cases(L y = b ("backwards substitution"), U x = y ("forwards substitution"))
+$
+

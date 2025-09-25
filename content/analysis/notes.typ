@@ -432,7 +432,9 @@ We would like to have more general approximations, with other kinds of spaces wi
 #definition[Convex hull][
   The _convex hull_ of a set $A subset X$ of a linear space $X$ is defined as:
 
-  $ cal(H)(A) = { g = sum_(i=1)^m theta_i f_i : m in NN, theta_i >= 0, sum_(i=1)^m theta_i = 1, f_1,...,f_m in A } $
+  $
+    cal(H)(A) = { g = sum_(i=1)^m theta_i f_i : m in NN, theta_i >= 0, sum_(i=1)^m theta_i = 1, f_1,...,f_m in A }
+  $
 
   In words, $cal(H)$ is the set of all convex linear combinations of elements in $A$.
 ]
@@ -450,7 +452,9 @@ We would like to have more general approximations, with other kinds of spaces wi
 
   Assume, $k > n$.
 
-  $ sum_(i=0)^k theta_i g_i = sum_(i=0)^k (theta_i f_i - theta_i g) = g - (sum_(i=0)^k) = 0 $
+  $
+    sum_(i=0)^k theta_i g_i = sum_(i=0)^k (theta_i f_i - theta_i g) = g - (sum_(i=0)^k) = 0
+  $
 
   We have a set ${ g_1, ..., g_k }$ which has at least $n+1$ elements since they have $k+1$ elements and $k>=n$. These are, then, linearly dependent since the dimension of the space is $n$.
 
@@ -458,24 +462,32 @@ We would like to have more general approximations, with other kinds of spaces wi
 
   Defining $alpha_0 = 0$, for any $lambda in RR$ we can consider the sum:
 
-  $ sum_(i=0)^k (theta_i - lambda alpha_i) g_i = underbrace(sum_(i=0)^k theta_i g_i, 0) - underbrace(lambda sum_(i=0)^k alpha_i g_i, 0) = 0 $
+  $
+    sum_(i=0)^k (theta_i - lambda alpha_i) g_i = underbrace(sum_(i=0)^k theta_i g_i, 0) - underbrace(lambda sum_(i=0)^k alpha_i g_i, 0) = 0
+  $
 
   We can cleverly choose $lambda$ to get results. Namely, we can choose $lambda = alpha_i/theta_i$ for the $i$ that corresponds with the minimal $theta_i$, which makes $theta_i - lambda alpha_i = 0$ and keeps all other $theta_i - lambda alpha_i$ nonnegative. The combination is still non-trivial since $theta_0 - lambda alpha_0 = theta_0 > 0$.
 
   We can use this to create a new linear combination that produces $g$. Given that $g_i = f_i - g$, we have:
 
-  $ sum_(i=0)^k (theta_i - lambda alpha_i) g_i = sum_(i=0)^k (theta_i - lambda alpha_i)(f_i - g) = sum_(i=0)^k (theta_i - lambda alpha_i)f_i - g sum_(i=0)^k (theta_i - lambda alpha_i) $
+  $
+    sum_(i=0)^k (theta_i - lambda alpha_i) g_i = sum_(i=0)^k (theta_i - lambda alpha_i)(f_i - g) = sum_(i=0)^k (theta_i - lambda alpha_i)f_i - g sum_(i=0)^k (theta_i - lambda alpha_i)
+  $
 
   We can divide by the sum that multiplies $g$, since it's positive, so:
 
-  $ g & = 1/(sum_(i=0)^k (theta_i - lambda alpha_i)) sum_(i=0)^k (theta_i - lambda alpha_i) f_i
-  \   & = sum_(i=0)^k (
-    (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j)) f_i
-  ) $
+  $
+    g & = 1/(sum_(i=0)^k (theta_i - lambda alpha_i)) sum_(i=0)^k (theta_i - lambda alpha_i) f_i
+    \ & = sum_(i=0)^k (
+      (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j)) f_i
+    )
+  $
 
   This is a convex combination. The sum of the coefficients is:
 
-  $ sum_(i=0)^k ( (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j))) = 1 $
+  $
+    sum_(i=0)^k ( (theta_i - lambda alpha_i) / (sum_(j=0)^k (theta_j - lambda alpha_j))) = 1
+  $
 
   We know also that all coefficients are nonnegative.
 
@@ -489,7 +501,7 @@ We would like to have more general approximations, with other kinds of spaces wi
 #proof[
   Take any sequence $(f_k)_k subset cal(H)(A)$. Then,
 
-  $ f_k = sum_(i=0)^n theta_(k i) f_(k i)$ where $theta_(k i) >= 0$, $sum_(k=0)^n theta_(k i)$ and $f_i in A$.
+  $f_k = sum_(i=0)^n theta_(k i) f_(k i)$ where $theta_(k i) >= 0$, $sum_(k=0)^n theta_(k i)$ and $f_i in A$.
 
   Since $A$ is compact, there is a convergent subsequence of the $(f_k)^*$ such that $(f_(k i))_k$ converges to some limit $f_i$ as $k -> oo$.
 
@@ -505,11 +517,11 @@ We would like to have more general approximations, with other kinds of spaces wi
 ]
 
 #theorem[Existence][
-  Let $(X, norm(dot))$ be a normed linear space. Given a subset $A subset X$ which is finite dimensional then there exists a $g in A$ which is "a" best approximation to $f$, such that $norm(f - h) = inf_(h in A) norm(f - h)$
+  Let $(X, norm(dot))$ be a normed linear space. Given a compact subset $A subset X$ which is finite dimensional then there exists a $g in A$ which is "a" best approximation to $f$, such that $norm(f - g) = inf_(h in A) norm(f - h)$
 ]
 
 #proof[
-  Let $f_0 in A$. Consider the set $S = { h in A : norm(h - f) <= norm(f_0 - f )}$.
+  Let $f_0 in A$. Consider the set $S = { h in A : norm(h - f) <= norm(f_0 - f)}$.
 
   We want to use @theorem-existence-of-best-approximation. We need to prove, then, that $S$ is compact. Using @theorem-closed-bounded-finite-compact, proving that $S$ is closed, bounded and finite-dimensional, then $S$ is compact.
 
@@ -540,17 +552,21 @@ We would like to have more general approximations, with other kinds of spaces wi
 
   Then the norm $norm(x_((n)) - y)$ is:
 
-  $ norm(x_((n)) - y) & = -2^n/2^(n-1) (underbrace(lambda\, lambda\, ...\, lambda, n), 0, ...) + y
-  \ & = 2^n/(2^n-1) lambda -> lambda "as" n -> oo
-   $
+  $
+    norm(x_((n)) - y) & = -2^n/2^(n-1) (underbrace(lambda\, lambda\, ...\, lambda, n), 0, ...) + y
+    \ & = 2^n/(2^n-1) lambda -> lambda "as" n -> oo
+  $
 
-  $ sum_(k=1)^oo 2^(-k) x_((n), k)
+  $
+    sum_(k=1)^oo 2^(-k) x_((n), k)
     & = sum_(k=1)^oo - (2^n 2^(-k))/(2^n - 1) + sum_(k=1)^oo 2^(-k) y_k \
-    & = -(2^n)/(2^n - 1)(1 - 2^(-n)) lambda = -lambda + lambda = 0 $
+    & = -(2^n)/(2^n - 1)(1 - 2^(-n)) lambda = -lambda + lambda = 0
+  $
 
   Suppose, to reach a contradiction, that there exists $(z_n)_n in A$ such that $norm((z_n) - (y_n)) <= lambda$. Consider $n$ such that $|z_k - y_k| <= 1/2 lambda$. This can happen because all sequences in $A$ converge to $0$. Then,
 
-  $ lambda = sum_(k=1)^oo 2^(-k) y_k
+  $
+    lambda = sum_(k=1)^oo 2^(-k) y_k
     & = sum_(k=1)^n 2^(-k)(y_k - z_k) \
     & <=^(triangle "ineq.") sum_(k=1)^oo 2^(-k) |y_k - z_k| \
     & = sum_(k=1)^(n-1) 2^(-k) |y_k - z_k| + sum_(k=n)^oo 2^(-k) |y_k - z_k| \
@@ -568,3 +584,467 @@ We would like to have more general approximations, with other kinds of spaces wi
 
   Therefore, for any $(z_n) in A$ we have $norm((z_n) - (y_n)) > lambda$. We can come arbitrarily close to $lambda$ with elements of $A$ but we can never reach it.
 ]
+
+#definition[Uniform convexity][
+  A linear space $(X, norm(dot))$ is _uniformly convex_ if for every $epsilon > 0$ there exists a $delta$ such that $norm(f - g) <= epsilon$ if $norm(f) = norm(g) = 1$ and $norm(1/2 (f + g)) < 1 - delta$
+]
+
+#theorem[Existence and unicity][
+  Given a uniformly convex Banach space $(X, norm(dot))$ and a closed and convex subset $A subset X$ and an element $f in X$, there exists a unique element $g in A$ that minimizes $norm(f - g)$
+]
+
+#definition[Strictly convex][
+  A normed linear space $(X, norm(dot))$ is _strictly convex_ if for some $f,g in X$ where $norm(f) = norm(g) = norm(1/2(f+g)) = 1$, then $f = g$.
+]
+
+#theorem[Existnce and unicity][
+  Given a normed linear space $(X, norm(dot))$ that is strictly convex, then for an element $f in X$ and a finite-dimensional subspace $A subset X$ there exists a unique element $g in A$ that minimizes the $norm(f - g)$.
+]
+
+Those are all the theorems we'll see related to convexity.
+
+= How to approximate functions in $norm(dot)_oo$
+
+Given a continuous function $f : [a, b] -> RR$ ($f in C[a, b]$), can we make $norm(f - p)_oo = sup_(x in [a,b])|f(x) - p(x)|$ arbitrarily small with polynomials $p$?
+
+Let's try one approach:
+
+Given points $x_0, x_1, ..., x_n in [a,b]$ we consider a polynomial of degree no greater than $n$, such that the polynomial agrees with the values of $f$ in these points, that is, $p_n(x_n) = x_n$, where $p_n(x) = sum_(i=0)^n c_n x^n$.
+
+#theorem[
+  It's not "a" polynomial, it's "the" polynomial, since there is only one such polynomial. In fact, it's called the Lagrange interpolation polynomial.
+]
+
+There is a proof where you can write it as a linear system where the matrix is a Vandermonde matrix which are known to be invertible.
+
+Doing the interpolation explicitly:
+
+$
+  p_n(x) = sum_(i=0)^n f(x_i) product_(j=0, j != i)^n (x - x_j) / (x_i - x_j) = sum_(i=0)^n f(x_i) W(x) / ((x - x_i) W'(x_i))
+$
+
+Where $W$ is the Wilkinson polynomial
+
+$ W(x) = W_n(x_0, x_1, ..., x_n, x) = product_(i=0)^n (x - x_i) $
+
+And $lim_(x -> x_i) W(x) / ((x - x_i) W'(x_i)) = lim_(x -> x_i) (W(x) - W(x_i))/(x - x_i) 1/(W'(x_i)) = W'(x_i) 1/(W'(x_i)) = 1$.
+
+So this rewriting works.
+
+Question now is how well does the interpolating polynomail approximates $f$? (in $norm(dot)_oo$).
+
+#theorem[
+  $norm(f - P_n)_oo = sup_([a,b])|f(x) - P_n (x)| <= 1/((n+1)!) norm(f^((n+1)))_oo norm(W)_oo$
+]
+
+So, if you know that the norm of all derivatives are bounded by $(n+1)!$ (and $norm(W)_oo$)
+
+#proof[
+  We will prove that for every $x$ in $[a, b]$ there exists a $xi in (a, b)$ such that $f(x) - P_n(x) = 1/((n+1)!) f^((n+1)) (xi) W(x)$. The points $x_n$ are given by both sides being zero.
+
+  For the rest of the points, $W(x_n)$ is not zero, so the quantity to prove is:
+
+  $ f(x) - P_n (x) = 1/((n+1)!) f^((n+1))(xi) $
+
+  We are going to define $phi(y) = f(y) - P_n(y) - lambda W(y)$, where $lambda = lambda_x = (f(x) - P_n (x))/W(x)$. This is useful because $phi(y)$ has roots at $x_n$ and one more! Namely, $phi(x) = f(x) - P_n (x) - (f(x) - P_n (x))/W(x) W(x)$. So it has roots on $x, x_0, x_1, ..., x_n$, therefore at $n + 2$ points.
+
+  We need to quickly involve another theorem:
+
+  #theorem[Rolle][
+    Suppose $phi : [c,d] -> RR$ is continuous on $[c,d]$, differentiable on $(c,d)$ and $phi(c) = phi(d)$, then there exists a $xi in (c, d)$ such that $phi'(xi) = 0$
+  ]
+
+  In our case, by Rolle's theorem, there exist $n + 1$ points where $phi'(y) = 0$. We can repeat this argument: there exist $n$ points where $phi''(y) = 0$, there exist $n - 1$ points where $phi'''(y) = 0$, etc. In general, there exists $n + 2 - j$ points where the $(dif^j)/(dif y^n) phi(y) = 0$. At the $n+1$th derivative, there exists at least one point where $phi^((n+1))(xi) = 0$, which means that:
+
+  $
+    phi^((n+1))(x) & = f^((n+1))(xi) - P_n^((n+1))(xi) - lambda W^((n+1))(xi) \
+                   & = f^((n+1))(xi) - 0 - lambda (n+1)! \
+  $
+
+  And put the value of $lambda$ in...
+
+  $
+    f^((n+1))(xi) = (f(x) - P_n (x))/W(x) (n+1)! => 1/(n+1)! f^((n+1)) (xi) W(x)
+  $
+
+  This clearly implies that
+
+  $ norm(f(x) - P_n (x))_oo <= 1/(n+1)! norm(f^((n+1)))_oo norm(W)_oo. $
+]
+
+Turns out while every selection of points can get arbitrarily close, there is some optimal choice of points ${x_0, x_1, ..., x_n}$ which makes $norm(W)_oo$ as small as possible.
+
+#theorem[
+  $ norm(W)_oo = sup_(x in [a,b])|product_(i=0)^n (x-x_i)| $
+
+  is minimal when
+
+  $ x_i = -(b+a)/(b-a) + 2/(b-a)cos(pi (2i+1)/(2n)) $
+
+  for $i = 0, ..., n$.
+]
+
+#proof[
+  First we should translat the problem to the range $[-1, 1]$. So, consider instead $tilde(W)(x) = (2/(b - a))^(n+1) W((b-a)/(2x) + (b+a)/2)$ where $tilde(W) : [-1, 1] -> RR$.
+
+  $
+    tilde(W)(x) & = (2/(b - a))^(n+1) W((b-a)/(2x) + (b+a)/2) \
+    & = (2/(b-a))^(n+1) product_(i=0)^n ((b-a)/2 x + (b+a)/2 - x_i) \
+    & = product_(i=0)^n (x - underbrace((b+a)/(b-a) + 2/(b-a) x_i, y_i))
+  $
+
+  Claim: $y_i = cos(pi (2i + 1)/(2(n+1)))$.
+
+  We know that $cos((n + 1)theta) = sum_(k=0)^(n+1) a_k (cos(theta))^k$. The polynomial $T_(n+1)(x) = sum_(k=0)^(n+1) a_k x^k$ is called the Chebyshev polynomial. It satisfies the following:
+
+  $ T_(n+1) (cos(theta)) = cos((n+1)theta) $
+
+  Clearly, the minima and maxima are at $(n+1)theta = pi k$ for $k in ZZ$, and the zeros are at the halfpoints $(n+1)theta = 1/2 pi + pi i$ for $i in ZZ$. The zeroes of the Chebychev polynomials can be obtained from the $theta$s of the zeroes of $cos((n+1)theta)$. So, $theta = pi (2i + 1)/(2(n+1))$. Here we only need $i=0,...,n$because of the cyclicity of $cos$. So the zeroes of $T_(n+1)$ are at $cos(pi (2i+1)/(2(n+1)))$.
+
+  The norm $norm(T_(n+1))$ is, then, $1$.
+
+  We will know show that any polynomial of the shape $product_(i=0)^n (x - x_i)$ has norm no less than one.
+
+  Suppose that there exists a $tilde(W)$ such that $norm(hat(W))_oo < norm(tilde(W))_oo$.
+
+  For $k=0$, the difference between $hat(W)$
+
+  $tilde(W)$ and $hat(W)$ alternate between positive and negative, and by the intermediate value theorem there are $n+1$ points where $tilde(W) - hat(W) cos(theta) = 0$. We know that $tilde(W)$ and $hat(W)$ have leading term $1 dot x^(n+1)$so they cancel out and $tilde(W) - hat(W)$ have degree $n$ and $n+1$ zeroes, and this is only possible if $tilde(W) - hat(W) = 0$, so that $tilde(W) = hat(W)$. Therefore $tilde(W)$ is optimal.
+]
+
+Question: does $P_n$ indeed converge to $f$ in supremum norm? Actually, it doesn't! For instance, for $f(x) = 1/(1+x^2)$.
+
+#theorem[Weierstrass][
+  Given a continuous function $f in C[a,b]$ then, for an arbitrary $epsilon > 0$, there exists a polynomial $P$ such that $norm(f - P)_oo < epsilon$.
+]
+
+The proof is instructive, since it gives you the procedure itself to get decent approximations of $f$ by polynomials. It uses Brnstein polynomials.
+
+#proof[
+
+  We define a map $B_n : C[a,b] -> C[a,b]$ (or $RR_n [x]$ polynomails of degree $<= n$ with real coefficients). This map is also called an operator. We are going to also work in $[a, b] = [0, 1]$, and you can always go back to $[a, b]$ by rescaling, so this is with no loss of generality.
+
+  The operator $B_n$ is:
+
+  $ (B_n f)(x) = sum_(k=0)^n f(k/n) binom(n, k) x^k (1-x)^(n-k) $
+
+  The claim is that
+  $ lim_(n->oo) norm(f - B_n f)_oo = 0. $
+
+  We will invoke the following theorem:
+  #theorem[
+    Suppose $L_n$ is a monotone linear operator on $C[0, 1]$. Then, $lim_(n->oo) norm(L_n f - f)_oo = 0$ for all $f in C[0, 1]$ iff $lim_(n->oo) norm(L_n f - f) = 0$ for $f(x) = 1$, $f(x) = x$ and $f(x) = x^2$.
+
+    Linear means what you think it means and a monotone operator means that $(L_n f) (x) >= (L_n g) (x)$ when $f(x) >= g(x)$.
+  ]
+
+  $B_n$ is a monotone linear operator. This we also assume to know.
+
+  Now we need to show that the theorem condition holds for $1, x$ and $x^2$.
+
+  - $f(x) = 1$, then $(B_n f)(x) = sum_(k=0)^n f(k/n) binom(n, k) x^k (1-x)^(n-k)$.
+
+    We can  use Newton's binomial formula, so $(B_n f)(x) = 1 = f(x)$, so $norm(f(x) - B_n f(x))_oo = norm(0)_oo = 0$.
+
+  - $f(x) = x$, then $(B_n f)(x) = sum_(k=0)^n k/n binom(n, k) x^k (1-x)^(n-k)$
+
+    We can start the sum at $k=1$, so
+    $
+      & = sum_(k=0)^n k/n n!/(k!(n-k)!) x^k (1-x)^(n-k) \
+      & = sum_(k=0)^n (n-1)!/((k-1)!(n-k)!) x^k (1-x)^(n-k) \
+      & = sum_(k=1)^(n-1) (n-1)!/(k!(n-1-k)!) x^(k-1) (1-x)^(n-1-k) \
+      & = x (x+1 - x)^(n-1) = f(x)
+    $
+
+  - Finally, $f(x) = x^2$. Instead of doing it directly, we are going to do $B_n (f - 1/n g)$ for $g(x) = x$. This is now:
+
+    $
+      (B_n (x^2 - x/n))(x) & = sum_(k=0)^n ( (k/n)^2 - 1/n k/n ) binom(n, k) x^k (1-x)^(n-k) \
+      & = sum_(k=0)^n ( (k(k-1))/n^2 ) n!/(k! (n-k)!) x^k (1-x)^(n-k) \
+      & = n(n+1)/n^2 sum_(k=2)^n ( (k(k-1))/n^2 ) (n-2)!/((k-2)! (n-k)!) x^k (1-x)^(n-k) \
+      & = (1-1/n) f(x)
+    $
+
+    Then, $sup|B_n f(x) - f(x)| = sup|(1-1/n)f(x) + 1/n x - f(x)| = sup|-1/n f(x) + 1/n x| <= sup|-1/n x^2| + sup|1/n x| = -1/n sup|x^2| + 1/n sup|x|$, which clearly goes to $0$ as $n -> oo$. By the theorem above, the limit
+
+    $ lim_(n->oo) norm(B_n f - f)_oo = 0 $
+]
+
+= Measure theory
+
+#let scr(it) = text(features: ("ss01",), box($cal(it)$))
+#definition[Topology][
+  A family $tau subset scr(P)(X)$ is a _topology_ on $X$ if it satisfies the following three conditions:
+  + $emptyset, X in tau$.
+  + $tau$ is closed under arbitrary unions.
+  + $tau$ is closed under finite intersections.
+]
+
+#example[Topologies][
+  A couple of topologies:
+
+  $
+    tau_0 = { emptyset, X } \
+    tau_F = P(x)
+  $
+]
+
+#definition[Metric space][
+  A set $(X, d)$ is a _metric space_ if $d$ is a distance, that is,
+  + $d(x,y) >= 0$
+  + $d(x, y) = d(y, x)$
+  + $d(x, y) + d(y, z) >= d(x, z)$
+
+  for all $x, y, z$ in $X$.
+]
+
+#definition[Open set][
+  Given a metric space $(X, d)$ and an $epsilon > 0$ we can define
+
+  $ B_d(x, epsilon) = { phi in X : d(x, y) < epsilon } subset X $
+
+  We say that $A subset X$ is an _open set_ if for any $a in A$ there exists $r_a > 0$ such that $B_d(a, r_a) subset A$ for all $a in A$.
+]
+
+The collection of all closed sets in a topologial space also has interesting properties.
+
+If $(X, tau)$ is a topological space, then the family $Omega subset scr(P)(X)$ given by $Omega = { E in scr(P)(X) : E^c = X \\ E in tau }$ satisfies:
+
++ $emptyset, X in Omega$.
++ $Omega$ is closed under finite unions.
++ $Omega$ is closed under arbitrary intersections.
+
+This is the dual form of the definition of a topology.
+
+#definition[$sigma$-Algebra][
+  Let $X$ be a set and let $scr(F)$ be a collection of subsets of $X$. Then $scr(F)$ _is a $sigma$-algebra of susbets of $X$_ (or "$sigma$-algebra on $X$" for short) if it satisfies:
+
+  + $emptyset in scr(F)$.
+  + for all $A in scr(F)$, $A^c$ is also in $scr(F)$.
+  + $scr(F)$ is closed under countable unions.
+]
+
+#theorem[basic properties of $sigma$-algebras][
+  - First two conditions imply that $emptyset^c = X$ and $X in scr(F)$.
+  - First and third conditions imply that $scr(F)$ is closed under finite unions.
+  - Last two conditions imply that $scr(F)$ is closed under countable intersections.
+]
+
+#definition[Measurable set][
+  Elements of a $sigma$-algebra are called _measurable sets_.
+]
+
+#definition[Measurable space][
+  An ordered pair $(X, scr(F))$, where $X$ is a set and $scr(F)$ is a $sigma$-algebra on $X$, is called a _measurable space_.
+]
+
+*Remark*: Most topologies are not $sigma$-algebras, and most $sigma$-algebras are not topologies. However, the smallest and largest topologies and $sigma$-algebras on a set are the same.
+
+- Indiscrete topology on $X$, $tau_0 = { emptyset, X }$ is a $sigma$-algebra.
+- Discrete topology on $X$, $tau = scr(P)(X)$ is also a $sigma$-algebra.
+
+#definition[Simple $sigma$-algebra generated by $A$][
+  For a set $X$, if $A subset X$ and $A != emptyset$, then we call the collection $scr(F)_A = { emptyset, A, A^c, X }$ a _simple $sigma$-algebra on $X$ generated by $A$_
+]
+
+#theorem[
+  For completeness, a simple $sigma$-algebra generated by a subset $X$ is a $sigma$-algebra.
+]
+
+#example[
+  Take $X = { x_1, x_2, ..., x_n }$. The collection $scr(F)_{x_1} = { emptyset, {x_1}, { x_2, ..., x_n}, X }$ is a set generated by ${ x_1 }$.
+]
+
+A few more examples and claims:
+- The collection $scr(F) = { A subset X : A "or" A^c "is countable" }$ is a $sigma$-algebra on $X$ (distinct from $scr(P)(X)$ iff $X$ is uncountable).
+
+#definition[The $sigma$-algebra generated by an arbitrary family][
+
+  Let $scr(A)$ be an arbitrary family of subsets of $X$. Then, the $sigma$-algebra generated by $scr(A)$ is the smallest linear algebra which contains every set in $scr(A)$.
+
+  #faint[Note that $scr(A)$ itself is not necessarily a $sigma$-algebra!]
+
+  This algebra is denoted by $sigma(scr(A))$
+]
+
+#theorem[$sigma$-agebras for subspaces][
+  For a subset $A subset X$:
+
+  + If $(X, scr(F))$ is a measurable space, the collection ${ A inter B : B in scr(F) }$ is a $sigma$-algebra on $A$.
+  + If $(A, Sigma)$ is a measurable space, the collection $B subset X : B inter A in Sigma$ is a $sigma$-algebra on $X$.
+]
+
+#theorem[The $sigma$-algebra generated by a function][
+  If $f : X -> Y$ and $Sigma$ is a $sigma$-algebra on $Y$, then the collection
+
+  $ sigma(f) := { f^(-1)(B) : B in Sigma } $
+
+  is a $sigma$-algebra on $X$.
+]
+
+Fiven a collection $scr(C)$ of subsets of a set $X$, we already know how to find the smallest (weakest) possible topologu $tau$ on $X$ sich that $scr(C) subset tau$. This is a relatively concrete procedure.
+
+How do we do the same thing for $sigma$-algebras?
+
+#theorem[
+  Let $X$ be a set, let $I$ be a non-empty indexing set, and let ${ scr(F)_i : i in I }$ be $sigma$-algebras on $X$. Then,
+
+
+  $ inter.big_(i in X) scr(F)_i $
+
+  is also a $sigma$-algebra on $X$.
+]
+
+#proof[(sketch)][
+  Let
+
+  #let f = $scr(F)_*$;
+  $ scr(F)_* = inter.big_(i in X) scr(F)_i $
+
+  + Since $emptyset in scr(F)_i$ for all $i$, then $emptyset in f$.
+  + For a set $A$ to be in $f$ then it is in all $scr(F)_i$. Since $scr(F)_i$ are $sigma$-algebras then $A^c$ is also in every $scr(F)_i$, so since it is in every $scr(F)_i$ it is in $f$.
+  + #todo[fill this in]
+]
+
+
+#definition[Borel sets][
+  Let $(X, tau)$ be a topological space. We set $scr(BB) = sigma(tau)$, the $sigma$-algebra on $X$ generated by the collection of open sets in $tau$.
+
+  We call the sets in $scr(B)$ the _Borel sets_ (or the Borel measurable subsets of $X$).
+]
+
+Although these definitions seems clean and simple, it is far from obvious which subsets of $RR$ are or are not Borel sets. For instance, consider $tau$ the usual topology on $RR$:
+
+$ tau subset scr(B) = sigma(tau) $
+
+So, every open set in $RR$ is a Broel set. Taking complements, closed sets are also Borel sets. In particular, single-point sets ${ a }$ are Borel sets.
+
+Countable unions of closed sets are Borel sets. Countable union of closed sets are called $F_sigma$ sets. In particular, all countable subsets of $RR$ are Borel sets, e..g., $QQ$ is a Borel set. Then so is $QQ^c = RR \\ QQ$. Similarly, the complements of $F_sigma$ sets, called $G_delta$ sets, are Borel sets.
+
+#definition[Measure and measure space][
+  Let $(X, scr(F))$ be a measurable space. A _measure_ on $scr(F)$ is a function $mu : scr(F) -> [0, oo)$, satisfying:
+  + $mu(emptyset) = 0$
+  + whenever $A_1, A_2, ...$ are pairwise disjoint sets in $scr(F)$ then
+
+  $ mu (union.big_(n=1)^oo A_n ) = sum_(n=1)^oo m(A_n) $
+
+  We call the triple $(X, scr(F), mu)$ is a _measure space_.
+]
+
+The most important example of a measure for us will be the Lebesgue measure on the Borel sets (or the Lebesgue measurable sets) in $RR$. Lebesgue measure gives the "total length" of these sets.
+
+For now we can look at simpler sets.
+
+#example[
+  - Counting measure: just count the number of elements. This is a measure.
+  - The characteristic function $xi_A : X -> { 0, 1 }$ for some subset $X subset A$ where it is $1$ if $x in A$ or $0$ if $x in.not A$
+]
+
+#definition[Complete measures][
+  A measure space $(X, scr(F), mu)$ is _complete_ and $mu$ is a _complete measure_ if:
+
+  $ forall N subset B in scr(F): m(B) = 0 => N in scr(F) "and" mu(N) = 0. $
+
+  That is, for all subsets $N subset B$
+]
+
+#example[
+  - The counting measure is complete.
+  - Given $x_0 in X$. The Dirac-$delta$ measure at $x_0$ ($1$ if $x_0 in A$, $0$ otherwise) is a complete measure.
+
+  Both of these are because $scr(F) = P(X)$.
+]
+
+#theorem[
+  On a measure space $(X, scr(F), mu)$ we consider:
+
+  $
+    overline(scr(F)) = { E subset X : exists A,B in scr(F) "with" A subset E subset B "and" mu(B \\ A) = 0 }.
+  $
+
+  and foe $E in overline(scr(F))$ we define $overline(mu)(E) = mu(A)$. Then:
+  + $overline(scr(F))$ is a $sigma$-algebra, the smallest such that $scr(F) subset overline(scr(F))$.
+  + $overline(mu)$ is a complete measure, extending $mu$ #faint[where "extending $mu$" means that if we restrict $overline(mu)$ to $scr(F)$ then we get $mu$].
+]
+
+#definition[Outer measure][
+  An _outer measure_ is a set function $mu^* : scr(P) -> [0, oo)$ where:
+  + $mu^*(emptyset) = 0$.
+  + If $A subset B$ then $mu^*(A) <= mu^*(B)$. #faint[This is basically monotony.]
+  + If ${ A_j }_(j in NN) subset X$  then $mu^* ( U_(j=1)^oo A_j) <= sum_(j=1)^oo mu^* (A_j)$.
+]
+
+Now we want to find  collection $scr(M) in scr(P)(X)$ such that $mu^*|_scr(M)$ is a measure.
+
+#definition[$mu^*$-measurable][
+  Given an outer measure $mu^*$ on $X$, a subset $M subset X$ is _$mu^*$-measurable_ if for every subset $A subset X$ then
+
+  $ mu^*(A) = mu^*(A inter M) + mu^*(A \\ M) $
+]
+
+#theorem[Carathéodory theorem][
+  Consider $scr(M) = { M subset X : M "is" mu^*"-measurable" }$, then:
+  + $scr(M)$ is a $sigma$-algebra.
+  + $mu = mu^*|_scr(M)$ is a complete measure.
+]
+
+#faint[Apparently Carathéodory was Nazi...]
+
+The point is that it is easier to construct outer measures and via this theorem we can construct regular measures.
+
+
+#definition[
+  collection $scr(E) subset scr(P)(X)$ is a semi-algebra if:
+  + $emptyset in scr(E)$
+  + $E, F in scr(E) => E union F in scr(E)$, i.e., closed under union.
+  + $E in scr(E) => E^c = union.big_(i=1)^n F_i$ for $F_i in scr(E)$ and all $F_i$ are disjoint. I.e., the complement can be written as a finite union of elements of $scr(F)$
+
+  They are called "semi" because they resemble of semi-open intervals.
+]
+
+#definition[
+  A set function $mu$ is $sigma$-finite on a set $X$ if:
+
+  $ X = union.big_(j=1)^oo X_j "with" mu(X_j) < oo "for all" j. $
+]
+
+#theorem[Carathéodory-Hopf extension theorem][
+  Consider a semi-algebra $scr(E) subset scr(P)(X)$ and $mu_0 : scr(E) -> [0, oo)$ a countably additive function. We define for all $A in scr(P):$
+
+  $
+    mu^*(A) = inf { sum_(j=1)^oo mu_0 (E_j) : E_j in scr(E), A subset union.big_(j=1)^oo E_j }
+  $
+
+  then:
+
+  + $mu^*$ is an outer measure and $mu = mu^*|_scr(M)$ is a complete measure which is an extension of $mu_0$. That is, $mu^*(E) = mu_0(E)$ for all $E in scr(E)$.
+  + If $mu_0$ is finite, then
+    + $mu$ is the unique measure which is an extension of $mu_0$ to $sigma(scr(E))$
+    + $scr(M) = overline(sigma(scr(E)))$. That is, $scr(M)$ is the copmletion relative to $mu$ of $sigma(scr(E))$. #faint[the overline is just to indicate that $scr(M)$ is complete.]
+]
+
+#definition[
+  A semi-open interval in $RR^n$ is a set of the type $I = I_1 times ... times I_n$ where each $I_j$ is a semi-open interval in $RR$.
+]
+
+#theorem[
+  there exists a unique measure space $(RR^n, scr(M), m)$ such that $scr(M) = overline(scr(B))(RR^n)$ and $m|_scr(E) = mu_0$. In particular:
+  + For all $M in scr(M)$, $M = B union N$ where $B in scr(B)(RR^n)$ and $m(N) = 0$.
+  + For all $N in scr(M)$ with $m(N) = 0$ there exists $A in scr(B)(RR^n)$ with $N subset A$ and $mu(A) = 0$
+
+  This is called the _Lebesgue_ measure in $RR^n$.
+]
+
+#definition[Measurable function][
+  Given a measurable space $(X, scr(F))$ and a topological space $(Y, scr(T))$, a mapping $f : X -> Y$ is mesurable if $f^(-1)(V) in scr(F)$ for all $V in scr(T)$.
+]
+
+#example[
+  If $(X, scr(F))$ is a measurable space and $A in scr(F)$ then $xi_A : A -> RR$  is a measurable function, and if $B in.not scr(F)$ then $chi_B$ is not a measurable function. In particular, $chi_QQ$ is mesurable
+]
+
+// #example[
+//   Consider $X = {1, 2, 3}$ and the $sigma$-algebra $scr(A) = { emptyset, X }$. The function
+
+//   $ f : X -> RR space f(1) $
+// ]

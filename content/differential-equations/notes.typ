@@ -458,7 +458,9 @@ What we did is $F D 2$ which has an order 2 error. How to get more accurate solu
 
 One option is to use more points. We can use 5 points (with 4 points we are still stuck at order 2) to get order 4 accuracy. Using a symmetric 5-point stencil we get the following:
 
-$ u''(x_j) approx 1/(12h^2)( -u_(j-2) + 16 u_(j-1) - 30 u_j + 16 u_(j+1) - u_(j + 2)) $
+$
+  u''(x_j) approx 1/(12h^2)( -u_(j-2) + 16 u_(j-1) - 30 u_j + 16 u_(j+1) - u_(j + 2))
+$
 The problem with this is that at the boundary we would be missing some points. The easiest way to work around the missing point is to do a semi forward stencil on the closest boundaries (that is, one back and three forward). The thing is that this still works out to order 4, so we can do one back and _four_ forward, and this does get order 4 accuracy.
 
 $ u''(x_j) approx 1/(12h^2) (10 u_0 - 15 u_1 - 4u_2 + 14u_3 - 6u_4 + u_5) $.
@@ -482,8 +484,8 @@ $
   hat(U)_j & = a U_j + b V_(2j) \
            & = a (u(x_j) + c_2 h^2 + O(h^4)) + b (u(x_j) + C_2/4 h^2 + O(h^4)) \
            & = a (u(x_j) + c_2 h^2 + O(h^4)) + b (u(x_j) + C_2/4 h^2 + O(h^4)) \
-           & = a u(x_j) + a c_2 h^2  + b u(x_j) + b C_2/4 h^2 + O(h^4) \
-           & = (a + b) u(x_j) + (a + b/4) c_2 h^2  + O(h^4) .
+           & = a u(x_j) + a c_2 h^2 + b u(x_j) + b C_2/4 h^2 + O(h^4) \
+           & = (a + b) u(x_j) + (a + b/4) c_2 h^2 + O(h^4) .
 $
 
 And this implies that we want $ cases(a + b = 1, a + b/4 = 0) $. This results in solution $a = -1/3$ and $b = 1/3$.
@@ -506,9 +508,11 @@ $ tau_j = 1/12 h^2 u^(("iv")) + O(h^4) $
 
 The problem we want to solve is $u'' = f$,
 
-$ A arrow(U) = arrow(F) quad w | "FD2": 1/h^2 underbrace((u_(j-1) - 2u_j + u_(j+1)), hat(U)_j) = f(x_j) + 1/12 h^2 u^(("iv")) + O(h^4) $
+$
+  A arrow(U) = arrow(F) quad w | "FD2": 1/h^2 underbrace((u_(j-1) - 2u_j + u_(j+1)), hat(U)_j) = f(x_j) + 1/12 h^2 u^(("iv")) + O(h^4)
+$
 
-And $ A arrow(hat(U)) = arrow(F) + arrow(Tau)$.
+And $A arrow(hat(U)) = arrow(F) + arrow(Tau)$.
 
 To do higher order methods we want to decrease the global error for which we want to decrease the local truncation error #todo[?]. Using $u'' = f$:
 
@@ -536,3 +540,32 @@ The finite difference discretization is:
 $ 1/(Delta + 2) (theta_(i - 1) - 2 theta_i + theta_(i + 1)) + sin(theta_i) = 0 $
 
 $ G(theta) = arrow(0) quad theta in RR^m $
+
+== Finite difference methods for 2D Ellipctic PDEs
+
+We have a constant elliptic equation:
+
+$
+  A u_(x x) + B u_(x y) + C u_(y y) + D u_x + E u_y + F u = f
+$
+
+Where $B^2 - 4 A C < 0$.
+
+We are going to solve the Poisson Equation, where $Delta u = u_(x x) + u_(y y) = f$.
+
+($f = 0$, Laplace's equation)
+
+We are going to do a 5-point Laplacian:
+
+$ Delta u = u_(x x) + u_(y y) = f, space (x, y) in Omega = (a,b) times (c,d) $
+$ u(x, y) = g, space (x,y) in g Omega $
+
+We are going to do basically the same thing as for the 1D case. We...
+
++ Generate a grid:
+  $
+    x_i = a + i h_x " for " i =0, ..., m+1, h_x = (b-a)/(m+1) \
+    y_j = a + j h_y " for " j =0, ..., n+1, h_y = (d-c)/(n+1)
+  $
++ $ U_(i j) approx u(x_i, y_i), space i=0,1,...,m+1; space j=0,1,...,n+1 $
++ $u_(x x) + u_(y y) = u_(x x) + u_(y y)$

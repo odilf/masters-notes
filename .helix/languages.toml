@@ -6,8 +6,6 @@ config.diagnosticSeverity = "Warning"
 name = "markdown"
 language-servers = ["typos", "marksman"]
 
-[language-server.tinymist]
-command = "tinymist"
 [language-server.tinymist.config]
 outputPath = "$root/build/$dir/$name"
 exportPdf = "onSave"
@@ -19,3 +17,5 @@ preview.background.enabled = true
 [[language]]
 name = "typst"
 language-servers = ["tinymist", "typos"]
+formatter = { command = "typstyle" }
+auto-format = true

@@ -299,9 +299,15 @@
     innerproduct(e^x, e^x) - 2 innerproduct(e^x, p) + innerproduct(p, p)
   $
 
-  Here we have three distinct terms. The first is simple:
+  Here we have three distinct terms. The first is can be calculated by, again, completing the square:
 
-  $ innerproduct(e^x, e^x) = 1 $
+  $ innerproduct(e^x, e^x)
+    & = integral_(-oo)^oo (e^x)^2 e^(-x^2) dif x \
+    & = integral_(-oo)^oo e^(2x - x^2) dif x \
+    & = integral_(-oo)^oo e^(-(x - 1)^2 + 1) dif x \
+    & = e integral_(-oo)^oo e^(-(x - 1)^2) dif x \
+    & = e sqrt(pi) \
+  $
 
   For the second, we can break it down into the basis vectors and use orthogonality:
 
@@ -319,14 +325,14 @@
 
   Therefore, the inner product is:
 
-  $ innerproduct(e^x - p, e^x - p) & = 1 - c_0^2 + c_1^2 + c_2^2
-  \ & = 1 - (pi e)^(1/4) (1 + sqrt(2)/2 + sqrt(2) / 4)
-  \ & = 1 - (pi e)^(1/4) (1 + 3sqrt(2)/4)
+  $ innerproduct(e^x - p, e^x - p) & = e sqrt(pi) - (c_0^2 + c_1^2 + c_2^2
+)  \ & = e sqrt(pi) - (pi e)^(1/4) (1 + sqrt(2)/2 + sqrt(2) / 4)
+  \ & = e sqrt(pi) - (pi e)^(1/4) (1 + 3sqrt(2)/4)
    $
 
   This value is the norm squared, so the distance is:
 
-  $ norm(e^x - p) = sqrt(innerproduct(e^x - p, e^x - p)) = sqrt(1 - (pi e)^(1/4) ( 1 + 3sqrt(2)/4 )) $
+  $ norm(e^x - p) = sqrt(innerproduct(e^x - p, e^x - p)) = sqrt(e sqrt(pi) - (pi e)^(1/4) ( 1 + 3sqrt(2)/4 )) $
 ]
 
 #exercise[

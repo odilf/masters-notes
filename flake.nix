@@ -24,6 +24,7 @@
               pkgs.typst
               pkgs.tinymist
               pkgs.typstyle
+              pkgs.newcomputermodern
 
               pkgs.jujutsu
               pkgs.just

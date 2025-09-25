@@ -621,20 +621,20 @@ This system is linear. Some other systems are not linear.
 #let phase-space(f, phase-args: none, ..plots) = lq.diagram(
   // width: 11cm,
   height: 7cm,
-  lq.quiver(
-    lq.linspace(-4, 4, num: 30),
-    lq.linspace(-4, 4, num: 30),
-    (x, xp) => {
-      let y = f(x)
-      let norm = calc.norm(xp, y)
-      (xp / norm, y / norm)
-    },
-    pivot: start,
-    color: (x, xp, u, v) => -calc.norm(xp, f(x)),
-    map: lq.color.map.plasma,
-    scale: 0.3,
-    ..phase-args,
-  ),
+  // lq.quiver(
+  //   lq.linspace(-4, 4, num: 30),
+  //   lq.linspace(-4, 4, num: 30),
+  //   (x, xp) => {
+  //     let y = f(x)
+  //     let norm = calc.norm(xp, y)
+  //     (xp / norm, y / norm)
+  //   },
+  //   pivot: start,
+  //   color: (x, xp, u, v) => -calc.norm(xp, f(x)),
+  //   map: lq.color.map.plasma,
+  //   scale: 0.3,
+  //   ..phase-args,
+  // ),
   ..plots,
 )
 
@@ -759,11 +759,10 @@ The most important point in a one-dimensional phase plane is that they only have
 
   #lq.diagram(
     ylim: (-2, 2),
-      lq.plot(
-        lq.linspace(-calc.pi / 2, calc.pi / 2, num: 100),
-        x => calc.tan(x),
-      )
-    ,
+    lq.plot(
+      lq.linspace(-calc.pi / 2, calc.pi / 2, num: 100),
+      x => calc.tan(x),
+    ),
 
     lq.vlines(-calc.pi / 2, calc.pi / 2, stroke: red),
   )
@@ -799,7 +798,7 @@ The most important point in a one-dimensional phase plane is that they only have
   So whatever the trajectory it never increases the potential.
 ]
 
-= One-dimensional dynamical systems. Bifurcations.
+= Bifurcations.
 
 You want your dynamical systems to be robust. Small changes to initial conditions should not drastically change the results.
 
@@ -1035,7 +1034,7 @@ We can analyze it through the potential, $V(x) = - r x^2/2 - x^4/4$. This looks 
     lq.diagram(
       lq.plot(
         lq.linspace(-1, 1),
-          x => -r * calc.pow(x, 2) / 2 - calc.pow(x, 4) / 4,
+        x => -r * calc.pow(x, 2) / 2 - calc.pow(x, 4) / 4,
       ),
     ),
     caption: [$-#rmath x^2/2 - x^4/4$],
@@ -1126,16 +1125,20 @@ For the time being, we assume $b = 0$.
 
 $ rho = r sin phi $
 
-$ dot.double(phi) = -g/gamma sin phi + omega^2 sin phi cos phi = g/gamma sin phi (gamma cos phi - 1) $
+$
+  dot.double(phi) = -g/gamma sin phi + omega^2 sin phi cos phi = g/gamma sin phi (gamma cos phi - 1)
+$
 
 $ gamma = (omega^2 r) / g $
 
-The equlibrium points are at $ phi^* = 0$,$phi^* = pi$ and $cos phi = 1/gamma$ if $gamma >= 1$
+The equlibrium points are at $phi^* = 0$,$phi^* = pi$ and $cos phi = 1/gamma$ if $gamma >= 1$
 
 We can do taylor expansion of $sin phi (gamma cos phi - 1)$:
 
-$ sin phi (gamma cos phi - 1) \
-   & = gamma/2 sin (2phi) - sin phi & = gamma/2 (2phi - 4/3 phi^3) - phi + phi^3/6 + O(phi^4) \
+$
+  sin phi (gamma cos phi - 1)
+  & = gamma/2 sin (2phi) - sin phi \
+  & = gamma/2 (2phi - 4/3 phi^3) - phi + phi^3/6 + O(phi^4) \
   & = (gamma - 1) phi + (1 - 4gamma)/6 phi^3 + O(phi^4)
 $
 
@@ -1145,14 +1148,18 @@ $ dot.double(phi) = mu phi + nu phi^3 $
 
 With $mu = g/r(gamma - 1)$ and $nu = (1-4gamma)/6 dot g/gamma$
 
-This is an important equation. It is _Duffing's oscillator_. It is a non-linear "spring" so to say. This equation has $phi$/$-phi$ symmetry, just like the original. 
+This is an important equation. It is _Duffing's oscillator_. It is a non-linear "spring" so to say. This equation has $phi$/$-phi$ symmetry, just like the original.
 We want to study the _overamped_ limit. We have this equation.
 
-$ r dot.double(phi) + (b r)/(m g) dot(phi) = -sin phi + gamma sin phi cos phi = sin phi (gamma cos phi - 1) $
+$
+  r dot.double(phi) + (b r)/(m g) dot(phi) = -sin phi + gamma sin phi cos phi = sin phi (gamma cos phi - 1)
+$
 
 We can introduce _scales of time_. For instance, $t = T tau$ so that $tau$ is dimensionless. The equation above becomes:
 
-$ r dot.double(phi) + (b r)/(m g) dot(phi) = r/(g T^2) (dif^2 phi) / (dif tau^2) + (b r) / (m g T) (dif phi) / (dif tau) $
+$
+  r dot.double(phi) + (b r)/(m g) dot(phi) = r/(g T^2) (dif^2 phi) / (dif tau^2) + (b r) / (m g T) (dif phi) / (dif tau)
+$
 
 Again, we are interested in the overdamped limit, so it makes sense to make the term that we want to be primary to $1$, that is:
 
@@ -1164,7 +1171,9 @@ $ epsilon = (r m^2 g^2) / (g b^2 r^2) = (m^2 g) / (b^2 r) $
 
 So that:
 
-$ r dot.double(phi) + (b r)/(m g) dot(phi) = epsilon (dif^2 phi) / (dif tau^2) + (dif phi) / (dif tau) $
+$
+  r dot.double(phi) + (b r)/(m g) dot(phi) = epsilon (dif^2 phi) / (dif tau^2) + (dif phi) / (dif tau)
+$
 
 To get the overdamped limit, we take $epsilon = 0$. Then, we have:
 
@@ -1174,13 +1183,15 @@ $ (dif phi) / (dif tau) = sin phi (gamma cos phi - 1) = f(phi) $
 #for gamma_val in (0.3, 3) {
   figure(
     phase-space(phi => calc.sin(phi) * (gamma_val * calc.cos(phi) - 1)),
-    caption: [$(dif phi) / (dif tau) = sin(phi) (gamma cos(phi) - 1)$, $gamma = #gamma_val$]
+    caption: [$(dif phi) / (dif tau) = sin(phi) (gamma cos(phi) - 1)$, $gamma = #gamma_val$],
   )
 }
 
 #let bifurcation-diagram(f) = [];
 
-#bifurcation-diagram((phi, gamma) => calc.sin(phi) * (gamma * calc.cos(phi) - 1))
+#bifurcation-diagram((phi, gamma) => (
+  calc.sin(phi) * (gamma * calc.cos(phi) - 1)
+))
 
 A problem with what we have done is that we have moved from a first order diferential equation to a second order diferential equation. Namely, a second order ODE needs an extra boundary condition than a first order ODE. Here, we can just calculate the derivative at $tau=0$ which is unlikely to be the one measured.
 
@@ -1191,10 +1202,12 @@ Applied to our problem, the singular perturbation is obtained by getting adding 
 $ epsilon (dif Omega)/(dif tau) + (dif phi)/(dif tau) = F(phi) $
 
 The equations we have now are
-$ cases(
-  (dif phi) / (dif tau) = Omega,
-  (dif Omega) / (dif tau) = 1/epsilon (f(phi) - Omega)
-) $
+$
+  cases(
+    (dif phi) / (dif tau) = Omega,
+    (dif Omega) / (dif tau) = 1/epsilon (f(phi) - Omega)
+  )
+$
 
 === Example: Budworm outbreak
 
@@ -1202,7 +1215,7 @@ This is similar to the logistic function.
 
 $ dot(N) = R N (1 - N/K) - p(N) $
 
-Where $ p(N) = -(B N^2)/(A^2 + N^2)$
+Where $p(N) = -(B N^2)/(A^2 + N^2)$
 
 Let's solve it.
 
@@ -1226,3 +1239,809 @@ $ (dif x)/(dif tau) = r x (1 - x/k) - x^2/(1 + x^2) $
 
 The fixed points of this equation are $x^* = 0$ and $r(1-x/k) = x/(1 + x^2)$. This is nice because we have a) reduced the number of parameters and b) instead of having to check a very hard elliptic curve, we only need to check a line with $x^2/(1+x^2)$
 
+= Higher dimensional dynamical systems. Multiple species.
+
+In one dimension we only have monotonic behavior. In two, we can have oscillations. In three, we introduce _chaos_.
+
+== Example: Predator-prey systems (Lotka-Volterra)
+
+$ dot(R) = a R - b R L $
+$ dot(L) = b R L - c L $
+
+Where $R$ represens rabbits and $L$, lynxes.
+
+This produces waves of rabbits and lynxes, since when you get more lynxes they eat the rabbits so there are less rabbits but then the lynxes have less food so they die so the rabbits reproduce but the lynxes now have more food so you get more lynxes which eat the rabbits... and so on.
+
+
+Some oscillations are resiliant, some are non-resilliant. In non-resiliant oscillations, a perturbation changes the orbit, while in resilliant systems, the trajectory gets recovered. Resillinat oscillations are also called _self-sustained_.
+== Example: SIR model (Kermack-McKendrick)
+
+Model for epidemics or pandemics (Elena's extended essay!).
+
+$ S(t) + I(t) + R(t) = N space ("constant") $
+
+$
+  dot(S) & = -beta (S I)/N \
+  dot(I) & = beta (S I)/N - gamma I \
+  dot(R) & = gamma I
+$
+
+=== Motivation: Reactions in chemistry
+
+Take a reaction $A + B -> C$. The rates of change are $dot(A) = dot(B) = -dot(C)$. So we are going to say we have a rate of reaction $r > 0$ so that $dot(A) = -r$, $dot(B) = -r$ and $dot(C) = r$.
+
+What is $r$? It clearly depends on the reactants, so $r = r(A, B)$. We also know that if one of the reactants is missing we won't get a reactiong, so $r(0, B) = r(A, 0) = 0$. And then we also have that any derivative of $r$ when one of the reactants is $0$ will be $0$, that is, $(dif^n r)/(dif A^2) (A, 0) = 0$, $(dif^n r)/(dif B^2) (B, 0) = 0$.
+
+We will now derive the _law of mass action_. We assume that the functions of $A$ and $B$ are analytic, which is a reasonable assumption, and that the concentrations can't be too high, because we're going to take the first terms of a Taylor series. So:
+
+$
+  r(A, B) = r_(0, 0) + r_(1, 0) A + r_(0, 1) B + r(1,1) A B + r_(2, 0) A^2 + r_(0, 2) B^2 + O(A^3 + B^3)
+$
+
+Let's find the coefficients:
+
+- $r_(0, 0) = r(0, 0) = 0$
+- $r_(1, 0) = (dif r)/(dif A) (0, 0) = 0$
+- $r_(0, 1) = (dif r)/(dif B) (0, 0) = 0$
+- $r_(2, 0) = (dif^2 r)/(dif A^2) (0, 0) = 0$
+- $r_(0, 2) = (dif^2 r)/(dif B^2) (0, 0) = 0$
+
+They're all $0$, except for $r_(1, 1)$, which is $r(A, B) = k A B$.
+
+So the system is:
+
+$
+  cases(
+    dot(A) = -k A B,
+    dot(B) = -k A B,
+    dot(C) = k A B,
+  )
+$
+
+Now, what if we had $2A -> C$? We would gt $dot(A) = -2 k A^2$ and $dot(C) = k A^2$. The $2$ we see is a _stoichiometric coefficient_.
+
+The general version for $sum alpha_n A_n -> sum beta_n B_n$, we get that $r = k product A_n^(alpha_n)$, $dot(x) = plus.minus nu r$ for a stoichiometrix coefficient $nu$, and for a system of reactions, the rates add.
+
+So, for $alpha A + beta B -> gamma C + delta D$, we would have $r = k A^alpha B^beta$ and:
+- $dot(A) = -alpha r = -alpha k A^alpha B^beta$
+- $dot(B) = -beta r = -beta k A^alpha B^beta$
+- $dot(C) = gamma r = gamma k A^alpha B^beta$
+- $dot(D) = delta r = delta k A^alpha B^beta$
+
+#example[
+  $ 2A harpoons.ltrb^(k_1)_(k_2) A $
+
+  We get:
+
+  $r_1 = k_1 A^2$
+  $r_2 = k_2 A$
+
+  $ dot(A) = -2r_1 + r_1 - r_2 + 2r_2 = r_2 - r_1 = A(k_2 - k_1 A) $
+
+  We can rewrite it as:
+
+  $ dot(A) = k_2 A (1 - A/M) $
+
+  for $M = k_2/k_1$. This is the logistic equation!
+]
+
+#example[
+  Let's try it with the reaction
+
+  $
+    A + B ->^(k_1) 2B \
+    A + B ->^(k_2) 2A
+  $
+
+  The constants are $r_1 = k_1 A B$ and $r_2 = k_2 A B$.
+
+  The equations are:
+
+  $
+    dot(A) = -r_1 -r_2 + 2r_2 = r_2 - r_1 = (k_2 - k_1) A B \
+    dot(B) = -r_1 + 2r_1 - r_2 = r_1 - r_2 = -(k_2 - k_1) A B
+  $
+
+  We know that $A + B$ is constant so $B = N - A$ for a number of particles $N$ then $(k_2 - k_1) A (N - A)$. This way we get that
+
+  $
+    dot(A) & = (k_2 - k-1) A (N - A) \
+           & = k A(1-A/N)
+  $
+
+  for $k = (k_2 - k_1) N$. It's the logistic equation again!
+]
+
+Let's talk about conservation laws.
+
+#todo[I guess we didn't???]
+
+$ alpha A + beta B ->^k gamma C + delta D $
+
+#todo[Somehow we got to this]
+
+$
+  dot(A) = -alpha k A^alpha (beta/alpha A + beta_0 - beta/alpha A_0)^beta
+$
+
+#example[Michaelis-Menten Kinetics][
+  This models the reaction with enzymes. The image we have is:
+
+  $ S + E harpoons.rtlb^(k_1)_(k_(-1)) C ->^(k_2) P + E $
+
+  We get equations:
+
+  $
+    dot(S) & = -k_1 S E + k_(-1) C \
+    dot(E) & = -k_1 S E + k_(-1) C + k_2 C \
+    dot(C) & = k_1 S E - k_(-1) C - k_2 C \
+    dot(P) & = k_2 C
+  $
+
+  We can get two conservations laws by adding up the equations. Namely:
+
+  $
+             dot(E) + dot(C) & = 0 \
+    dot(S) + dot(C) + dot(P) & = 0
+  $
+
+  And we need some initial conditions, so let's assume we start with only sustrate and enzymes, so $S(0) = S_0$, $E(0) = E_0$, $P(0) = 0$ and $C(0) = 0$. We can write the previous conversation laws with these quantities as:
+
+  $
+    E + C = E_0 => E = E_0 - C \
+    S + C + P = S_0 => P = S_0 - S - C
+  $
+
+  Substituting these into the first equations, we get:
+
+  $ dot(S) = -k_1 S (E_0 - C) + k_(-1) C = k_(-1) C - (k_1 E_0) S + k_1 S C $
+  $
+    dot(C) = k_1 S(E_0 - C) - (k_(-1) + k_2) C = k_1 E_0 S - (k_(-1) + k_2) C - k_1 S C
+  $
+
+  There is a twist to this story. One of these reactions (the second one) is being produced much faster than the other, so we can assume that it is always at equilibrium (where $dot(C) = 0$) before the first one. At that point we can express $C$ as a function of $S$ as $C = (k_1 E_0) S div (k_(-1) + k_2 - k_1 S)$.
+
+  Basically, we can see this equation as some substrate becoming a product. But this is not mediated by the law of mass acction because there is a non-linear dependence on $S$ because of the fact that enzymes are limited.
+]
+
+This all comes back to the law of mass action for Lotka-Volterra. The reactions with the rabbits and the lynxes would be:
+
+$
+  R ->^a 2R \
+  R + L ->^b 2L \
+  L ->^c emptyset
+$
+
+The original equations are just the law of mass action, with $r_1 = a R$, $r_2 = b R$, $r_3 = c L$:
+
+$
+  dot(R) & = overparen(a R, r_1) - overparen(b R L, r_2) \
+  dot(L) & = underparen(b R L, r_2) - underparen(c L, -r_3)
+$
+
+== Example: Harmonic oscillator revisited
+
+We have a harmonic oscillator with equations:
+
+$
+  cases(
+    dot(x) = v,
+    dot(v) = -omega^2 x
+  )
+$
+
+We can write this as a matrix $dot(x) = A x$ where:
+
+$ x = mat(x; v) quad A = mat(1, 0; -omega^2, 0) $
+
+This results in conentric ellipses going clockwise, with $0$ as a stable point. In this case it is called a _centre_. It is also in this case _marginally stable_.
+
+== Example: Simple example?
+
+When we have a system like $dot(x) = A x$ where $x = mat(x_1; x_2)$ and $A = mat(a, b; c, d)$, if the solution is of the form $x(t) = e^(lambda t) u$ for a constant vector $u$, then the solution to the equation is:
+
+$
+  dot(x) = A x \
+  lambda e^(lambda t) u = A e^(lambda t) u
+  A u = lambda u
+$
+
+So the solutions are the eigenvectors and eigenvalues.
+
+So let's solve a general case.
+
+$
+  det(A - lambda I) = det mat(a - lambda, b; c, d - lambda) = lambda^2 - underbrace((a + d), tau = h.bar A) lambda + underbrace(a d - b c, Delta = det A)
+$
+
+We can decompose it as
+
+$ V^(-1) A V = C $
+
+And we have that $h.bar A = h.bar C$ and $det A = det C$
+
+So, the characteristic polynomial is:
+
+$ p(lambda) = lambda^2 - tau lambda + Delta $
+
+The solutions $p(lambda) = 0$ are when $lambda_plus.minus = (tau plus.minus sqrt(tau^2 - 4 Delta))/2$
+
+Depending on the discriminant we can have different results.
+
++ $tau^2 > 4 Delta$
+  Here we have two eigenvalues: $lambda_1, lambda_2 in R$ where $lambda_1 != lambda_2$.
+
+  We have that $A v_j = lambda_j v_j$. Let's take $V = mat(v_1, v_2)$. If we take $A V$ we get
+  $
+    A V = (A v_1, A v_2) = (lambda_1 v_1, lambda_2 v_2) = V D
+  $
+
+  for $D = mat(lambda_1, 0; 0, lambda_2)$.
+
+  So then we can write $x(t) = z_1(t) v_1 + z_2(t) v_2$ as a change of basis.
+
+  #todo[This goes somewhere $z_j (t) = c_j e^(lambda_j t)$]
+
+  And we can do more stuff:
+
+  $ V dot(Z) = A V Z = V D Z -> dot(Z) $
+
+  #example[
+    $
+      cases(
+        dot(x) = 11x + 2y,
+        dot(y) = 12x + 9y
+      )
+    $
+
+    $ A = mat(11, 2; 12, 9) $
+
+    $ tau = 20, Delta = 99 - 24 = 75 $
+
+    $ tau^2 - Delta = 400 - 300 = 100 $
+
+    $ lambda = (20 plus.minus 10)/5 = cases(5, 15) $
+
+    With the eigenvalues, we can compute the eigenvectors:
+
+    $ (A - 15I bar 0) = mat(-4, 2; 12, -6 | 0) => v_1 = mat(1; 2) $
+    $ (A - 5I bar 0) = mat(6, 2; 12, 4 | 0) => v_1 = mat(1; -3) $
+  ]
+
++ $tau^2 = 4 Delta$. In this case we get one eigenvector. Imagine we get an eigenvalue $lambda_0$ with eigenvector $v_0$. Let's take another vector $v_2$ not parallel to $v_0$. Then, we can take
+  $
+    v_1 = (A - lambda_0 I) v_2 = alpha v_2 + beta v_0 \
+    (A - lambda_0 I) v_1 = alpha (A - lambda_0 I) v_2 + beta cancel((A - lambda_0 I) v_0) \
+    A v_1 - lambda_0 v_1 = alpha v_1 \
+    A v_1 = (lambda_0 + alpha) v_1 \
+  $
+
+  Eventually we reach:
+
+  $ A v_2 = v_1 + lambda_0 v_2 $
+
+  And
+
+  $
+    A V = mat(A v_1, A v_2) = mat(lambda_0 v_1, v_1 + lambda_0 v_2) = V underbrace(mat(lambda_0, 1; 0, lambda_0), J \ "(Jordan's" \ "canonical" \ "form)")
+  $
+
+  The main equation we need is the fact that
+
+  $ A V = V J $
+
+  We can now do a change of variables again $x(t) = z_1(t) v_1 + z_2(t) v_2 = V z$, so that:
+
+  $
+    dot(x) = V dot(z) = A x = A V z = V J z \ => V dot(z) = V J z \ => dot(z) = J z
+  $
+
+  This is not a totally decoupled system, but it's the closest we can get. The system explicitly is:
+
+  $
+    cases(
+      dot(z_1) = lambda_0 z_1 + z_2,
+      dot(z_2) = lambda_0 z_2
+    ) => cases(
+      z_2 = c_2 e^(lambda_0 t),
+      z_1 = (c_1 + c_2 t) e^(lambda_0 t)
+    )
+  $
+
+  which has easy solutions, as shown.
++ $tau^2 - 4 Delta < 0$
+  $lambda_(plus.minus) = tau/2 plus.minus i omega$ where $omega = sqrt(4Delta - tau^2)$
+
+  $lambda_- = overline(lambda_+)$
+
+
+  $ x(t) = xi(t) omega + overline(xi)(t) overline(omega) $
+
+  We eventually reach:
+
+  $ dot(x) = A x quad V dot(xi) = A V xi = V D xi $ where $ D = mat(tau/2 + i omega, 0; 0, tau/2 - i omega) $
+
+  $
+    dot(xi) = D xi = cases(
+      dot(xi) = (tau/2 + i omega) xi,
+      dot(overline(xi)) = (tau/2 - i omega) overline(xi)
+    )
+  $
+
+  So somehow $xi(t) = xi_0 e^(tau/2 t) e^(i omega t)$
+
+  And even more eventually:
+
+  $ x(t) = a/2 2 e^(tau/2 t) Re(e^(i(omega t - phi) (u + i v))) $
+
+  $ x(t) = a e^(tau/2 t) (cos(omega t - phi) u - sin(omega t - phi) v) $
+
+  This is a spiral, attractive if $tau < 0$ and repelling if $tau > 0$. The real part tells you that something is being attractive or repelled, the imaginary part tells you how it's rotating. In fact, this applies even when the imaginary part is $0$, because then it's just not rotating. The semantics are conserved.
+
+  However, the phase-space diagram has no clear geometric relationship with the eigenvectors themselves.
+
+  This is called a _focus_, either unstable ($tau>0$) or stable ($tau<0$).
+
+
+#theorem[
+  For a system like
+
+  $
+    cases(
+      dot(x) = f(x, y),
+      dot(y) = g(x, y)
+    )
+  $
+
+  Where $dot(x) = F(x)$ and $D F(x)$ is continuous in an open set $U$, then there is a set for $(*)$ for every initial condition $x(t_0) = x_0 in U$ and the solution is unique.
+]
+
+== A few definitions
+
+#definition[Nullclines][
+  Nullclines are the manifolds where the derivatives are $0$. They divide the plane in positive and negative $dot(x)$ and $dot(y)$, for instance. In nullclines, the trajectories cross in an axis direction (say either vertical or horizontally).
+]
+
+#definition[Homoclines and heteroclines][
+  Homoclines are trajectories that start and end at the same fixed point. Heteroclines are trajectories that start at a fixed point and end at a different fixed point. These are important because they also divide the plane in important regions.
+]
+
+#definition[Stability][
+  We say a point $x^*$ is a stable fixed point if for every $R>0$ there exists $0 < r <= R$ such that if $norm(x(t_0) - x^*) <= r$ then $norm(x(t) - x^*) <= R$ for all $t > t_0$.
+]
+
+#definition[Asymptotical stability][
+  A fixed point $x^*$ is called _asymptotically stable_ or an _attractor_ if for some $R > 0$ then if at some point $norm(x(t_0) - x^*) <= R$ then $lim_(t->oo) x(t) = x^*$
+]
+
+The difference between the two definitions above is that the first only guarantees that if you start sufficiently close to the fixed point you stay in the fixed point, while the second says that if you start close to the fixed point you start getting _closer_ to the fixed point.
+
+Let's examine fixed points. For $dot(x) = F(x)$, a point $x^*$ being fixed means that
+
+$
+  F(x) = cancel(F(x^*)) + overbrace(D F (x^*), A) (x - x^*) + o(norm(x - x^*)) \
+  dot(x) = A (x - x^*) + ...
+$
+
+If $A$ is nonsingular then $x^*$ is a fixed point. The eigenvalues will tell you whether the points are attracting, repelling or saddle, and the eigenvectors in what directions.
+
+However, we still have nonlinear terms! To see what happens we need to look at the $tau^2$ vs $4Delta$ diagram. If it is well on the stable diagram, it stays stable and the local analysis above works fine. The problem is if the stable point is a stable center (at the y-axis), because any tiny perturbation can make it either stable or unstable.
+
+#example[
+  Let's take
+
+  $
+    cases(
+      dot(x) =-x + x^3,
+      dot(y) = -2y
+    )
+  $
+
+  The nullclines are at $x=0$, $x = plus.minus 1$ and $y = 0$.
+
+  This results in three fixed points. We can analyze $(0, 0)$ by linearizing, obtaining $dot(x) = -x, space dot(y) = -2y$ so $A = mat(-1, 0; 0, -2)$.
+
+  The Jacobian is $D F = mat(-1 + 3x^2, 0; 0, -2)$ so $D F(plus.minus 1, 0) = mat(2, 0; 0, -2)$
+]
+
+#example[Rabbits vs sheep][
+  Let $x$ be rabbits, $y$ be sheep, and
+
+  $
+    cases(
+      dot(x) = x(3 - x - 2y),
+      dot(y) = y(2 - x - y),
+    )
+  $
+
+  This is a typical scheme of competition.
+
+  The nullclines are at $x = 0$, $x + 2y = 3$, $y = 0$ and $x + y = 2$. To get all fixed points we need to combine these equations. In the end we get $(0, 0)$, $(0, 2)$, $(3, 0)$, $(1, 1)$.
+
+  Taking the jacobian we have:
+
+  $ D F = mat(3 - 2x - 2y, 2x; -y, 2 - x - 2y) $
+
+  and we get
+
+  - $D F (0, 0) = mat(3, 0; 0, 2)$ $->$ unstable
+  - $D F(0, 2) = mat(-1, 0; -2, -2)$ $->$ stable
+  - $D F(3, 0) = mat(-3, -6; 0, -1)$ $->$ stable
+  - $D F(1, 1) = mat(-1, 2; -1, -1)$. Trace is $tau=2$, determinant $Delta = 1 - 2 = -1$ so this is a saddle point.
+
+  If we plot this we get that rabbits and sheep can't coexist (this is called competitive exclusion).
+]
+
+== Example: Transformation of a centre
+
+$
+  cases(
+    dot(x) = -y + a x(x^2 + y^2),
+    dot(y) = x + a y(x^2 + y^2)
+  )
+$
+
+We should use colar coordinates here, so we have $r$ and $theta$ where $x = r cos(theta)$, $y = r sin(theta)$ and $x^2 + y^2 = r^2$. Also $tan theta = y/x$.
+
+We need to get $dot(r)$ somehow, and we do it by $2 r dot(r) = 2x dot(x) + 2y dot(y)$ so $ dot(r) = x/r dot(x) + y/r dot(y) $
+
+We also have that $(1 + tan^2 theta) dot(theta) = (theta dot(x) ) / x^2$
+
+$ dot(theta) = (x dot(y) - y dot(x)) / r^2 $
+
+Replacing these into the equations, we get:
+
+$
+  dot(r) & = cos theta (cancel(-r sin theta) + a r^3 cos theta ) + sin theta (cancel(r cos theta) + a r^3 sin theta )
+  \ & = a r^3 (cos^2 theta + sin^2 theta)
+  \ & = a r^3
+$
+
+
+$
+  dot(theta) & = -1/r^2 r sin(theta)(-r sin theta + a r^3 cos theta) + 1/r^2 r cos theta (r cos theta + a r^3 sin theta)
+  \ & = sin^2 theta + cos^2 theta
+  \ & = 1
+$
+
+So we only have a single nullcline at $r=0$ so the only fixed point is at $(0, 0)$.
+
+We can linearize the system and we get just $dot(x) = x$ and $dot(y) = y$ so the Jacobian is $D F = mat(0, -1; -1, 0)$, trace is $0$, determinant is $1$ and thus we cocnlude that the fixed point is a centre. Uh oh, we cannot just linearize then, we have to see if we're in a stable or unstable point!
+
+We can see it by eye. If $a < 0$ then it is an attracting spiral, if $a > 0$ it's a repelling spiral and only if $a = 0$ it is actually a center.
+
+== Example: Conservative systems
+
+If we have something like $m dot.double(x) = F(x) = -V'(X)$ then $m dot.double(x) + V'(x) = 0$ And then we get $m dot(x) dot.double(x) + V'(x) dot(x) = 0$ and finally
+
+$
+  m dif / (dif t) (1/2 dot(x)^2) + dif/(dif t) V(x) = 0 \
+  dif/(dif t) (1/2 m dot(x)^2 + V(x)) = 0
+$
+
+We essentially get a nontrivial equation that is conserved along the dynamics. Namely,
+$ E(x, dot(x)) = 1/2 m dot(x)^2 + V(x) $
+
+And we name it $E$ because in this context, it is the energy, and energy is conserved.
+Let's take the case $V(x) = -1/2 x^2 + 1/4 x^4$. The equations would be $ cases(
+  dot(x) = y,
+  dot(y) = x - x^3,
+) $
+
+So $E = 1/2 y^2 - 1/2 x^2 + 1/4 x^4$ is conserved.
+
+These systems cannot have attractors unless the constant is completely constant. Nodes and focuses are excluded. All they can have are centers and saddles. Centers are the minima of the conserved quantities, and the saddles are maxima.
+
+In this particular case, these trajectories are homoclinic.
+
+#definition[Conservative system][
+  We say that a system $dot(x) = F(x)$ is _conservative_ if there exists a non-trivial quantity $E(x)$ such that $dif/(dif t) E(x) = 0$.
+]
+
+== Index theory
+
+We want to analyze the _index_ of a curve.
+
+#definition[Index number of a curve][
+  THe _index number_ $I_c$ of a curve is defined as
+
+  $
+    I_c = [Delta phi]_c/(2pi)
+  $
+
+  Essentially, we see how many turns we take if we evaluate the vector field along a curve.
+]
+
+#theorem[Index number properties][
+  + If the simple closed curve $c_1$ can be continuously deformed into $c_2$ without ever crossing a fixed point, then $I_(c_1) = I_(c_2)$.
+  + If there are no fixed points in the interior of $c$ then $I_c = 0$ (this follows from the previous, as you can essentially reduce the curve to a single point).
+  + Replacing $F(x)$ by $-F(x)$ doesn't change $I_c$.
+  + If $c$ is a trajectory of the dynamical system $dot(x) = F(x)$ then $I_c = 1$.
+]
+
+These all are pretty sensible.
+
+#definition[Index of a point][
+  The _index_ of a point $x$ is the inde of any closed curve surrounding $x$ and no other fixed point.
+]
+
+So, the index of a non-fixed point is always $0$. The index of a fixed point $x^*$ is $1$ unless it is a saddle point, in which case it is $-1$.
+
+#theorem[
+  If a simple closed curve $c$ surrounds $n$ isolated fixed points $x^*_1, ..., x^*_n$, then the index of this curve is the sum of the indices of these points. That is:
+
+  $ I_c = sum_(j=1)^n I_j $
+]
+
+This is a pretty important theorem. It's easy to see that this is the case because you can take the curve and deform it to hug them with trajectories that are arbitrarily close to the points or to the "highways" between points.
+
+== Example: Van der Pol's oscillator
+
+The equation is:
+
+$ dot.double(x) + mu(x^2 - 1) dot(x) + x = 0 $
+
+This is like a damped oscillator when $x < 1$ but it actually amplifies oscillation when $x > 1$. We are going to study the cases where $mu$ is large and $mu$ is small.
+
+== Gradient systems
+
+We are going to take a look at _gradient systems_ which have no closed orbit. We have that
+
+$ dot(x) = F(x) -gradient V(x) $
+
+We have that $dot(x) = f(x, y) = -(diff V)/(diff x)$ and $dot(y) = g(x, y) = -(diff V)/(diff y)$. We can check if these form a gradient if $(diff f)/(diff y) = (diff g)/(diff x)$.
+
+If there is a closed orbit, we would have that $x(0) = x(T)$ for some period $T > 0$.
+
+$
+  V(x(0)) = V(x(T))
+$
+
+so
+
+$
+  V(x(0)) - V(x(T)) = 0 \
+  integral_0^T dif/(dif t) V(x) dif t \
+  integral_0^T gradient V dot(x) dif t \
+  =^(dot(x) = -gradient V) - integral_0^T norm(gradient V)^2 dif t \
+  => norm(gradient V) = 0 \
+  => gradient V = 0
+$
+
+which implies that a gradient system has a closed orbit only if the potential is constant, which is a trivial system.
+
+So, checking if a system is gradient is a way to reach conclusion about closed orbits.
+== Lyapunov functions
+
+Here's an example:
+
+$
+  cases(
+    dot(x) = y,
+    dot(y) = -x - y^3
+  )
+$
+
+This system is clearly not gradient.
+
+If we differentiate $dot(x)$ we can rewrite the system as $dot.double(x) = -x - dot(x)^3$ or equivalently:
+
+$
+  dot.double(x) + x = -dot(x)^3
+$
+
+Let's multiply by $dot(x)$:
+
+$
+  underbrace(dot(x) dot.double(x) + x dot(x)) & = -dot(x)^4 \
+         dif/(dif t) (1/2 dot(x)^2 + 1/2 x^2) & = -dot(x)^4
+$
+
+We can write this as a function $ E(x, dot(x)) = 1/2(x^2 + dot(x)^2) $
+
+and as such
+
+$
+  E(x(T), dot(x)(T)) - E(x(0), dot(x)(0)) = -integral_0^T dot(x)^4 dif t <= 0
+$
+
+#definition[Lyapunov function][
+  Let $dot(x) = F(x)$ and $x^*$ be a stable point such that $F(x^*) = 0$. We say that $E(x)$ is a _Lyapunov function_ for this system if:
+  + $E(x)$ has continuous derivatives in an open set containing $x^*$.
+  + $E(x) > 0$ for all $x != x^*$ and $E(x^*) = 0$ (i.e., the fixed point is a local minimum of this function).
+  + $gradient E(x) dot F(x) < 0$ for all $x != x^*$.
+]
+
+Let's check that $E$ is a Lyapunov function. We have:
+
++ $E(x, y) = 1/2 (x^2 + y^2) >= 0$
++ $E(x^*) = 0$
++ $gradient E dot F = x y + y (-x - y^3) = -y^4 <= 0$
+
+So it is!
+
+If we have a Lyapunov function we can show that there are no stable orbits by the same argument as for the gradient systems. To be clear:
+
+$
+  E(x(T)) - E(x(0)) = integral_0^T dif/(dif t) E(x, y) dif t = integral_0^T gradient E dot F dif t <= 0
+$
+
+and this can only happen if $gradient E dot F = 0$. In the case the inequality is strict there is just no periodic orbit at all, and since $-y^4 = 0$ only when $y = 0$ and the stable point is at $(x, y) = (0, 0)$, then in this case there are no periodic orbits at all.
+
+=== Example: Damped harmonic oscillator
+
+The equation is:
+
+$ dot.double(x) + mu dot(x) + V'(x) = 0 $
+
+If $mu = 0$, then $dot.double(x) + V'(x) = 0$. We can define $E = 1/2 dot(x)^2 + V(x)$ so $(dif E)/(dif t) = 0$. We can rewrite this as:
+
+$
+  cases(
+    dot(x) = y,
+    dot(y) = -mu y - V'(x)
+  )
+$
+
+And then we rewrite $E$ as $ E(x, y) = 1/2 y^2 + V(x). $
+
+We want to show that $E$ is a Lyapunov function, so:
++ $E$ is differentiable
++ $E(x^*, 0) = V(x^*) = 0$ and $E(x, y) > 0$ in an environment of $(x^*, 0)$.
++ $gradient E = (V'(x), y) => gradient E dot F = V'(x) y + y(-mu y - V'(x)) = -mu y^2 < 0$ when $y != 0$.
+
+$E$ is indeed a Lyapunov function, which shows that these systems cannot have closed orbits. This is interesting because without the friction we have all closed orbits, but with friction they become attractors.
+
+=== Example:
+
+Applying Lyapunov functions can be tricky.
+
+$
+  cases(
+    dot(x) - y -x^3,
+    dot(y) = x - y^3,
+  )
+$
+
+$x = y^3$, $y = -x^3$ so $(0, 0)$ is the onnly fixed point.
+
+A Lyapunov function is $E(x, y) = x^2 + y^2$. The first two conditions are easily met. As for the last one,
+
+$
+  gradient E dot F & = 2x (-y - x^3) + 2y (x - y^3) \
+                   & = -2x^4 - 2y^4
+$
+
+which is clearly positive if $x != and y != 0$, so $E$ is a Lyapunov function, so the system has no closed orbits.
+
+If you have a general system, finding Lyapunov functions is more of an art than a science. What you can try sometimes do is take something of the form:
+
+$
+  E(x, y) & = a(x - x^*)^2 + b(x - x^*)(y - y^*) + c(y - y^*) \
+          & = (x - x^*, y - y^*) mat(a, b/2; b/2, c) mat(x - x^*; y - y^*)
+$
+
+You want $a > 0$ and the matrix to be positive definite for the gradient to go away around the fixed points. Since $a > 0$, positive definiteness implies that the determinant must be positive, which is given by $a c - b^2/4$ or, as it is more common to write it,
+
+$ b^2 - 4a c < 0. $
+
+This can rule out closed orbits _in a region_ but not necesarilly everywhere.
+
+== Poincaré-Bendixson Theorem
+
+Now, how could we show that a system _does_ have stable orbits?
+
+#theorem[Poincaré-Bendixson][
+  If
+  + $R$ is a closed bounded subset of a plane
+  + $dot(x) = f(x)$ is a continuously differentiable vector field on an open set containing $R$
+  + $R$ does not contain any fixed point and
+  + There exists a trajectory $C$ that is "confined" in $R$
+
+  then, either $C$ is a closed orbit or there is a closed orbit in $R$.
+]
+
+Intuitively, this makes sense because if there are no fixed points in a region and trajectories cannot leave
+
+To apply this theorem we need to find a trapping region without a fixed point.
+
+If you have a repeller, it is easy to find a trapping region since you can take a big region containing the repeller and cutting out a small region around the repeller, which will create a trapping region.
+
+=== Example: Limit cycles
+
+Take system:
+
+$
+  cases(
+    (dif r)/(dif t) = r(1 - r^2) + mu r cos theta,
+    (dif phi)/(dif t) = 1
+  )
+$
+
+We have that $-1 <= cos theta <= 1$ so the first equation is bounded by:
+
+$ r(1 - r^2 - mu) <= r(1 - r^2) + mu r cos theta <= r(1 - r^2 mu) $
+
+So then,
+
+$
+  r_"min" (1 - r^2_"min" - mu) > 0 & quad => quad & r_"min" < sqrt(1 - mu) \
+  r_"max" (1 - r^2_"max" + mu) < 0 & quad => quad & r_"max" > sqrt(1 + mu) \
+$
+
+We can take $r_"min" = 0.99 sqrt(1 - mu)$ and $r_"max" = 1.01 sqrt(1 + mu)$ and this way we find a trapping region.
+
+=== Example: Glycolysis (Sel'kov model)
+
+The system is
+
+$
+  cases(
+    dot(x) = -x + a y + x^2 y,
+    dot(y) = b - a y - x^2 y,
+  )
+$
+
+where $x$ represents ADP (the pre/postcursor to ATP) and $y$ is F6P (basically fructose).
+
+We want to show that this has a periodic orbit.
+
+The first thing we do is plot the nulclines.
+
+#{
+  let a = 1.2
+  let b = 0.8
+  figure(
+    lq.diagram(
+      lq.plot(lq.linspace(0, 10), x => (x * x) / (a + x * x)),
+      lq.plot(lq.linspace(0, 10), x => b / (a + x * x)),
+    ),
+  )
+}
+
+Then we find the arrows in each of the regions.
+
+We have a horizontal line at the top that makes one bound of the region and one on the right. This is because it is formed at the points where $dot(x) = 0$ and $dot(y) = 0$ #todo[or maybe I got it wrong]. Then, we need to calculate the slope of these two:
+
+$
+  dot(y)/dot(x) = (dif y)/(dif x) = (b - y(a+x^2))/(y (a+x^2) - x) = -(y(a + x^2) - b)/(y(a + x^2) - x)
+$
+
+This is $<= -1$ if $x >= b$. So then, the trapping region is closed by a slope of $-1$ because all trajectories have, at that point, slope $<= 1$. So they go all inside.
+
+We now have a trapping region but we still have a stable point inside. The fixed point is at $x^* = (b, b/(a + b^2))$. We need to determine its stability, and we do this with the Jacobian:
+
+$
+  & D F = mat(-1 + 2x y, a + x^2; -2x y, -(a+x^2)) \
+  => & D F(x^*) = mat(-1 + 2 b^2/(a+b^2), a + b^2; -2 b^2 / (a + b^2), -(a + b^2))
+$
+
+We now calculate $Delta = det(D F(x^*)) = a-b^2 + 2b^2 = a + b^2 > 0$. The determinant is positive so the stability of the point depends on the trace, which is:
+
+$
+  tau = (b^2 - a)/(a + b^2) - (a + b^2) = (b^2 - a - (a + b^2)^2)/(a + b^2) > 0
+$
+
+And thus the point is unstable iff $b^2 - a - (a + b^2)^2 > 0$. Let's work through this a bit more:
+
+$
+                b^2 - a - (a + b^2) & > 0 \
+              (a + b^2)^2 + a - b^2 & < 0 \
+      a^2 + b^4 + 2 a b^2 + a - b^2 & < 0 \
+      a^2 + b^4 + 2 a b^2 + a - b^2 & < 0 \
+  a^2 + a(2b^2 + 1) + b^2 (b^2 - 1) & < 0 \
+$
+
+This is a parabola, and for this to be negative it needs to be between the two roots:
+
+$
+  2 a_plus.minus & = -2b^2 - 1 plus.minus sqrt((2b^2 + 1)^2 - 4b^4 + 4b^2) \
+                 & = -2b^2 - 1 plus.minus sqrt(4b^4 + 4b^2 + 1 - 4b^4 + 4b^2) \
+                 & = -2b^2 - 1 plus.minus sqrt(8b^2 + 1) \
+$
+
+the condition we want is $0 < a < a_+$ so the condition is:
+
+$
+  2a < sqrt(1 + 8^2) - 1 - 2b^2
+$
