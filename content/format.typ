@@ -8,8 +8,9 @@
   set page(paper: "a4")
   set heading(numbering: "1.1)")
 
-  set page(height: auto, width: 15cm, margin: 1cm)
-  set page(fill: oklch(23%, 2.5%, 260deg))
+  // set page(height: auto, width: 15cm, margin: 1cm)
+  // set page(height: auto, width: 15cm, margin: 1cm)
+  set page(fill: oklch(23%, 2.5%, 260deg), numbering: "1")
   set text(fill: white)
   set table(stroke: white + 0.5pt)
 
@@ -37,20 +38,6 @@
 #let notes(title, subtitle: none) = it => {
   show: common-show-rules
 
-  show heading.where(
-    level: 1,
-  ): it => {
-    pagebreak(weak: true)
-    it
-  }
-
-  balance(text(size: 36pt, tracking: -0.5mm, title))
-  if subtitle != none {
-    linebreak()
-    subtitle
-  }
-
-
   show outline.entry.where(
     level: 1,
   ): set block(above: 1.5em)
@@ -62,10 +49,28 @@
     it.element.location(),
     it.indented(it.prefix(), it.inner()),
   )
-  outline()
 
-  it
-  v(10cm)
+  align(horizon, {
+    balance(text(size: 36pt, tracking: -0.5mm, title))
+    v(0cm, weak: true)
+    if subtitle != none {
+      linebreak()
+      subtitle
+    }
+
+    v(5mm)
+    outline()
+
+    show heading.where(
+      level: 1,
+    ): it => {
+      pagebreak(weak: true)
+      it
+    }
+
+    it
+    v(10cm)
+  })
 }
 
 #let exercises(title) = it => {
@@ -103,7 +108,10 @@
   [#metadata("Exercise end") <exercise-end>]
 }
 
-#let theorem = thmbox("theorem", "Theorem", fill: oklch(30%, 23%, 310deg))
+#set enum(numbering: "(i)")
+#let theorem(..args) = {
+  thmbox("theorem", "Theorem", fill: oklch(30%, 23%, 310deg))(..args)
+}
 #let corollary = thmplain(
   "corollary",
   "Corollary",
@@ -122,6 +130,7 @@
   numbering: none,
 )
 #let proof = thmproof("proof", "Proof")
+#let lemma = thmbox("lemma", "Lemma")
 
 
 #let lq = lq

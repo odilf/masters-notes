@@ -31,6 +31,9 @@
 
               pkgs.pnpm_9
               pkgs.nodejs_24
+
+              # Latest not in nixpkgs
+              # pkgs.pandoc
             ];
           };
 

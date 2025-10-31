@@ -1043,8 +1043,1214 @@ The point is that it is easier to construct outer measures and via this theorem 
   If $(X, scr(F))$ is a measurable space and $A in scr(F)$ then $xi_A : A -> RR$  is a measurable function, and if $B in.not scr(F)$ then $chi_B$ is not a measurable function. In particular, $chi_QQ$ is mesurable
 ]
 
-// #example[
-//   Consider $X = {1, 2, 3}$ and the $sigma$-algebra $scr(A) = { emptyset, X }$. The function
+Just look at the slides...
 
-//   $ f : X -> RR space f(1) $
-// ]
+= More best approximations
+
+Take a function $f in C[a, b]$. Given the set $g_1, ..., g_n in C[a,b]$, is there a unique best approximant $sum_(i=1)^n c_i g_i$ for $f$ in supremum norm?
+
+We already know there exists a best approximant of $f$.
+
+The space $X = { sum_(i=0)^n c_i g_i : c_i in RR }$ is finite-dimensional subspace of the normed linear space $C[a,b]$ with norm $norm(dot)_oo$. We have a theorem that shows that a best approximant to $f$ exists in this case.
+
+Is it unique?
+
+If we have that $g_j(x) = x^j$ then $g_(2j) (x) = cos(2j x)$
+
+#theorem[
+  Given a function $f in C[a, b]$ and a general family $g_1, ..., g_n in C[a, b]$. Let $r(x)$ be the error of the approximation, i.e., $r(x) = f(x) - sum_(i=1)^n c_i g_i(x)$.
+
+  The supremum norm of the error, $norm(r)_oo$ is minimal iff $0 in cal(H)(A)$ where
+
+  $ A = { r(x) g(x) : x in [a, b] "such that" |r(x)| = norm(r)_oo }. $
+
+  Essentially, $A$ is all the points where $r$ attains its maximum value.
+]
+
+#proof[
+  Let's do one of the first directions, where if $norm(r)_oo$ is _not_ minimal, then $0 in.not cal(H)(A)$.
+
+  Suppose $norm(r)_oo$ is not minimal. Then, there must exist a smaller element composed by $tilde(c_i) in RR$ such that
+
+  $
+    norm(f - sum_(i=1)^n (c_i + tilde(c_i)) g_i)_oo < norm(f - sum_(i=1)^n c_i g_i)_oo.
+  $
+
+  Let $x in [a,b]$ be a point where a maximum of $r$ is attained, i.e., $|r(x)| = norm(r)_oo$. Here, we have that
+
+  $
+    (f(x) - sum_(i=1)^n (c_i + tilde(c_i)) g_i (x))^2 &<= norm(f - sum_(i=1)^n (c_i + tilde(c_i)) g_i)_oo^2
+    \ &< norm(f - sum_(i=1)^n c_i g_i)^2_oo
+    \ &= (f(x) - sum_(i=1)^n c_i g_i(x))^2
+    \ (r(x) - sum_(i=1)^n tilde(c_i) g_i(x))^2 & < r(x)^2
+    \ r(x)^2 - 2 r(x) sum_(i=1)^n tilde(c_i) g_i(x) + (sum_(i=1)^n tilde(c_i) g_i(x))^2 & < r(x)^2
+    \ 1/(2 r(x)) (sum_(i=1)^n tilde(c_i) g_i(x))^2 & < sum_(i=1)^n tilde(c_i) g_i(x)
+    \ 1/(2 r(x)) (sum_(i=1)^n tilde(c_i) g_i(x))^2 & < innerproduct(tilde(c_i), g(x)) <= 0
+  $
+
+  Let's label the point $x$ with $|r(x)| = norm(r)_oo$ as $(x_j)$.
+
+  Now assume $0$ is in the convex hull to get a contradiction. This would mean that $0 = sum_(j=1)^k theta_j g(x_j)$ with $sum theta_k = 1$ and $theta_k >= 0$.
+
+  So, $ 0 = innerproduct(tilde(c), 0) = innerproduct(tilde(c), sum_(j=1)^n theta_j g(x_j)) = sum_(j=1)^k theta_j underbrace(innerproduct(tilde(c), g), >0) > 0. $
+
+  We get that $0 > 0$, which is clearly false. Therefore, $0$ is not in the convex hull of $A$.
+
+  Opposite: Left as an exercise.
+]
+
+This is still a somewhat complex characterization. This is why we have the Haar condition.
+
+#definition[Haar condition][
+  For $g_1, ..., g_n in C[a, b]$ we say that ${ g_1, ..., g_n }$ satisfies the _Haar condition_ when any set of $n$ vectors $(g_1 (x), ..., g_n (x))$ is linearly independent for any set of $n$ choices of $x in [a, b]$.
+
+  Equivalently, when the determinant
+
+  $
+    D[x_1, ..., x_n] = det mat(g_1(x_1), ..., g_n (x_1); dots.v, dots.down, dots.v; g_1 (x_n), ..., g_n (x_n))
+  $
+
+  is non-zero.
+
+  #faint[Really, this can be more general that just $C[a, b]$.]
+]
+
+#example[
+  The family of polynomials gives the Vandermonde determinant.
+]
+
+#definition[
+  Given $g_1, ..., g_n in C[a, b]$ we say that the set ${ g_i : i = 1, 2, ... }$ is a Markoff system if all $n$-truncations of $G$, ${ g_1, ..., g_n }$, satisfy the Haar condition.
+]
+
+#theorem[
+  Let ${ g_1, ..., g_n }$ satisfy the haar condition.
+
+  Let $a <= x_1 < x_2 < ... < x_n <= b$ and $lambda_0, ..., lambda_n in RR \\ { 0 }$.
+
+  Then $0 in cal(H)({ lambda_0 g(x_0), ..., lambda_n g(x_n)})$ iff $lambda_i lambda_(i + 1) < 0$ (that is, if the $lambda$s alternate signs).
+]
+
+#proof[
+  We claim that $D[x_1, ..., x_n]$ has the same sign as $D[y_1, .... y_k]$ in case $x_1 < ... < x_n$ and $y_1 < ... < y_n$.
+
+  Define $h(lambda) = D[(1- lambda)x_1 + lambda y_1, ..., (1-lambda)x_n + lambda y_n]$. We have that $h(0) < 0$ and $h(1) > 0$ so by the intermediate value theorem we know that there exists some $c in (0, 1)$ such that $h(c) = 0$.
+
+  Where $h(c) = 0$ we have that the sum is $0$, but by the Haar condition there exist distinct numbers $i, j in {1, ..., n}$ such that
+
+  $
+    (1 - c)x_i + c y_i & = (1 - c)x_j + c y_j \
+    (1 - c)(x_i - x_j) & = -c(y_i - y_j) \
+     "sign"(x_i - x_j) & != "sign"(y_i - y_j)
+  $
+
+  which is a contradiction! Therefore, the signs are the same if we have that both $x_i$ and $y_i$ increase.
+
+  Now, we have $0 in cal(H)({ lambda_0 g(x_0), ..., lambda_n g(x_n) })$ iff $0 = sum_(i=0)^n theta_i lambda_i g(x_i)$ (only up to $n$ because of Carathedeory!)
+
+  Then, we can use Cramer's rule, which says that $A$ is an invertible $n times n$ matrix and $b$ is some vector in $RR^n$, then the solution of to $A x = b$ is given by $x_i = (det A_i)/(det A)$ where $A_i$ is the matrix $A$ obtained by removing the $i$th column replaced by $b$.
+
+  In our case, we have
+  $
+    g(x_0) = sum_(i=1)^n (-theta_i lambda_i)/(theta_0 lambda_0) g(x_i) = mat(
+      g_1 (x_1), ..., g_n (x_1);
+      dots.v, dots.down, dots.v;
+      g_1 (x_n), ..., g_n (x_1)
+    )^T mat(
+      (-theta_1 lambda_1)/(theta_0 lambda_0);
+      dots.v;
+      (-theta_n lambda_n)/(theta_0 lambda_0)
+    )
+  $
+
+  so, $ (-theta_i lambda_i)/(theta_0 lambda_0) = (det((A^T)_i))/det(A^T) = det(A_i)/det(A) = D[x_1, ..., x_(i-1), x_0, x_(i+1), .... x_n]/D[x_1, ..., x_n] $
+
+  To return to the original order $x_0 < x_1 < ... < x_n$  we have to do $i - 1$ interchangings, which gives a factor of $(-1)^(i-1)$. So, we get
+
+  $
+    = (-1)^(i - 1) D[x_0, x_1, ..., hat(x)_i, ..., x_n]/D[x_1, ..., x_n]
+  $
+
+  Then, we get that the sign of $-(theta_i lambda_i)/(theta_0 lambda_0)$ is $(-1)^(i - 1)$ and finally, $"sign"(lambda_i) = (-1)^i "sign" (lambda_0)$. Indeed, they alternate.
+]
+
+#theorem[Alternation][
+  If ${ g_1, ..., g_n }$ satisfy the Haar condition and $f in C[a, b]$, then $sum_(i=1)^n c_i g_i$ is the best approximant of $f$ if $r = f - sum_(i=1)^n c_i g_i$ has at least $n+ 1$ alternations.
+
+  And there exist $x_0, ..., x_n in [a, b]$ such that $x_0 < x_1 < ... < x_n$ and $r(x_i) = -r(x_(i - 1)) = plus.minus norm(r)_oo$
+]
+
+#proof[
+  We know that $norm(r)_oo$ is minimal iff $0 in cal(H)(A)$, where $A = { r(x) g(x) : x in [a, b] "such that" |r(x)| = norm(r)_oo }$. Caratheodory theorem tells us that $0$ can be created as a convex combination of $k$ elements. By the Haar condition we have that $k >= n$, so then $k$ has to be exactly equal to $n$.
+
+  Without loss of generality we can assume increasing $x$s, $a <= x_0 < x_1 < ... < x_n <= b$. The previous theorem tells us that all $(theta_i r(x_i)) (theta_(i-1) r(x_(-1))) < 0$, and since the $theta_i$s are positive, the signs of the $x_i$s must alternate.
+]
+
+#theorem[Unicity][
+  Given a set ${g_1, ..., g_n }$ that satisfies the Haar condition, a function $f in C[a, b]$ has a best approximant $sum_(i=1)^n c_i g_i$ of $f$ in supremum norm is unique.
+]
+
+#proof[
+  Suppose $p = sum_(i=1)^n c_i g_i$ and $Q = sum_(i=1)^n tilde(c_i) g_i$ are distinct best approximants of $f$. Then $1/2 (P + Q)$ is also a best approximant.
+
+  $
+    norm(f - 1/2(P + Q))_oo & = norm(1/2 (f - P) + 1/2 (f - Q))_oo \
+    & <=^"triangle" 1/2 norm(f - P)_oo + 1/2 norm(f - Q)_oo \
+    & =^"alternation" 1 dot min_(tilde(P) in "span" g_i) norm(f - tilde(P))
+  $
+
+  We have that there exist $x_0 < x_1 < ... < x_n$ such that $f(x_i) - 1/2 (P + Q)(x_i) = plus.minus (-1)^i norm(f - p)_oo$. Thus,
+
+  $
+    1/2 (f(x_i) - P(x_i)) + 1/2(f(x_i) - Q(x_i)) = plus.minus (-1)^i min norm(f - tilde(P)).
+  $
+
+  This is only possible when $f(x_i) - P(x_i) = f(x_i) - Q(x_i)$ so $P(x_i) = Q(x_i)$ for all $x_i$.
+
+  Since $P$ equals $Q$ in $n + 1$ distinct points, the Haar condition is contradicted (left as an exercise as to why exactly). Therefore, the solution has to be unique.
+]
+
+#theorem[Strong unicity theorem][
+  Given a set ${ g_1, ..., g_n } subset C[a, b]$ that satisfies the Haar condition, and a function $P_0$ which is the unique best approximant of some function $f in C[a, b]$. Then, there exists a $lambda_f > 0$ such that $norm(f - P)_oo >= norm(f - P_0) + lambda_f norm(P_0 - P)$.
+]
+
+This theorem shows that the only way to approximate a function given these conditions is by functions that approximate this function.
+
+#theorem[Haar's unicity theorem][
+  A set ${ g_1, ..., g_n } subset C[a, b]$ satisfies the Haar condition iff the best approximant for any $f in C[a,b]$ is unique (in supremum norm).
+]
+
+#proof[
+  Assume that ${ g_1, ..., g_n }$ does not satisfy the Haar condition. We have to find a function that has more than one best approximant.
+
+  We have that the exist $x_1 < ... < x_n$ such that $ D[x_1, ..., x_n] = 0 = det mat(
+    g_1 (x_1), ..., g_n (x_1);
+    dots.v, dots.down, dots.v;
+    g_1 (x_n), ..., g_n (x_n);
+  ) = det A $
+
+  Let $a in RR^n \\ { 0 }$ such that $A a = 0$, so for all $j$, $sum_(i=1)^n g_i (x_j) a_i = 0$.
+  Let $b in RR^n \\ { 0 }$ such that $A^T b = 0$, so for all $i$, $sum_(j=1)^n g_i (x_j) b_j = 0$.
+
+  Let $Q = sum_(i=1)^n a_i g_i$. Then $Q(x_i) = 0$ for all $j$. Without loss of generality, let's take $norm(Q)_oo = 1$.
+
+  We can now construct our counterexample $f$. Namely take an $f$ with $norm(f)_oo = 1$ and $f(x_j) = "sign"(b_j)$.
+
+  Let $F(x) = f(x) (1 - |Q(x)|)$, so that $F(x_j) = f(x_j) (1 - |Q(x_j)|) = "sign"(b_j)$.
+
+  To reach a contradiction, suppose $norm(F - P)_oo < 1$. Then $"sign" p(x_j) = "sign"F(x_j) = "sign" b_j$. However, we can look at the combination:
+
+  $
+    sum_(j=1)^n b_j p(x_j) = sum_(i,j=1)^n c_i b_j g_i (x_j) = sum_(i=1)^n 0 = 0
+  $
+
+  because of the definition of $b$. But, the sum should also be less than $0$. Hence, a contradiction, so $norm(F - P)_oo >= 1$ for any $P$.
+
+  But then, take $lambda in [0, 1]$ and look at $|F(x) - lambda Q(x)|$:
+
+  $
+    |F(x) - lambda Q(x)| & <= |F(x)| + lambda |Q(x)| \
+                         & <= |f(x)| (1 - |Q(x)|) + lambda |Q(x)| \
+                         & <= 1 - |Q(x)| + lambda |Q(x)| \
+                         & = 1 - (1 - lambda) |Q(x)| <= 1
+  $
+
+  The only way for this to be possible is if all $lambda Q$ are best approximants.
+]
+
+= Best approximations for erratic functions
+
+This is why you want Lebesgue measure, we want to be able to measure distance in a more general way.
+
+#theorem[
+  Given a function $f : [a, b] -> RR$, $f$ is Riemann integrable on $[a, b]$ iff $f$ is Lebesgue integrable on $[a, b]$ and the set of discontinuities of $f$ has Lebesgue measure $0$.
+
+  #faint[Sometimes saying that the set of discontinuities has Lebesgue measure $0$ is referred to as being "continuous almost everywhere".]
+
+  When this is the case, we have that
+
+  $
+    integral_a^b f(x) dif x = integral_[a, b] f dif m
+  $
+]
+
+Instead of $C[a, b]$, consider $L^p$ spaces. To be precise, by $L^p$ we mean $L^p [a, b]$ and really that is $L^p ([a, b], m)$
+
+We have the Weierstrass approximation theorem, which says that you can approximate functions to arbitrary precisions in $norm(dot)_oo$. We want to get similar results for $L^p$ and in particular $L^1$ and $L^2$. Mostly $L^2$.
+
+#theorem[
+  Given a function $f in C[a, b]$ then for every $epsilon > 0$ there exists a polynomial $p$ such that $norm(f - p)_2 < epsilon$.
+]
+
+#proof[
+  Take any arbitrary $epsilon > 0$. Weierstrass theorem tells us that there exists a polynomial $p$ such that $norm(f - p)_oo < epsilon/sqrt(b - a)$.
+
+  Then the norm in question is:
+
+  $ norm(f - p)_2^2 = integral_a^b (f(x) - p(x))^2 dif m(x) $
+
+  By the definition of supremum, the difference $f(x) - p(x) <= norm(f - p)_oo$. Then, $ norm(f - p)_2^2 <= integral_a^b epsilon/sqrt(b - a) dif m(x) (epsilon/sqrt(b - a))^2 (b - a) = epsilon^2. $
+
+  Therefore, $norm(f - p)_2 < epsilon$.
+]
+
+What we want to do tho is apply this to functions in $L^2$, not just in $C[a, b]$.
+
+We have trigonometric polynomials:
+
+$
+  T_n (x) = a_0 + sum_(k=1)^n (a_k cos(k x)) + b_k sin(k x))
+$
+
+We can write this using Euler's identity:
+
+#let sign = $"sgn"$
+
+$
+  T_n (x) = sum_(k=-n)^n c_k e^(i k x) quad "where" quad c_0 = a_0 quad c_k = 1/2 (a_k + sign(k) b_k)
+$
+
+We can rescale $x$ by $b - a$ to make $T_n$ $(b - a)$ periodic, but we will just see for $-pi$ to $pi$ for simplicity.
+
+For $p = 2$ we can consider the inner product:
+
+$ innerproduct(f, g) = 1/(2pi) integral_(-pi)^pi f(x) overline(g(x)) dif m(x) $
+
+So then
+
+$
+  innerproduct(f, f) = norm(f)_2^2
+$
+
+$L^2[-pi, pi]$ is a Hilbert space, since it comes from an inner product.
+
+Now we can introduce Fourier for Lebesgue measure. Given a function $f in L^2[-pi, pi]$ the Fourier series representation of $f$ is given by
+
+$
+  sum_(k=-oo)^oo c_k e^(i k x) quad "where" c_k = innerproduct(f, g_k) "and" g_k (x) = e^(i k x)
+$
+
+#theorem[
+  We denote the partial sum $S_n [f](x) = sum_(k=-n)^n c_k e^(i k x)$. Then
+
+  $ norm(f - S_n [f])_2 -> 0 "as" n -> oo $
+]
+
+#proof[
+  Cionsider the Fejér kernel $F_n (x) = 1/(n+1) sum_(k=0)^n D_k (x)$ where $D_k (x) = sum_(ell=-k)^k e^(i k x)$ are Dirichlet kernels.
+
+  So,
+
+  $
+    F_n (x) = 1/n ((sin(n/2 x))/(sin(1/2x)))^2
+  $
+
+  Take the convolution product of $f$ and $F_n$:
+
+  $ (f * f_n)(x) 1/(2pi) integral_(-pi)^pi f(y) F_n (x - y) dif m(y) $
+
+  Left as an exercise, $norm(f * F_n - f)_2 -> 0$ as $n -> oo$, so trigonometric polynomials are dense in $L^2 [-pi, pi]$.
+
+  Finally, we have a theorem where the best approximation $g$ of $f$ in $"span" { g_(-n), ..., g_n}$ is given by:
+
+  $
+    g(x) = sum_(k=-n)^n innerproduct(f, g_k) g_k = S_n [f] (x)
+  $
+
+  Since $g(x)$ is the unique best approximation, it is definitely better than $f * F_n$ and since that converges, $g$ definitely converges too.
+]
+
+#theorem[Parseval's theorem][
+  Given a function $f in L^2 [-pi, pi]$, then
+
+  $
+    norm(f)_2^2 = 1/(2pi) integral_(-pi)^pi (f(x))^2 dif m(x) = sum_(k=-oo)^oo c_k^2 = sum_(k=-oo)^oo innerproduct(f, g_k)^2
+  $
+
+  with $g_k (x) = e^(i k x)$
+]
+
+#proof[
+  For every $epsilon > 0$ there exists an $N$ such that $n > N$ where $norm(f - S_n [f])_2 < epsilon$.
+
+  So,
+
+  $
+    abs(norm(f)_2^2 - sum_(k=-n)^n |c_k|^2) & = norm(S_n [f])_2^2 \
+    & = 1/(2pi) integral_(-pi)^pi abs(S_n [f] (x))^2 dif m (x) \
+    & = 1/(2pi) integral_(-pi)^pi (sum_(k=-n)^n c_k e^(i k x)) (sum_(ell=-n)^n c_ell e^(i ell x)) \
+    & = 1/(2pi) sum_(k,ell = -n)^n c_k overline(c_l) integral_(-pi)^pi e^(i (k - ell)x) dif m(x) \
+    & = sum_(k=-n)^n c_k overline(c_k) = sum_(k=-n)^n abs(c_k)^2 \
+  $
+
+  So then, $abs(norm(f)_2 - norm(S_n [f])_2) <= norm(f - S_n [f])_2 < epsilon$, so
+
+  $
+    abs(norm(f)_2 - sqrt(sum_(k=-oo)^oo abs(c_k)^2)) = 0
+  $
+]
+
+#corollary[
+  We have that
+  $
+    norm(f - S_n [f])_2^2 = 1/(2pi) integral_(-pi)^pi abs(f(x) - S_n [f](x))^2 dif m(x) = sum_(abs(x) > n) abs(c_k)^2
+  $
+
+  And the right hand side goes to $0$ as $norm(f - S_n [f])_2$ goes to $0$ (so $n -> oo$).
+]
+
+== Orthogonal polynomials
+
+This is a more general setting. Orthogonal polynmoials $g_0, g_, ...$ of degree $n$ satisfy the orthogonality condition of $innerproduct(g_i, g_j) = delta_(i j)$.
+
+Actually, apparently, the orthogonality condition also has a weight function $W : [a, b] -> (0, oo)$ and then we define the inner product
+
+$
+  innerproduct(q_i, q_j)_w = integral_a^b q_i (x) q_j (x) W(x) dif m(x) = delta_(i j)
+$
+
+We call ${ q_0, q_1, ... }$ an _orthonormal system_.
+
+We define the norm using the weight as $ norm(f)_(L^2_W) = integral_a^b abs(f(x))^2 W(x) dif m(x). $
+
+We can define a "Fourier series" for these polynomials too.
+
+#theorem[
+  Let $f in C[a, b]$. Let $P_n [f](x)$ denote the polynomial that best approximates $f$ in $norm(dot)_oo$ (which is unique, because orthogonality implies satisfying the Haar condition).
+
+  Then, we have:
+
+  + The best approximant of $f$ converges to $f$ in supremum norm. That is,
+    $ lim_(n -> oo) norm(f - P_n [f])_oo = 0 $
+  + The best approximation also converges to $f$ in $L^2$ norm (though it might not be the best):
+    $ lim_(n -> oo) norm(f - P_n [f])_(L^2_W) = 0 $
+  + The more general partial sum also converges to $f$ in $L^2$ norm:
+    $ lim_(n -> oo) norm(f - S_n [f])_(L^2_W) = 0 $
+]
+
+#proof[
+  To prove (i) we can take an arbitrary $epsilon > 0$. The weierstrass theorem gives a polynomial $P$ such that $norm(f - P)_oo < epsilon$. We know that $P(x) = sum_(k=0)^oo innerproduct(p, q_k) q_k (x) = sum_(k=0)^m innerproduct(p, q_k) q_k(x)$ where $m$ is the degree of $P$.
+
+  If $m <= n$ we have that $norm(f - P_n [f])_oo <= norm(f - P) < epsilon$.
+
+  If $m > n$ we can use triangle inequality to get
+
+  $
+    norm(f - P_n [f])_oo <= underbrace(norm(f - P)_oo, < epsilon) + underbrace(norm(P - P_n [f]), -> 0 "(strong unicity)") \
+    => norm(f - P_n [f])_oo < epsilon
+  $
+
+  For large enough $n$.
+
+  (ii) follows from (i) by the same argument as before (taking $epsilon/sqrt(b - a)$).
+  For (iii) we can use the fact that $L^2_W$ is an inner-product space, where we know that the orthogonal projection gives the best approximation. Therefore,
+
+  $
+    norm(f - S_n [f])_(L^2_W) & <= norm(f - P_n [f])_(L^2_W) \
+                              & <= integral_a^b norm(f - P_n [f])_oo W(x) dif m(x) \
+                              & = norm(f - P_n [f])_oo integral_a^b W(x) dif m(x) \
+  $
+
+  and assuming $W$ is a nice Lebesgue integrable function, the integral is just a number so the norm goes to $0$ as $n -> 0$.
+]
+
+*Remark*: In general, $lim_(n -> oo) norm(f - S_n [f])_oo != 0$.
+
+#theorem[Nikolaev][
+  Given a continuous weight function $W : [a, b] -> (0, oo)$ and a polynomial $L_n f$ of degree at most $n$ that best approximates $f$ in $L^2_W$ norm, where $norm(f - L_n f)$ is minimal; there exists a continuous function $f in C[a, b]$ such that $norm(f - L_n f)_oo -> oo$ as $n -> oo$.
+]
+
+== Approximating functions in $L^1$
+
+We have that $L^1 ([a, b], w m) = { "(classes of)" f : [a, b] -> RR : norm(f)_(1,w) < infinity }$, where
+
+$ norm(f)_(1, m) = integral_a^b abs(f(x)) w(x) dif m(x) $
+
+*Remark*: most of the results and arguments we use also hold more generally for $[a, b]$ replaced by a compact set $X$, and $w m$ replaced by any (nice) measure.
+
+Question: Given some function in $L^1$, does there exists a best approxximation $g in RR_n[x]$ of $f$? Can we tell if it's unique? How do we now if $g$ is a best approximant?
+
+The answer to the first question is yes because $RR_n[x]$ is a finite-dimensional subspace of $L^1$ which is a normed linear space, so by theorem 2.2 there is a best approximant.
+
+Let's now focus on characterizing the best approximations.
+
+#example[Very realistic example][
+  A museum want to build a fancy of the form $f(x) = e^x$. A fence of this size is cosrly. Instead, they want the construction company to build a fence of the form $alpha x^2 + beta x + gamma$ that approximates $f$ not in the supremum norm sense but rather in the area sense.
+
+  This is asking which $g in RR_2[x]$ best approximates $f$ in $L^1$ norm. That is, when is
+
+  $ integral_a^b abs(f(x) - g(x)) dif m(x) $
+
+  minimal?
+]
+
+#definition[Zero set][
+  Given a function $f in L^1([a, b], w m)$, we define its zero set by
+
+  $ Z(f) = { x in [a, b] f(x) = 0 } $
+]
+
+#example[
+  If $f in RR_n[x]$ then the number of elements in $Z(f)$ is finite.
+
+  If $f in C[a, b]$ then $Z(f) = f^(-1)({ 0 })$ is compact.
+
+  In particular, the boundary of $Z(f)$ is contained in $Z(f)$ (i.e., $diff Z(f) subset Z(f)$).
+
+  If $f(x) = cases(1 quad x in RR \\ QQ, 0 quad QQ)$ then $Z(f) = QQ$ but $diff Z(f) = RR subset.not QQ$
+]
+
+#definition[
+  The sign function of $f$ is given by
+
+  $
+    sign(f) = cases(
+      1 quad & "if" x > 0,
+      0 quad & "if" x = 0,
+      -1 quad & "if" x < 0,
+    )
+  $
+]
+
+
+Revisitng quickly the supremum norm, $L^oo$ is defined as the classes where $norm(f)_oo < oo$ which actually doesn't necessarily mean that any function $f$ in $L^oo$ has $sup abs(f)_oo < oo$. We define the essential supremum as:
+
+$
+  "ess" sup abs(f(x)) = inf { s in RR union {plus.minus oo } : abs(f(x)) <= s, \ "except on a set of Lebesgue measure 0" }
+$
+
+#theorem[Characterization][
+  Given a finite-dimensional subspace $A subset L^1([a, b], w m)$ and a function $f in L^1([a, b], w m)$, then $g in A$ is a best approximant in $A$ of $f$ iff
+
+  $
+    abs(integral_[a, b] sign(f - g)(x) tilde(g)(x) w(x) dif m(x)) <= integral_(Z(f-g)) abs(tilde(g)(x) w(x) dif m(x))
+  $
+
+  for all $tilde(g) in A$.
+
+  *Remark*: If we assume $f in L^1([a, b], w m) \\ overline(A)$, then we may omit the finite-dimensional condition.
+] <theorem-characterization-l1>
+
+Before proving this we need a bit of work:
+
+#let norm1(x) = $norm(#x)_(1, w)$
+
+#theorem[Liapunoff][
+  Given functions $g_1, ..., g_n$ in $L^1([a, b], w m)$ then the values
+  $
+    A = { integral_[a, b] h g_1 w dif m, ..., integral_[a, b] h g_n w dif m : h in^oo ([a, b], w m), norm(h)_oo <= 1}
+  $
+
+  and
+
+  $ tilde(A) = { integral_[a, b] h g_1 w dif m, ..., integral_[a, b] h g_n w dif m : h in^oo ([a, b], w m), abs(h) = 1 } $.
+
+  That is, $A = tilde(A)$.
+]
+
+#corollary[
+  Given a finite-dimensional subspace $A subset L^1$ and a function $f in L^1$ then $g$ is a best approximation in $A$ of $f$ iff there exists an $h in L^oo$ such that
+  + $abs(h(x)) = 1$
+  + $integral_[a, b] h tilde(g) w dif m = 0$
+  + $integral_[a, b] h (f - g) w dif m = norm1(f - w)$
+
+  for all $x in [a, b]$ and $tilde(g) in A$.
+]
+
+#let span = $"span"$
+
+#proof[(sketch)][
+  Let $g$ be a best approximant in $A$ of $f$.
+
+  $A = span { g_1 ..., g_n }$
+
+  We have that $L^oo ([a, b], w m) tilde.eq L^1 ([a, b], w m)^*$
+
+  We can find $h in L^oo$ such that $ 0 = Phi(h)(g_k) = integral_a^b h(x) g_k (x) w(x) dif m(x) $ and without loss of generality, $norm(h)_oo <= 1$.
+
+  From the set of such $h$ we can pick an $h$ such that $Phi(h)(f - g) = integral_a^b h(x)(f(x) - g(x)) dif x$ is maximal.
+
+  Consider now the vector
+
+  $
+    mat(
+      integral_[a, b] h g_1 w dif m;
+      integral_[a, b] h g_2 w dif m;
+      dots.v;
+      integral_[a, b] h g_n w dif m;
+      integral_[a, b] h (f - g) w dif m;
+    )
+  $
+  There exists an $tilde(h)$ with $norm(tilde(h)(x)) = 1$ such that
+
+  $
+    integral_[a, b] tilde(h) g_w dif m = 0 quad "and" quad integral_[a, b] tilde(h) (f - g) w dif m & = integral_[a, b] h (f - g) w dif m
+    \ & = integral_[a, b] abs(f - g) w dif m
+  $
+
+]
+
+Now, on to the proof we wanted.
+
+#proof[of @theorem-characterization-l1][
+  Suppose we have a $g$ that holds the equation above. Take any other arbitrary $tilde(g) in A$. Then,
+  $
+    norm1(f - g) & = integral_a^b abs(f(x) - g(x)) w(x) dif m(x) \
+    & = integral_a^b sign(f - g)(x) (f(x) - g(x)) w(x) dif m(x) \
+    & "(leaving out x)" \
+    & = integral_[a,b] sign(f - g)(x) (f - g) w dif m \
+    & = integral_[a,b] sign(f - g)(x) (f - g) w dif m \
+    & quad - integral_[a,b] sign(f - g)(x) tilde(g) w dif m + integral_[a,b] sign(f - g)(x) tilde(g) w dif m \
+    & = integral_[a,b] sign(f - g) (f - tilde(g)) w dif m + integral_[a, b] sign(f - g) (tilde(g) - g) w dif m \
+    & <= integral_([a,b] \\ Z(f - g)) abs(f - tilde(g)) w dif m + integral_Z(f-g) abs(g - tilde(g)) w dif m \
+    & = integral_([a,b] \\ Z(f - g)) abs(f - tilde(g)) w dif m + integral_Z(f-g) abs(f - tilde(g)) w dif m \
+    & = integral_[a,b] abs(f - tilde(g)) w dif m \
+    & = norm1(f - tilde(g)) \
+  $
+
+  For opposite inclusion, we take the dual $L^1([a b], w m)^*$. To revise the dual of $X$ is the set of functions
+  $ X^* = { T: X - RR : T "is linear and continuous" } $
+
+  The dual of $L^1([a, b], w m)$ is isomporhpic to $L^oo ([a, b], w m)$, so there exists a bijection from $L^oo$ and the dual of $L^1$. This bijection $Phi$ is inear bijective and $Phi$ and $Phi^(-1)$ are continuous.
+
+  #faint[Sketch of proof: We have $Phi(h)(f)$ which gets sent to $integral_a^b h(x) f(x) w(x) dif m(x)$.
+    #example[
+      $L^p([a, b], w m)^* tilde.eq L^(p/(p-1)) ([a, b], w m)$ for $p > 1$
+    ]
+  ]
+
+  We can use Liapunoff theorem to assume that there exists an $h$ in $L^oo$ such that
+
+  + $abs(h(x)) = 1$
+  + $integral_[a, b] h tilde(g) w dif m = 0$
+  + $integral_[a, b] h (f - g) w dif m = norm1(f - g)$
+
+  It follows from (iii) that $h = sign(f - g)$ on $[a, b] \\ Z(f - g)$ except possibly on a set of Lebesgue measure $0$. Now we can write the expression of the theorem:
+
+  $
+    abs(integral_[a, b] sign(f - g) tilde(g) w dif m)
+    & = abs(integral_([a, b] \\ Z(f - g)) sign(f - g) tilde(g) w dif m) \
+    & = abs(integral_([a, b] \\ Z(f - g)) h tilde(g) w dif m) \
+    & = abs(cancel(integral_[a, b] h tilde(g) w dif m) - integral_Z(f-g) h tilde(g) w dif m) \
+    & = abs(-integral_Z(f-g) h tilde(g) w dif m) \
+    & = abs(integral_Z(f-g) h tilde(g) w dif m) \
+    & <= integral_Z(f-g) abs(h tilde(g) w) dif m \
+    & <= integral_Z(f-g) abs(tilde(g)) w dif m \
+  $
+]
+
+Now, a few consequences/corollaries of @theorem-characterization-l1:
++ Let $f in C[a, b]$ and suppose $g in A$ satisfies that the boundary $diff Z (f - g)$ has Lebesgue measure $0$. Then, $g$ is a best approximant in $A$ iff
+  $
+    abs(integral_[a, b] sign(f - g) tilde(g) w dif m) <= integral_Z(f -g) abs(tilde(g)(x)) h(x) dif m (x)
+  $
+
+  for all $tilde(g) in A$.
+
+
+#theorem[Characterization][
+  Let $A$ be a subspace of $overbrace(C[a, b], subset L^1)$ and $f in C[a, b]$. Suppose that $g in A$ satisfies $f(x) = g(x)$ in only finitely many points. Then, $g$ is a best $L^1$ approximant in $A$ of $f$, iff
+
+  $ sign(f - g) perp A $
+
+  where $sign(f - g) perp A$ means
+
+  $ integral_[a, b] sign(f - g) tilde(g) dif mu = 0 quad forall tilde(g) in A $
+]
+
+We can almost prove it with @theorem-characterization-l1, but not quite. What if $f in overline(A) \\ A$? We need a lemma:
+
+#lemma[
+  Let $f in C[a, b]$. Assume $f_0$ has finitely many zeros and that $integral_[a, b] h sign(f_0) dif mu != 0$. Then, there exists a $lambda in RR$ such that
+
+  $
+    integral_[a, b] abs(f_0 - lambda h) dif mu < integral_[a, b] abs(f_0) dif mu
+  $
+]
+
+Now we can prove it.
+
+#proof[
+  If $f in A$, then clearly the best approximation is $g = f$. If $f in.not overline(A)$ then we can use @theorem-characterization-l1, where the right-hand side is $0$ and the left-hand-side is the expression we want to show is $0$.
+
+  But what if $f in overline(A) \\ A$?
+
+  Suppose there exists an $h in A$ such that $integral_[a, b] h sign(f - g) dif mu != 0$. We can use the lemma to with $f_0 = f - g$ to find a $lambda$ such that
+
+  $
+    integral_[a, b] abs(f - g - lambda h) dif mu < integral_[a, b] abs(f - g) dif mu.
+  $
+
+  Since $g + lambda h in A$ it is a better $L^1$ approximant, it means that $g$ is not a best approximant. Then, for a best approximant we need to have that
+
+  $ sign(f - g) perp A. $
+
+  Suppose now that $sign(f - g) perp A$. For any $tilde(g) in A$ we have that
+
+  $
+    integral_[a, b] abs(f - tilde(g)) dif mu
+    & = integral_[a, b] sign(f - tilde(g)) (f - tilde(g)) dif mu \
+    & >= integral_[a, b] sign(f - g) (f - tilde(g)) dif mu \
+    & = integral_[a, b] sign(f - g) (f - g + g - tilde(g)) dif mu \
+    & = integral_[a, b] abs(f - g) dif mu + integral_[a, b] sign(f - g) (g - tilde(g)) \
+    & = integral_[a, b] abs(f - g) dif mu
+  $
+
+  where the final left hand side is $0$ because we assumed that $sign(f - g) perp A$. With this we conclude
+
+  $ norm(f - tilde(g))_1 >= norm(f - g)_1 quad forall tilde(g) in A $
+
+  that is, $g$ is a best approximant of $f$ in $A$.
+]
+
+#example[
+  Take $[a, b] = [-1, 1]$ with $w(x) = 1$ so $dif mu = dif x$. Take $f = x^2$ and $A = span { g_0, g_1 }$ where $g_k (x) = x^k$. What is the best $L^1$ approximant of $f$ in $A$?
+
+  We want:
+
+  $
+    integral_(-1)^1 sign(f - g)(x) dif x = 0 \
+  $
+
+  Our $g$ can be written as $g(x) = alpha + beta x$, so $(f - g)(x) = x^2 - alpha - beta x$.
+
+  We need to find the signs of $x$. Take $(f - g)(x) = 0$ at $x_-$ and $x_+$ where $x_- < x_+$. We can split the integral as:;;
+
+  $
+    integral_(-1)^1 sign(f - g)(x) 1 dif x
+    & = integral_(-1)^(x_-) 1 dif x + integral_(x_-)^x_+ (-1) dif x + integral_(x_+)^1 1 dif x \
+    & = x_- + 1 - x_+ + x_- + 1 - x_+ \
+    & = 2 (1 + x_- + x_+) = 0
+  $
+
+
+  $
+    integral_(-1)^1 sign(f - g)(x) x dif x & = integral_(-1)^(x_-) x dif x - integral_(x_-)^x_+ x dif x + integral_(x_+)^1 x dif x \
+    & = 1/2 (x_-^2 - 1 - x_+^2 + x_-^2 + 1 - x_+^2) \
+    & = x_-^2 - x_+^2 = 0
+  $
+
+  this holds when $g(x) = 1/4$.
+]
+
+Now on to unicity.
+
+#definition[
+  $A$ is a Haar subspace of $C[a, b]$ if $A$ is a finite-dimensional and $0$ is the only function in $A$ that attains $0$ more than $n$ times.
+
+  The difference with the Haar condition on some set of ${ g_1, ..., g_n }$ is just that $A$ is a subspace.
+]
+
+#theorem[Jackson's][
+  Let $A$ be a Haar subspace of $C[a, b]$. Then each $f in C[a, b]$ has a unique best approximant in $A$ to $f$.
+]
+
+#proof[
+  Let $dim A = n$. Let $g, hat(g)$ are best approximants. We need to show that they are necesarilly the same. Then also $1/2 (g + hat(g))$ is a best $L^1$ approximant. This follows from the triangle inequality:
+
+  $
+    norm(f - 1/2(g + hat(g)))_1 & = norm(1/2(f - g) + 1/2(f - hat(g)))_1 \
+                                & <= norm(1/2(f - g))_1 + norm(1/2(f - tilde(g)))_1 \
+                                & = norm(f - g)_1
+  $
+
+  We also have that
+
+  $
+    0 = integral_a^b underbrace(
+      (abs(f - 1/2 (g + hat(g))) - 1/2 abs(f - g) - 1/2 abs(f - hat(g)) ),
+      abs(f - 1/2 (g + hat(g))) <= 1/2 abs(f - g) + 1/2 abs(f - hat(g)) <= 0
+    ) dif x = 0
+  $
+
+  This is only possible if
+
+  $ abs(f - 1/2 (g + hat(g))) = 1/2 abs(f - g) + 1/2 abs(f - hat(g)). $
+
+  Now, suppose $f - 1/2(g + hat(g))$ has a zero. The only way for this to happen is if $abs(f - g)$ and $abs(f - hat(g))$ also has a zero. In fact, all zeros of $f - 1/2(g + hat(g))$ are also zeros of $f - g$ and $f - hat(g)$. This implies that those zeros are also zeros of $g - hat(g)$ (since $g - hat(g) = (f - hat(g)) - (f - g)$).
+
+  Couple of scenarios now possible:
+  + Assume $f - 1/2(g + hat(g))$ has at least $n$ zeros. Then $g - hat(g)$ has at least $n$ zeros, but this is a contradiction because both $g$ and $hat(g)$ are in $A$ which is a Haar subspace, and they would violate the Haar condition; unless $g = hat(g)$.
+  + Assume $f - 1/2(g + hat(g))$ has less than $n$ zeros. Then there exists $a = x_0 < x_1 < ... < x_n = b$ such that al zeros of $f - 1/2(g + hat(g))$ are among them.
+
+    We can use the lemma above, letting $f_0 = f - 1/2(g + hat(g))$ and supposing $integral_[a,b] h sign(f_0) dif mu != 0$ for some $h in A$, we deduce that there exists a $lambda in R$ such that
+
+    $
+      integral_[a, b] abs(f_0 - lambda h) dif mu < integral_[a,b] abs(f_0) dif mu.
+    $
+
+    However, this is contradicts the fact that $f + 1/2(g + hat(g))$ is a best approximant since $f + 1/2 (g + hat(g)) + lambda h$ would be a better approximant. Therefore we need to have that
+
+    $ integral_[a,b] h sign(f_0) dif mu = 0 $
+
+    for all $h in A$.
+
+    We can decompose this integral into $n - 1$ parts:
+
+
+    $
+      0 = integral_[a,b] h sign(f_0) dif mu = sum_(i=1)^n integral_(x_(i-1))^(x_i) h sign(f_0) dif mu
+    $
+
+    this is relevant because the $sign$ cannot change in any of these integrals, because it needs to cross $0$ to do so. Therefore, for $sigma_i in { -1, 1 }$,
+
+    $
+      0 & = sum_(i=1)^n integral_(x_(i-1))^(x_i) h sigma_i dif mu \
+        & = sum_(i=1)^n sigma_i phi_i (h) \
+    $
+
+    where $phi_i (h) = integral_(x_(i-1))^x_i h(x) dif mu (x)$.
+
+    For a basis ${ g_1, ..., g_n }$ of $A$, we have that, in particular,
+
+    $
+      0 = sum_(i=1)^n sigma_i phi_i (g_j) \
+    $
+
+    This is a matrix application on some vector Namely, for $M_(i j) = phi_i (g_j)$,
+
+    $ M^T mat(sigma_1; dots.v; sigma_n) = 0. $
+
+    This means that $M^T$ is singular so $M$ is too. Then, $M$ has an eigenvector $arrow(v) in RR^n$ with eigenvalue $0$, such that
+
+    $
+      M arrow(v) = 0 & => sum_(j=1)^n v_j phi_i (g_j) = 0 \
+      & => phi_i (sum_(j=1)^n v_j g_j) \
+      & => integral_(x_(i-1))^(x_i) underbrace((sum_(j=1)^n v_j g_j), tilde(h))
+    $
+
+    by the mean value theorem:
+
+    $
+      integral_(x_(i-1))^(x_i) (sum_(j=1)^n v_j g_j) = (x_i - x_(i-1)) tilde(h)(xi) w(xi)
+    $
+
+    so $tilde(h)$ has a zero in each internal $(x_(i-1), x_i)$. Since $tilde(h) in A$ Haar condition says this is only possible if $tilde(h) = 0$. However, this is a contradiction! Since the eigenvalue would not exist. Therefore, this entire case is not possible, and we only have the previous case which showed what we wanted to show.
+]
+
+Repeating the definition:
+
+#definition[
+  Given $g_1, ..., g_n in C[a, b]$ we say that the set ${ g_i : i = 1, 2, ... }$ is a Markoff system if all $n$-truncations of $G$, ${ g_1, ..., g_n }$, satisfy the Haar condition.
+]
+
+#theorem[Markoff's theorem][
+  Let ${ g_0, g_1, ... }$ be a Markoff system and $h_n$ is the best $L^1$ approximation of the form $h_n = g_n - sum_(i=0)^(n+1) c_(n i) g_i$ of the $0$ function.
+  If $g = sum_(i=0)^n c_i h_i$ is such that $sign(f - g) = sign(h_(n+1))$ then $g$ is the best $L^1$ approximation in $span { h_0, ..., h_n }$ of $f$.
+]
+
+#lemma[
+  Let $f, h in C[a, b]$. We assume $f$ has finite number of zeros. If $integral_[a, b] abs(f - lambda h) dif mu < integral_[a, b] abs(f) dif mu$.
+]
+
+
+== Splines
+
+Remember Runge's example: $f: [-5, 5 ] -> RR$, $f(x) = 1/(1+x^2)$.
+
+Consider the Lagrange interpolation polynomial of degree at most $n$ with equispaced points $x_i = -5 + (10i)/n$ for $i = 0, ..., n$. The problem with this is that you get oscillations at the ends that get worse and increase amplitude as $n$ gets larger. This is a general feature that happens for many other functions as well.
+
+So, how do we avoid it?
+
+*Idea*: Approximate by piecewise linear functions.
+
+#definition[Spline][
+  Given $f : [a, b] -> RR$ and $a = x_0 < x_1 ... < x_n = b$. We say that $P$ is a spline of degree $k$ if
+  + $P in C^(k-1)[a, b]$.
+  + $P in RR_k [x]$ on every $[x_i, x_(i+1)]$ for $i = 0, ..., n - 1$.
+
+  Explicitly $p in C^(k-1)[a, b]$ and
+
+  $
+    p(x) = cases(
+      P_0 (x) in RR_k [x] quad & x in [x_0, x_1],
+      P_1 (x) in RR_k [x] quad & x in [x_1, x_2],
+      dots.v,
+      P_(n-1) (x) in RR_k [x] quad & x in [x_(n-1), x_n],
+    )
+  $
+]
+
+#example[Linear spline][
+  Corresponds to $k=1$. Explicitly, we have
+
+  $
+    P_i (x) f(x_i) + (f(x_(i+1)) - f(x_i))/(x_(i+1) - x_i) (x - x_i) quad "for" x in [x_i, x_(i+1)]
+  $
+]
+
+#definition[
+  Let $Omega_n = { x_0, x_1, ..., x_n }$ satisfy $a = x_0 < x_1 < ... < x_n = b$. We denote by $S_k (Omega_n)$ the set of al splines of degree $k$ respeccting $Omega_n$.
+]
+
+=== Cubic splines
+
+In practice, generally we have cubic splines.
+
+We want to have continuity of derivatives, so $P^((j))_(i-1) (x_i) = P_i^((j)) (x_i)$ for $j = 0, ..., k-1$.
+
+A cubic spline has form
+
+$
+  P(x) = cases(
+    P_0(x) = a_0 x^3 + b_0 x^2 + c_0 x + d_0,
+    dots.v,
+    P_(n-1)(x) = a_(n-1) x^3 + b_(n-1) x^2 + c_(n-1) x + d_(n-1),
+  )
+$
+
+To match the derivatives, we want:
+
+$
+  cases(
+    P_(i-1) (x_i) = P_i (x_i),
+    P'_(i-1) (x_i) = P'_i (x_i),
+    P''_(i-1) (x_i) = P''_i (x_i),
+  )
+$
+
+for all interior points $i = 1, ..., n - 1$.
+
+We also have that the functions need to match the interpolated function $f$, so
+
+$
+  P_i (x_i) = f(x_i) quad "for" i = 0, ..., n
+$
+
+We have $4n$ variables and $3 (n-1) + n+1 = 4n - 2$ equations. We expect, then, that two degrees of freedom are left.
+
+#definition[Spline constraints][
+  A _natural cubic spline_ has the extra conditions $p''(a) = p''(b) = 0$.
+  A _clamped spline_ has the extra conditions where $P'(a)$ and $P'(b)$ are given.
+]
+
+*Neat insight*: The second derivative of a cubic spline is a linear spline.
+
+Let $z_i = p''(x_i)$.
+
+$
+  p''_i (x) & = p''_i (x_i) + (p''_i (x_(i+1)) - p''_i (x_i))/(x_(i+1) - x_i) (x - x_i)
+  \ & = z_i (x - x_(i+1))/(x_i - x_(i+1)) + z_(i+1) (x - x_i)/(x_(i+1) - x_i)
+  \ & = -z_i (x - x_(i+1))/(Delta x_i) + z_(i+1) (x - x_i)/(Delta x_i)
+$
+
+The only thing we don't know in that formula are the $z_i$s. If we had that we could retrieve $p(x)$ by integrating the second derivative twice, which would leave us with two variables we need to determine.
+
+This means
+
+$
+  p_i (x) & = z_(i+1)/(6 Delta x_i) (x - x_i)^3 + z_i/(6 Delta x_i) (x_(i+1) - x)^3 + tilde(alpha_i) x + tilde(beta_i)
+  \ & = z_(i+1)/(6 Delta x_i) (x - x_i)^3 + z_i/(6 Delta x_i) (x_(i+1) - x)^3 + alpha_i (x - x_i) + beta_i (x_(i+1) - x)
+$
+
+Using continuity and the interpolation equations, we can say that
+
+$
+  P_i (x_i) = f(x_i) = P_(i - 1) (x_i) \
+$
+At each end we get:
+
+$
+  f(x_i) & = P_i (x_i) = 0 + z_i /(6Delta x_i) (Delta x_i)^3 + beta_i Delta x_i = z_i/6 (Delta x_i)^2 + beta_i Delta x_i \
+  f(x_(i+1)) & = P_i (x_i) = z_(i+1)/6 (Delta x_i)^2 + alpha_i Delta x_i \
+$
+
+So then,
+
+$
+  beta_i = f(x_i)/(Delta x_i) -z_i/6 Delta x_i\
+  alpha_i = f(x_(i+1))/(Delta x_i) -z_(i+1)/6 Delta x_i
+$
+
+and plugging this back in to the original equation:
+
+$
+  p_i (x)
+  & = z_(i+1)/(6 Delta x_i) (x - x_i)^3 + z_i/(6 Delta x_i) (x_(i+1) - x)^3 + \
+  & + (f(x_(i+1))/(Delta x_i) -z_(i+1)/6 Delta x_i) (x - x_i) + \
+  & + (f(x_i)/(Delta x_i) -z_i/6 Delta x_i) (x_(i+1) - x)
+$
+
+We still have to find $z_i$ tho. In the case for a natural cubic spline we have that $p''(a) = p''(b) = 0$, so we immediately have $z_0$ and $z_n$ (namely, $0$).
+
+The only remaining equations we haven't used are the first derivative continuity equations. We first have to differentiate $p_i$ (and $p_(i+1)$):
+
+$
+  p'_i (x) & = (z_(i+1))/(2 Delta x_i) (x - x_i)^2 - z_i / (2Delta x_i) (x_(i+1) - x)^2 \ & + (f(x_(i+1))/(Delta x_i) -z_(i+1)/6 Delta x_i)
+  \ & - (f(x_i)/(Delta x_i) -z_i/6 Delta x_i)
+$
+$
+  p'_(i-1) (x) & = (z_i)/(2 Delta x_(i-1)) (x - x_(i-1))^2 - z_(i-1) / (2Delta x_(i-1)) (x_1 - x)^2 \ & + (f(x_1)/(Delta x_(i-1)) -z_1/6 Delta x_(i-1))
+  \ & - (f(x_(i-1))/(Delta x_(i-1)) -z_(i-1)/6 Delta x_(i-1))
+$
+
+At $x_i$, we get
+
+$
+  p'_i (x_i) & = - z_i / 2 Delta x_i \
+             & + (f(x_(i+1))/(Delta x_i) -z_(i+1)/6 Delta x_i) \
+             & - (f(x_i)/(Delta x_i) -z_i/6 Delta x_i)
+$
+
+$
+  p'_(i-1) (x_i) & = (z_i)/2 Delta x_(i-1) \
+                 & + (f(x_1)/(Delta x_(i-1)) -z_1/6 Delta x_(i-1)) \
+                 & - (f(x_(i-1))/(Delta x_(i-1)) -z_(i-1)/6 Delta x_(i-1))
+$
+
+Equating them, we get
+
+$
+  p'_i (x_i) & = p'_(i-1) (x_(i)) \
+  - z_i / 2 Delta x_i + f(x_i)/(Delta x_i) - (Delta z_i) / 6 Delta x_i & = z_i / 2 Delta x_i + f(x_(i-1))/(Delta x_(i-1)) - (Delta z_(i-1)) / 6 Delta x_(i-1) \
+  6 ((Delta f(x_i)) / (Delta x_i) - (Delta f(x_(i-1))) / (Delta x_(i-1))) & = 3 z_i Delta x_i + Delta z_i Delta x_i + 3 z_i Delta x_(i-1) - Delta z_(i - 1) Delta x_(i - 1)
+$
+
+Eventually, we find that we can write it in tridiagonal form:
+
+$
+  z_(i-1)( Delta x_(i-1)) + z_i (3 Delta x_i - Delta x_i + 3 Delta x_(i-1) - Delta x_(i-1)) + z_(i + 1) Delta x_i \
+  z_(i-1) Delta x_(i-1) + z_i Delta_+ + z_(i + 1) Delta x_i
+$
+
+where $Delta_+ x_i = 2 (Delta x_i + Delta x_(i-1))$
+
+So then we have a tridiagonal matrix:
+
+$
+  mat(
+    Delta_+ x_1, Delta x_1;
+    Delta x_1, Delta_+ x_2, Delta x_2;
+    space, Delta x_2, Delta_+ x_3, dots.down;
+    , dots.down, dots.down, Delta x_(n-2);
+    , , Delta x_(n-2) Delta_+ x_n, Delta x_(n-1)
+  )
+$
+
+How can we measure when a function "looks smooth"?
+
+
+We define $norm(p) = sqrt(integral_a^b abs(p''(x))^2)$ and ask when is $norm(p)$ minimal.
+
+#theorem[
+  Given $Omega_n = { x_0, ..., x_n }$, the natural cubic spline and the clamped cubic spline minimize the smoothness norm that interpolate a function $f in C[a, b]$ at points $x_i$.
+]
+
+#proof[
+  We want t show $norm(g) >= norm(p)$ for any $g$ such that $g(x_i) = f(x_i)$
+
+  *Cubic spline*
+  Let $p$ be the natural cubic spline. We can rewrite the norm as
+
+  $
+    norm(g)^2 & = norm(p + (g - p))^2 = norm(p + h)^2 \
+              & = integral_a^b (p''(x) + h''(x))^2 dif x \
+              & = norm(p)^2 + norm(h)^2 + 2 integral_a^b p''(x) h''(x) dif x
+  $
+
+  We need to show that the integral is $0$. We can do that by integrating by parts twice:
+
+  $
+    integral_a^b p''(x) h''(x) dif x
+    & = underbrace([p''(x) h'(x)]_a^b, cancel(p''(b) ...) - cancel(p''(a) ...)) - integral_a^b p'''(x) h'(x) dif x \
+    & = -integral_a^b p'''(x) h'(x) dif x \
+    & = -sum_(i=0)^(n-1) p'''(x_i) (h(x_(i+1)) - h(x_i)) = 0
+  $
+
+  *Clamped spline*
+  Let $p$ be the clamped cubic spline. Given $h = p - g$ then $h(x_i) = 0$ and also $h'(a) = h'(b) = 0$. We arrive the same as before to
+
+  $ norm(g)^2 = norm(p)^2 + norm(h)^2 + 2 integral_a^b p''(x) h''(x) dif x $
+
+  Then, we can show that the integral is $0$:
+
+  $
+    integral_a^b p''(x) h''(x) dif x
+    & = underbrace([p''(x) h'(x)]_a^b, cancel(h'(b) ...) - cancel(h'(a) ...)) - integral_a^b p'''(x) h'(x) dif x \
+    & = -integral_a^b p'''(x) h'(x) dif x \
+    & = -sum_(i=0)^(n-1) p'''(x_i) (h(x_(i+1)) - h(x_i)) \ & = 0
+  $
+
+  similarly to before.
+]
+
+This tells us that the clamped and natural cubic splines are the _smoothest_, but we have not seen at all how well it approximates $f$.
+
+#theorem[
+  Given $Omega_n = {x_0 ..., x_n}$ where $a = x_0 < x_1 < ... < x_n = b$, parameters $alpha, beta$ and $f : [a, b] -> RR$ there exists a unique natural and a unique clamped cubic spline such that $p(x_i) = f(x_i)$.
+]
+
+#proof[(sketch)][
+  Just like the natural cubic spline, the clamped cubic spline satisfies a tridiagonal linear equation. This satisfies the form
+
+  $
+    (Delta x_i)/(Delta x_(i-1) + Delta x_i) S_(i-1) + 2 S_i + (Delta x_(i - 1)) / (Delta x_(i - 1) + Delta x_i) S_(i + 1) & = 3 (
+    Delta x_i ((Delta f(x_(i-1)))/Delta x_(i-1)) - Delta x_(i-1) (Delta f(x_i))/(Delta x_i)
+    ) / (Delta x_(i-1) + Delta x_i)
+  $
+
+  where $Delta x_i = x_(i+1) - x_i$, $Delta f(x_i) = f(x_(i+1)) - f(x_i)$ and $S_i = P'(x_i)$.
+
+  Both tri-diagonal matrices are row-diagonally dominant (left as an exercise), which implies that that there is a unique solution.
+]
+
+The meaning of row diagonally dominant is that $abs(A_(i i)) > sum_(j=1 \ j!= i)^n abs(A_(i j))$.
+
+=== General splines
+
+We still have $Omega_n = { x_0, ..., x_n }$. Note that $S_k (Omega_n)$ is a subspace of the space of piecewise $C^(k-1)$ functions on $[a, b]$ and, in particular, of the space $C[a, b]$. That is, any spine is at least continuous.
+
+We want to figure out if the space $S_k (Omega_n)$ is finite-dimensional.
+
+#example[
+  We have the spline in $S_k (Omega_n)$
+
+  $
+    q_(k,i) = (x - x_i)^k_+ = cases(
+      (x - x_i)^k & quad "if" x >= x_i,
+      0 & quad "if" x < x_i
+    )
+  $
+]
+
+These functions are going to be the basis of $S_k (Omega_n)$.
+
+#theorem[
+  Let $Omega_n$. Then $S_k (Omega_k)$ is a linear space of dimension $n + k$ with the basis
+  $
+    { p_0, p_1, ..., p_k, q_(k, 1), ..., q_(k, n-1)}
+  $
+
+  where $p_j (x) = x^j$ and $q_(k, i) (x) = (x - x_i)^k_+$.
+]
+
+#proof[
+  We want to show that any spline can be written as a unique linear combination of the basis. Namely,
+
+  $
+    p(x) & = sum_(j=0)^k a_j (p_j (x) = x^j) + sum_(i=1)^(n-1) b_i q_(, i)(x) \
+         & = sum_(j=0)^k a_j x^j + sum_(i=1)^(n-1) b_i (x - x_i)^k_+
+  $
+
+  We prove this by induction. For $n = 1$, we have that $p(x) = p_1 (x) in RR_k [x]$ so $p(x) = sum_(j=0)^k a_k x^k$ so this is correct for $n=1$.
+
+  Now, let's assume that this is correct for some $m$ and try to show the case for $m + 1$.
+
+  We have, then, that
+
+  $
+    p(x) = sum_(j=0)^k a_j x^j + sum_(i=1)^(m) b_i (x - x_i)^k_+
+  $
+
+  If we define $phi(x) = p(x) - sum_(j=0)^k a_j x^j - sum_(i=1)^(m-1) b_i (x - x_i)^k_+$ we have that $phi(x) = 0$ on $x in [a, x_m]$. We also know that $phi in S_k (Omega_n)$ and in particular, $phi in C^(k - 1)$ and $phi(x) = phi_m (x) in RR_k [x]$ on $x in [x_m, x_(m + 1)]$.
+
+  Then, $phi^(k+1) = 0$ on $[x_m, x_(m+1)]$ and $phi(x_m) = phi'(x_m) = ... = phi^((-1)) (x_m) = 0$.
+
+  Then $phi$ is defined up to a constant. In other words, $phi(x) = phi_m (x) = b_i (x - x_i)^k_+$ on $[x_m, x_(m+1)]$
+
+  We conclude that the original equation holds.
+
+  Then we also need to show that this representation is unique. We can show this by showing that the representation of $0$ has all coefficient be $0$. That is, what happens when $sum_(j=0)^k a_j x^j + sum_(i=1)^(n-1) b_i (x - x_i)^k_+ = 0$
+
+  Looking interval by interval, for $x in [x_0, x_1]$ then $sum_(j=0)^k a_j x^j = 0$ which can only happen if the polynomial is identically $0$. So $a_j = 0 forall j$
+
+  For $x in [x_1, x_2]$, then $sum_(i=1)^1 b_i (x - x_i)^k_+ = 0$ so $b_1 (x - x_1)^k = 0$ so again, this is the zero polynomial which happens if $b_1 = 0$. We can repeat this argument for all $b$ to show that all $b_2 = ... = b_(n-1) = 0$.
+]
+
+
+We want to now find how good these approximations are in $norm(dot)_2$ and $norm(dot)_oo$. We have that $S_k (Omega_n)$ is a finite-dimensional subspace (of dimension $n+k$) of the normed linear spaces $(C[a, b], norm(dot)_2)$ and $(c[a, b], norm(dot)_oo)$.
+
+Then, by theorem 2.2 we now that there exists a best approximant in $S_k (Omega_n)$. It turns out that $S_k (Omega_n)$ is strictly convex in $L^2$ norm so by theorem 2.4 the best approximant $S_k (Omega_n)$ is unique.
+
+In the supremum norm it's not so clear. It is known not to be strictly convex and there is no relevant theorem we can use. Unfortunetaly, $S_k (Omega_n)$ is not a Haar subspace so we cannot use our usual alternation theorem.
+
+#definition[
+  Given $Omega_n$, $xi in [x_i, x_(i+1))$ is called an _essential zero_ of a spline $p in S_k (Omega_n)$ if $p(xi) = 0$ and $p$ does not vanish identically on $[x_i, x_(i+1))$
+]
+
+#theorem[
+  The number of essential zeros of a $S_k (Omega_n)$ spline is at most $n + k - 1$.
+]
+
+#proof[
+  Let $r$ denote the number of essential zeros of $p$. $p^((k-1))$ is a linear spline. By mean value theorem, $p'$ has (at least) $r - 1$ essential zeros and repeating this $p^((k-1))$ has (at least) $r - k + 1$ essential zeros. Since $p^((k-1))$ is a linear spline so it has at most one essential zero in each interval $[x_i, x_(i+1))$. So, $p^((k-1))$ has at most $n$ zeros and thus $r - k + 1 <= n => r <= n + k - 1$.
+]
+
+#theorem[
+  The bound $r <= n + k - 1$ is optimal.
+]
+
+#proof[
+  Construct a spline as follows:
+
+  $ p(x) = x^k + sum_(i=1)^(n-1) b_i (x - x_i)^k_+ $
+
+  where $ b_(i + 1) = 1/(Delta x_i)^k ((-1)^i - ((x_(i+1) - a)/(x_1 - a))^k - sum_(ell=1)^(i-1) b_ell (Delta x_ell)^k). $
+
+  Here you can show that $p(x_i) = (-1)^(i-1)$ for all $i$. Using the intermediate value theorem there exist $xi_i in (x_i, x_(i+1))$  such that $p(xi_i) = 0$.
+
+  $x^k$ has a zero of multiplicity $k$ at $x=0$, so the number of zeros for this spline is $k + n - 1$.
+]
+
+Intuitively, you can think of $S_k (Omega_n)$ as $RR_(n + k - 1)[x]$
+
+= Rational approximations
+
+== TODO: Padé approxmants
+
+== Approximations
+
+Given $f in C[a, b]$, how can we approximate $f$ with rational functions?
+
+$
+  R = P/Q
+$
+
+We have that $P in RR_n$ and $Q in RR_m$. Since $f$ is continuous it shouldn't have any infinities so we can assume $Q > 0$ on $[a, b]$.
+
+We define $ RR_m^n [a, b] = { P/Q : P in RR_n, Q n RR_m, Q > 0 "on" [a, b]} $
+
+Now we have our usual questions:;
+- Are there best approximants?
+- How do we characterize them?
+- Are they unique?
+
+#example[
+  Consider $RR_m^n[0, 1]$ and sequence $R_k (x) = 1/(k x + 1)$ for $m >= 1$. Suppose tat $A = { R = P/Q in RR_m^n [0, 1] : norm(f - R)_oo <= norm(f)_oo }$ is compact.
+
+  Then, there exists a convergent subsequence $R_k_j$ with a limit in $A$. Then, pontwise:
+
+  - $x = 0$: $lim_(j->oo) R_k_j (0) = 1$
+  - $x in (0, 1]: lim_(j->oo) R_k_j (x) = 0$
+
+  Then $tilde(R) (x) = cases(1 quad x = 0, 0 quad x in (0, 1])$. But $tilde(R) in.not C[a, b]$ so $tilde(R) in.not A$, which is a contradiction.
+]
+
+#theorem[Existence][
+  For each $f in C[a, b]$ there exists a best approximant in $RR_m^n [a, b]$ to $f$ (n $norm(dot)_oo$).
+]
+
+#proof[
+  Let $delta = inf_(R in RR_m^n [a, b]) norm(f - R)_oo$. We have to show that there is some $R$ where $norm(f - R)_oo = delta$. There exists a sequence $(R_k)_k in RR_m^n [a, b]$ such that $lim_(k -> oo) norm(f - R)_oo = delta$.
+
+  Write $R_k (x) = (P_k (x)) / (Q_k (x))$ as before. Without loss of generality, let $norm(Q_k) = 1$. Also assume $norm(R_k - f)_oo <= delta + 1$ without loss of generality.
+
+  $
+    norm(R_k)_oo <= norm(R_k - f)_oo + norm(f)_oo <= delta + 1 + norm(f)_oo = theta
+  $
+
+  where $theta > 0$. We know that ${ Q in RR_m : norm(Q) = 1 }$ is compact. We can use that by considering
+
+  $norm(P_k)_oo = norm(P_k / Q_k Q_k)_oo <= norm(R_k)_oo norm(Q_k)_oo <= theta$.
+  Therefore, $(P_k, Q_k)$ is in the compact set
+
+  $ { (P, Q) in RR_n times RR_m : norm(P)_oo <= theta, norm(Q)_oo = 1 }. $
+
+  There exists a subsequence such that $P_k -> P$ and $Q_k -> Q$ in $norm(dot)_oo$ as $k -> oo$.
+
+  For $x in [a, b] \\ { x_1, ..., x_ell }$ we have that $R_k (x) = (P_k (x))/(Q_k (x))-> (P(x))/(Q(x))$. Notice that $abs(P_k (x)) = abs(R_k (x) Q_k (x)) <= theta abs(Q_k (x))$. Taking $k -> oo$, $abs(P(x)) <= theta abs(Q(x))$. By continuity, tis also holds for $x in { x_1, ..., x_ell }$ and any zero of $Q$ is also a zero of $P$. Therefore, $Q > 0$ on $[a, b]$.
+
+  Pointwise: $R_k (x) -> R(x)$ for all $x in [a, b]$.
+
+  #todo[I got tiwed]
+]

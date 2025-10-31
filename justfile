@@ -6,3 +6,4 @@ build-all:
             typst compile "$subject/notes.typ" "../build/$subject.pdf" --root .; \
         fi \
     done
+    cd content && typst compile "analysis/exercises.typ" "../build/analysis-exercises.pdf" --root .;

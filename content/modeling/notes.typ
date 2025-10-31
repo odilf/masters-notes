@@ -621,20 +621,20 @@ This system is linear. Some other systems are not linear.
 #let phase-space(f, phase-args: none, ..plots) = lq.diagram(
   // width: 11cm,
   height: 7cm,
-  // lq.quiver(
-  //   lq.linspace(-4, 4, num: 30),
-  //   lq.linspace(-4, 4, num: 30),
-  //   (x, xp) => {
-  //     let y = f(x)
-  //     let norm = calc.norm(xp, y)
-  //     (xp / norm, y / norm)
-  //   },
-  //   pivot: start,
-  //   color: (x, xp, u, v) => -calc.norm(xp, f(x)),
-  //   map: lq.color.map.plasma,
-  //   scale: 0.3,
-  //   ..phase-args,
-  // ),
+  lq.quiver(
+    lq.linspace(-4, 4, num: 30),
+    lq.linspace(-4, 4, num: 30),
+    (x, xp) => {
+      let y = f(x)
+      let norm = calc.norm(xp, y)
+      (xp / norm, y / norm)
+    },
+    pivot: start,
+    color: (x, xp, u, v) => -calc.norm(xp, f(x)),
+    map: lq.color.map.plasma,
+    scale: 0.3,
+    ..phase-args,
+  ),
   ..plots,
 )
 
@@ -2045,3 +2045,1702 @@ the condition we want is $0 < a < a_+$ so the condition is:
 $
   2a < sqrt(1 + 8^2) - 1 - 2b^2
 $
+
+
+== Example: Relaxation oscillations (Van der Pol oscillator, $mu >> 1$)
+
+Revisited. Equations are:
+
+$ dot.double(x) + mu(x^2 - 1) dot(x) + x = 0 $
+
+where we can write $dot(x)$ as $dot(x) = mu (y - G(X))$ with $G(x) = x^3/3 - x$. We can define a new variable $w$ where $dot(w) = -x$, and $dot(w) + x = 0$ and we get
+
+$
+  cases(
+    dot(w) = -x,
+    dot(x) = w - mu G(x)
+  )
+$
+
+and with $w = mu y$ we end up with
+
+$
+  cases(
+    dot(x) = mu (y - G(x)),
+    dot(y) = -1/mu x,
+  )
+$
+
+The idea here is that we are going to assume that $mu >> 1$. This produces relaxation oscillations, where it cycles and in each cycle slowly moves at first and then jumps to the other end.
+
+If $mu$ is very large, $1/mu$ is small so $y$ increases slowly and $x$ increases very fast. It approaches a cycle around the nullcline.
+
+We can calculate the period:
+
+$
+  T = 2 integral_(t_D)^(t_A) dif t + 2 integral_(t_A)^(t_B) dif t \
+  T = underbrace(2 / mu, approx 0) integral_(x_D)^(x_A) (dif x)/(y - G(x)) + 2 integral_(y_A)^(y_B) dif t \
+  T = 2 integral_(y_A)^(y_B) dif t \
+$
+
+This second integral is close to the nullcline, that is, when $y = G(x) + 1/mu^2 H(x)$ and $dot(y) = (G'(x) + 1/mu^2 H'(x)) = -x/m$ where we get that $dot(x) = -x/mu G'(x) (1 + O(1/mu))$
+
+And eventually we get
+
+$
+  integral_(t_A)^(t_B) dif t = mu integral_(x_A)^(x_B) (-(G'(x))/x) dif x + O(1/mu)
+$
+
+We get $x_B$ at the extrema of $G$, which are at $plus.minus 1$. Let's take $x_B = 1$. For $x_A$ we can approximate it as the coordinate where a straight line from $D$ intersects $G(x)$. So, $G(-1) = 2/3$ and then $G(x) = 2/3$ happens when $x = 2$.
+
+The integral evaluates to:
+
+$
+  integral_(t_A)^(t_B) dif t = O(1/mu) + mu (3 - 2 ln 2)
+$
+
+So, if $mu$ is very large, $T = mu (3 - ln 4)$.
+
+== Example: Duffing equation
+
+#faint[Page 239 of Strogatz.]
+
+The equation is
+
+$ dot.double(x) + x + epsilon x^3 = 0. $
+
+We can write this as $x = x_0 + epsilon x_1 + epsilon^2 x_2 + ...$. However, this would be very wrong! This is because this problem has two time scales: the period of rotation and the time it takes to reach the limit.
+
+Let's take two times, $tau = t$ and $T = epsilon t$. The assumption we make here is that $x(t)$ can be written as $x(tau, T)$.
+
+So, we can write
+
+$ x = x_0(tau, T) + epsilon x_1 (tau, T) + ... $
+
+Taking derivatives of $x$ is now a bit more complicated. Namely:
+
+$ dot(x) = x_tau + x_T epsilon $
+$ dot.double(x) = x_(tau tau) + 2 epsilon x_(tau T) + epsilon^2 x_(T T) $
+
+This is what makes this a bit more tricky. #faint[Here is where the fun starts.]
+
+#faint[Page 243 from Strogatz.]
+
+We are going to neglect everything that contains $epsilon^2$ or higher.
+
+$
+  x = underbrace((x_(0 tau tau) + 2 epsilon x_(0 tau T) + ...) + epsilon (x_(1 tau tau) + ...), x_0) \
+  + underbrace(x_0 + epsilon x_1 + ..., x_1) \
+  + epsilon(x_0^2 + 1) x_(0 tau) + ... = 0
+$
+
+we can collect same order terms and set them to $0$.
+- For order 1, $x_(0 tau tau) + x_0 = 0$, which is a harmonic oscillator with general solution $r(T) cos(tau + phi(T))$
+- For order $epsilon$
+  $ x_(1 tau tau) + x_1 = -2 x_(0 tau T) -(x_0^2 - 1) x_(0 tau) $
+
+  One side is
+  $
+    x_(0 tau T) & = diff/(diff T) (-r(T) sin(tau + phi(T))) \
+                & = -r' sin(tau + phi) - r phi' cos(tau + phi) \
+  $
+  and the other side
+  $
+    (x_0^2 - 1) x_(0 tau) = (r^2 cos^2(tau + phi) - 1)(-r sin(tau + phi))
+  $
+
+  Eventually we get
+
+
+== Example: Griffith's model
+
+#faint[Page 269 from Strogatz.]
+
+== Example: Pitchfork bifurcation: Overdamped anharmonic oscillator
+
+Eventually we get:
+
+$ E = k/2 ((l_c - l_0)/l_c x^2 + l_0/(4l_c^3) x^4 + ...) $
+
+Here we introduce $xi = (l_c - l_0) / l_c$. If $xi < 0$, only fixed point is $x = 0$; if $xi > 0$ then two fixed points $x^*_plus.minus$.
+
+Using simplifying assumption $l_0 approx l_c$, then we have that
+
+$ E approx k/2 (xi x^2 + x^4/(4l_0^2)) $
+
+This is the equation we will use.
+
+We can differentiate to get maxima and minima, which are $x = plus.minus l_0 sqrt(2xi)$.
+
+The equation of motion is
+
+$
+        m dot.double(x) + mu dot(x) + (diff E)/(diff x) & = 0 \
+    m dot.double(x) + mu dot(x) - k xi x + k/(2l_0) x^3 & = 0 \
+  dot.double(x) + mu/m dot(x) - k xi x + k/(2l_0 m) x^3 & = 0 \
+$
+
+We can change the scale of $x$. Let's introduce the natural scale of length $x_c$ and of time $t_c$ and take:
+
+$
+  cases(
+    x = x_c u,
+    t = t_c tau,
+    xi = q epsilon,
+  )
+$
+
+Put it into the equation...
+
+$
+  x_c/(t_c^2) u'' + (mu x_c)/(m t_c) - (k q x_c)/(m) epsilon u + (k x_c^3)/(2l_0^2 m) u^3 = 0 \
+  u'' + (mu t_c)/m u' - (k f t_c^2)/m epsilon u + (k x_c^2 t_c^2)/(2l_0^2 m) u^3 = 0
+$
+
+Here we get
+
+$
+  t_c = m / mu \
+  x_c = l_0 mu sqrt(2/(k m)) \
+  q = mu^2/(k m)
+$
+
+And this gets converted to...
+
+$ u'' + u' - epsilon u + u^3 = 0 $
+
+You can actually do this for any potential that is symmetric like this, because we truncated the terms. This equation, then, is kind of universal.
+
+For $epsilon < 0$, fixed point is $u^* = 0$ and if $epsilon > 0$ we have $u^* = 0$, $u^*_plus.minus sqrt(epsilon/3)$
+
+Now, let's study the dynamics.
+
+For $epsilon < 0$, we have that $u'' + u' - epsilon u = 0$ (we get rid of the $u^3$ because $u$ is small?). The characteristic function is $lambda^2 + lambda - epsilon = P(lambda)$, the roots are $lambda_plus.minus = (-1 plus.minus sqrt(1 + 4epsilon))/2 approx epsilon$ as $epsilon$ is small. The solutions are then:
+
+$
+  u = c_1 e^(-tau) + c_2 e^(epsilon tau)
+$
+
+Here we get the two scales of time. The $e^(-tau)$ disappears much faster than $e^(epsilon tau)$. As $tau$ increases, the term that defines the behaviour is the $e^(epsilon tau)$ because $e^(-tau) -> 0$ fast.
+
+The overall behavior is that you go fast down the y axis and then slowly approach the origin. Whenever you have a fast and a slow mode, the same thing happens. The point is that the points quickly go to a one dimensional manifold so a pitchfork bifurcation (which is what we have here) is essentially a one dimensional phenomenon.
+
+Ok, so let's try to introduce the slow scale. Let $T = epsilon tau$. We are going to assume that $u$ is given by an expansion. So,
+
+$ u = epsilon^1/2 A_0(T) + epsilon A_1(T) + epsilon^(3/2) A_2 (T) + ... $
+
+Eventually, we get
+
+$ A'_0 = A_0 - A_0^3 $
+
+Which is the normal form of a pitchfork bifurcation. So, once the fast mode has ended, we get a pitchfork bifurcation in the one dimension it has covnerged to.
+
+Since the equation of $u'' + u' - epsilon u + u^3 = 0$ is universal, then $A'_0 = A_0 - A_0^3$ is also universal! The second derivative $u'' = O(epsilon^(5/2))$ is negligible.
+
+== Theory: Hopf bifurcation
+
+The equations of Hopf bifurcations are
+
+$
+  cases(
+    dot(R) = mu r - r^3,
+    dot(theta) = omega + b r^2
+  )
+$
+
+#faint[Page 274 of Strogatz.]
+
+And, very eventually, you get this:
+
+$
+  cases(
+    rho' = rho (nabla_r - ell_r/2 rho^2),
+    phi' = nabla_i - ell_i/2 rho^2,
+  )
+$
+
+Where $A = rho e^(i phi)$, and $r$/$i$ subscripts indicate real and imaginary parts.
+
+This equation is universal again, so every pitchfork bifurcation follows these equations.
+
+
+== One-Dimensional Map
+
+This is how you get the logistic map and the mandelbrot set.
+
+#faint[Page 385 of Strogatz.]
+
+== Fractals
+
+#faint[Page 435 of Strogatz.]
+
+= Markov processes and chains
+
+A Markov chain is a Markov process with discrete state space.
+
+$ P(n m) = P(n, n) P(r, m) $
+
+We have time-homogeneous Markov Chains where the probabilities are the same over time, in the sense that
+
+$ P(n, m) = P(n - m) $
+
+So then
+
+$ P(x_(n+k) = s_i | x_n = s_j) = P_(i j)^((k)) $
+
+And we denote
+
+$ P^((k)) = (P_(i j)^((k))) $
+
+And in fact
+
+$ P(n) = P(1)^n $
+
+We remove the time dependence at some point, so
+
+$ P = P(1) $
+
+and $ P(n) = P^n $
+
+
+We are going to denote $1 = mat(1; 1; 1; dots.v; 1)$
+
+A funny thing is that $P^n$ converges as $n -> oo$. Let's see why this happens.
+
+We start with the eigenvalues $P v_i = lambda_i v_i$. Let $V = mat(v_1, v_2, v_3)$ and $Lambda = mat(lambda_1, 0, dots.h, 0; 0, lambda_2, dots.h, 0; dots.v, dots.v, dots.down, dots.v; 0, 0, 0, lambda_n)$.
+
+Assume the matrix $P$ is diagonalizable, such that $P V = V Lambda$. Let $U = V^(-1)$ such that $U P = Lambda U$
+
+We get $U = mat(u_1^T; u_2^T; u_3^T; dots.v; u_n^T)$ and $u_i^T P = lambda_i u_i^T$.
+
+Since $U V = I$ we have that $u_i^T v_j = delta_(i j)$. The matrix $P$ can be written now as
+
+$
+  P = sum_(i=1)^N lambda_i underbrace(v_i u_i^T, n times n "matrix" \\ "(projector)")
+$
+
+The point is that $(v_i u_i^T)^2 = v_i cancel(u_i^T v_i) u_i^T = v_i u_i^T$. The projection stays the same. We can use this in the expression of $P$ and raise it to the $n$ to get:
+
+$ P^n = sum_(i=1)^N lambda_i^n v_i u_i^T $
+
+from which it falls out that
+
+$ P^n = V Lambda^n V^(-1). $
+
+Finally, we can do
+$
+           1^T P v_i & = lambda_i 1^T v_i \
+             1^T v_i & = lambda_i (1^T v_i) \
+   "if" lambda_i = 1 & => 1^T v_i = 1 \
+  "if" lambda_i != 1 & => 1^T v_i = 0 \
+$
+
+== Ergodic and Regular Markov chains
+
+In an Ergodic Markov chain you can reach any state from any other state at most $N$ steps, where $N$ is the size of the state space. That is, $(P^(n_(i j)))_(i j) > 0$.
+
+An Ergodic Markov chain is a regular Markov chain if there exists a $n > 0$ such that $P^n > 0$ (all elements of the matrix are positive).
+
+An Ergodic Markov chain that is not regular is given by two states that go to each other with a probability $1$.
+
+#theorem[Fundamental limit][
+  Given a transition matrix $P$ of a regular MC, the limit of $P^n$ as $n$ goese to infinity is a positive matrix. Specifically,
+
+  $
+    lim_(n -> oo) P^n = w 1^T = mat(w, w, w, w)
+  $
+
+  where $w_i > 0$ and $sum_i w_i = 1$
+]
+
+#corollary[
+  The only solution of $P v = v$ is a multiple of $w$ and the only solution of $u^T P = u^T$ is a multiple of $1$.
+]
+
+#proof[
+  $P^2 v = P v = v -> P^2 v = v -> P^n v = v$
+
+  The limit $P^n v = v$ as $n -> oo$ is $v = w (1^T v) prop w$.
+
+  And $u^T P^n = u^T$ and as $n -> oo$ $(u^T w) 1^T = u^T prop 1^T$.
+]
+
+#theorem[
+  Given an ergodic MC there is a unique probability vector $w$ such that $P w = w$ and $w > 0$. Any vector such that $P v = v$ is a multiple of $w$. Any vector $u$ such that $u^T P = u^T$ is a multiple of $1$.3
+]
+
+#theorem[Perron-Frobenius][
+  A few.
+]
+
+=== Example: Ehrenfest model: sationarity
+
+We have two urns, $N$ total marbles and a $q$ chance of changing one random marble from urn.
+
+The equation $P w = w$ is:
+
+$ w_n = p_(n,n+1) w_(n+1) + p_(n n) w_n + p_(n, n-1) w_(n-1) $
+
+If we think about and replace the probabilities, we get
+
+$
+  w_n & = (n+1)/N q w_(n+1) + (1 - q) w_n + (N-n+1)/N q w_(n-1) \
+  w_n & = (n+1)/N q w_(n+1) + w_n - q w_n + (N-n+1)/N q w_(n-1) \
+  0 & = (n+1)/N q w_(n+1) - q w_n + (N-n+1)/N q w_(n-1) \
+  0 & = (n+1)/N w_(n+1) - w_n + (N-n+1)/N w_(n-1) \
+  0 & = (n+1)/N w_(n+1) - w_n + (1 - (n-1)/N) w_(n-1) \
+  (n+1)/N w_(n+1) - (n-1)/N) w_(n-1) & = w_n - w_(n-1) \
+$
+
+Here we using generating functions! Take polynomial
+
+$ Q(z) = sum_(n=0)^N z^n w_n $
+
+We multiply the equation by $sum_n z^n$:
+
+$
+  sum_(n=0)^N (n+1)/N w_(n+1)z^n - sum_(n=1)^N (n-1)/N w_(n-1)z^n
+  = sum_(n=0)^N w_n z^n - sum_(n=1)^N w_(n-1) z^n
+$
+
+Now we shift the indices to get $n$ everywhere:
+
+$
+  1/N sum_(n=1)^N (n) w_(n)z^(n+1) - 1/N sum_(n=0)^(N-1) n w_(n)z^(n-1)
+  & = sum_(n=0)^N w_n z^n - sum_(n=1)^(N-1) w_n z^(n-1) \
+  1/N sum_(n=0)^N (n) w_(n)z^(n+1) - 1/N sum_(n=0)^N n w_(n)z^(n-1) + cancel(1/N z^(N+1) N)
+  & = sum_(n=0)^N w_n z^n - sum_(n=1)^N w_n z^(n-1) cancel(z^(N+1)) \
+  1/N sum_(n=0)^N (n) w_(n)z^(n+1) - 1/N sum_(n=0)^N n w_(n)z^(n-1) + cancel(1/N z^(N+1) N)
+  & = sum_(n=0)^N w_n z^n - sum_(n=1)^N w_n z^(n-1) cancel(z^(N+1)) \
+  1/N Q'(Z) - z^2/N Q'(z) & = Q(z) - z Q(z) \
+  (1 - z^2) Q'(z) & = N (1-z) Q(z) \
+  (1 + z) Q'(z) & = N Q(z) \
+  Q(z) = c (1 + z)^N
+$
+
+From the construction of $Q$ we can get $Q(1) = sum_(n=0)^N w_n = 1$, so $Q(1) = c (1 + 1)^N => c = 2^(-N)$. Therefore, we find that
+
+$
+  Q(Z) = 2^(-N) sum_(n=0)^N z^N mat(N; n)
+$
+
+So $ w_n = 1/(2^N) mat(N; n) $
+
+This is just saying that in the stationary state any marble has a $1/2$ chance to be in any urn.
+
+
+== Absorving Markov chains
+
+An absorving state has $P_(i i) = 1$. That is, once you enter you stay there forever (the state $s_i$ is "absorving"). A non-absorving state is called transient.
+
+An absorving MC contains absorving states but from every transient state you can reach at least one absoring state in a finite number of steps.
+
+Generally you put the transient states at the start and the absorving states at the end. You also denote $t$ transient states and $r$ absorving states.
+
+The limit of $P^n$ for a matrix like this is:
+
+$
+  P^n = mat(Q^n, 0; R_n, I)
+$
+
+
+Fundamenta matrix of absorving MC:
+
+$ N = (I - Q)^(-1) = sum_(k=0)^oo Q^k $
+
+This corresponds to the expected number of visits from state $s_j$ to state $s_j$ before absorption, for each $N_(i,j) in N$.
+
+For the drunkyards walk exampe with probabilities $1/2$, we have that:
+
+$ Q = mat(0, 1/2, 0; 1/2, 0, 1/2; 0, 1/2, 0) $
+$ (I - Q) = mat(I, -1/2, 0; -1/2, I, -1/2; 0, -1/2, I) $
+
+And the inverse:
+
+$ N = (I-Q)^(-1) = mat(3/2, 1, 1/2; 1, 2, 1; 1/2, 1, 3/2) $
+
+This tells us that the state right next to the absorving states are the least common and the center ones the most common. This tracks with our expectations.
+
+We also have an absorving matrix $B$ where $b_(i j)$ represents the probability to be absorved at $s_i$ if you start at $s_j$.
+
+There is a relation
+
+$
+  B = R + B Q => B(I - Q) = R => B = R N
+$
+
+In the drunkyard's walk example, we have that
+
+$ R = mat(1/2, 0, 0; 0, 0, 1/2) $
+
+so
+
+$ R N = mat(3/4, 1/2, 1/4; 1/4, 1/2, 3/4) $
+
+== Example: Birth and death process
+
+#show link: set text(fill: blue.lighten(70%))
+#link("https://en.wikipedia.org/wiki/Birth%E2%80%93death_process")
+
+Births and deaths, characterized by positive birth rates $lambda_i$ and death rates $mu_i$ (or $b_i$ and $d_i$ in the notes).
+
+$ tau^T = 1^T N $
+
+#todo[What is $tau$?]
+
+$ N = (I - Q)^(-1) $
+
+$n_(i j)$ is the time spent visiting $i$ starting from $j$.
+
+$ tau = mat(tau_1; tau_2; dots.v; tau_t) $
+
+Let $ pi_n = cases(pi_0 = 1, pi_n = (b n)/d_n pi_(n-1)) $
+
+We are solving $tau^T (Q - I) = -1^T$
+
+and we reach
+
+$ pi_n n_(n + 1) - pi_(n-1) n_n = pi_(n-1)/d_n = pi_n / b_n $
+
+This is a telescopic sum, that results in
+
+$ pi_n u_(n + 1) - pi_0 u_1 = pi_n u_(n + 1) - tau_1 $
+
+and eventually...
+
+$ pi_(N-1)/d_n = pi_N / b_N $
+
+and finally...
+
+
+$ tau_n = sum_(k=0)^(n-1) 1/pi_k sum_(j = k+1)^N pi_j / b_j $
+
+== Example: SIS model
+
+== Example: Branching process (Galtton-Watson)
+
+#faint[N. Privault: Understanding Markov Chains]
+#link("https://en.wikipedia.org/wiki/Galton%E2%80%93Watson_process")
+
+This has an infinite number of states. Let's see what happens here.
+
+We have probability $P[Y=r] = z_r$  such that $sum_(r=0)^oo z_r = 1$.
+
+Also, $ P_(i j) & = P[x_n = i | x_(n-1) = j] \
+        & = P[x_n = sum_(k=1)^j Y_r | x_(n-1) = j ] $
+
+We are going to use... generating functions!
+
+$ f(s) = sum_(r=0)^oo P(Y=r) s^r = E() $
+
+If we change the variable we can find the generating function at generation $n$:
+
+$
+     F_n (s) & = sum_(r=0)^oo P[x_n = r] s^r \
+             & = P(x_(n-1) = j) sum_(r=0)^oo P(x_n = r | x_(n-1) = j) s_j \
+  P(x_n = r) & = P(x_n = r | x_(n-1) = j) P(x_(n-1) = j) \
+$
+
+What is the probability of the sum of $j$ random variables?
+
+$
+  sum_(r=0)^oo P(x_n = r | x_(n-1) = j) s_j = E(s^(sum_(=1)^j Y_k)) \
+  =^"independent" E(s^Y)^j = f(s)^j
+$
+
+So the the term above can be written as:
+
+$ F_n (s) = sum_(j=1)^oo P(x_(n-1) = j) f(s)^j = F_(n-1) (f(s)) $
+
+and to put it more clearly:
+
+$ F_n (s) = F_(n-1) (f(s)) $
+
+And where does this recursion start? $F_0 (s) = s$ and $x_0 = 1$.
+
+*Derivative:*
+
+$ F'_n (s) = sum_(r=1)^oo P(x_n = r) r s^(r-1) $
+
+Evaluated at one, we get the mean value at generation $m$:
+
+$ F'_n (1) = E(x_n) = m_n $
+
+The second derivative is:
+
+$ F''_n (s) = sum_(r=1)^oo P(x_n = r) r (r-1) s^(r-2) $
+
+And at $1$:
+
+$ F''_n (1) = E(x_n^2) - E(x_n) $
+
+This is almost the variance! In fact,
+
+$ V_n = E(x_n^2) - E(x_n)^2 => F''_n (1) = V_n + m_n^2 - m_n $
+
+#todo[A bunch of stuff missing.]
+
+#todo[I woke up late, but...]
+
+Properties #todo[of what? idk]
++ $1^T Z = 1^T$
++ $Z w = W$
++ $(I - P) Z = I - w 1^T$
+
+We also get
+
+$
+  m_(i j) = (z_(i i) - z_(i j))/w_i
+$
+
+from the fundamental matrix.
+
+== Continuous time Markov chains
+
+We have that $P(t + u) = P(t) P(u)$.
+
+There are events that happen that take a random, continuous amount of time. The waiting times are also called jump times and the inter-event times are also called holding times or sojourn times.
+
+=== Example: Poisson process
+
+This is a process where:
++ State space $cal(S) = { 0, 1, 2, ... }$
++ Stationary
++ Initially $X(0) = 0$
++ For sufficiently small $Delta t$:
+  $
+    P_(i j) (Delta t) = cases(
+      lambda Delta t + o(Delta t),
+      1 - lambda Delta t + o(Delta t),
+      o(Delta),
+      0
+    )
+  $
+
+We eventually have to use generating function
+
+$
+  G(z, t) = sum_(i=0)^oo z^i P_i (t)
+$
+
+= Deterministic processes over averages or something
+
+== Brownian motion
+
+Observation of botonist (mr Brown) where a grain of polen in water is never stable and moves in an erratic way. He couldn't come up with an explanation of why it moved like that and it was ultimetaly used in one of the 1905 Einstein papers where it confirmed the material atom model.
+
+
+If you take a lot of particles that have brownian motion you can have a macroscopic description of diffusion. This _is_ essentially deterministic, because for high enough number of particles the chance of that not happening is exponentially small, essentially 0.
+
+=== Symmetric random walk: net displacement
+
+How far away would a symmetric random walk move away from $0$ after some time?
+
+We are going to say that the number of iterations is $m$, the position it is is $n$, the number of step to one direction is $n_1$ and in the other then is $n_2 = n - n_1$.
+
+What is the probability that we are at position $n$ at time $m$? The answer is
+
+$ P_n (m) = 1/2^n mat(n; n_1) $
+
+which is the sum of $n$ Bernoulli variables.
+
+Then, $m = n_1 - n_2 = 2n_1 - n$ so we can rewrite $n_1 = (m + n)/2$ and $n_1 = (m - n)/2$. This implies that $m$ and $n$ need to have the same parity. And the formula above becomes
+
+$ P_n (m) = 1/2^n mat(n; n_1) = 1/2^n mat(n; (m+n)/2) $
+
+#let mean(x) = $angle.l #x angle.r$
+
+We can take averages and expected values. We want to calculate $mean(n_1)$. If we say that $p$ is the probability of going to the right and $q = 1 - p$ of going to the left, then
+
+$ P_n (m) = mat(n; n_1) p^(n_1) q^(n - n_1) $
+
+Then,
+
+$ sum_(n_1=0)n P_n (m) = (p + q)^n = 1 $
+
+So the expected value is
+
+$
+  mean(n_1) & = sum_(n_1 = 0)^n n_1 P_n (m) \
+            & = sum_(n_1=0)^oo n_1 mat(n; n_1) p^(n_1) q^(n - n_1) \
+            & = p diff/(diff p) (
+                sum_(n_1=0)^oo mat(n; n_1) p^(n_1) q^(n - n_1)
+              )
+              #todo[what??] \
+            & = p diff/(diff p) (p + q)^n \
+            & = p n (p + q)^(n - 1) \
+            & = n p \
+$
+
+We can do the same with $mean(n_1^2)$, and we get
+
+$
+  mean(n_1^2) & = n(n- 1) p^2 + n p \
+              & = n^2 p^2 - n p^2 + n p \
+              & = n^2 p^2 + n p (1 - p) \
+$
+
+And then we can calculate the variance:
+
+$ v = mean(n_1^2) - mean(n_1)^2 $
+
+*Average displacement after $n$ steps*
+
+We calculate it this way:
+
+$ mean(m) = mean(n_1) - mean(n_2) = n (p - q) $
+
+Given $mean(n_1) = n p = mean(n_2)$ and $mean(n_1^2) = n^2 p^2 + n p q$. Then, the mean difference squared is:
+
+$ mean(Delta n_1^2) = n p q $
+
+Now, we can calculate the standard deviation:
+
+$
+  mean((Delta m)^2) = 4 n p q \
+  sqrt(mean((Delta m)^2)) = 2 sqrt(n p q) \
+$
+
+If $p = q = 1/2$, then $mean(m) = 0$ which means no displacement, as expected. Also $sqrt(mean(Delta m^2)) = n^(1/2)$. This exponent is what characterizes brownian motion.
+
+
+=== This is a Gaussian
+
+$
+  P_n (m) = 1/2^n (n!) / ( ((n+m)/2)! ((n-m)/2)! )
+$
+
+We use Stirling's approximation:
+
+$
+  n! approx sqrt(2 pi n) exp(n log n - n)
+$
+
+Substituting in:
+
+$
+  P_n (m) & = 1/2^n (sqrt(2 pi n)) / ( pi sqrt(n^2 - m^2) ) e^phi \
+  "where" quad 1/n phi & = log n - 1/2 (1 + m/n) (log (n/2) + log (1 + m/n)) \
+  & - 1/2 (1 - m/n) (log (n/2) + log (1 - m/n)) \
+  & = log n - log(n/2) - 1/2 (1 + x) log (1 + x) - 1/2 (1 - x) log(1 - x) \
+  & = log 2 - psi(x) \
+  \
+  \
+  "where" quad psi(x) & = 1/2 (1 + x) log(1 + x) + 1/2 (1 - x) log(1 - x) \
+  "and" quad x & = m/n \
+$
+
+So, $e^phi$ is now:
+
+$
+  e^phi = exp(n lg 2 - n psi(x)) = 2^n e^(-n psi(x))
+$
+
+Putting it al back in,
+
+$
+  P_n (m) & = sqrt((2n)/(pi (n^2 - m^2))) e^(-n psi(x)) \
+          & = sqrt(2/(n pi)) (1 - x^2)^(-1/2) e^(-n psi(x)) \
+$
+
+Now, we use the fact that $x = m/n$ is generally very small, so we expand it in powers of $x$:
+
+$
+  sqrt(2/(n pi)) (1 - x^2)^(-1/2) = sqrt(2 / (n pi)) (1 + x^2/2 + ...)
+$
+
+and
+
+$
+  psi(x) & = 1/2 (1 + x) log(1 + x) + 1/2 (1 - x) log(1 - x) \
+         & = x^2/2 + ... "(odd terms cancel)"
+$
+
+
+So, as $n$ tends to infinity, we find that
+
+$
+  P_n (m) = sqrt(2 / (n pi)) e^(-m^2 / (2n))
+$
+
+which is a gaussian.
+
+== The diffusion equation
+
+There is another way to calculate the above probability, which is closer to what we want to achieve.
+
+We can talk about "number of paths", so
+
+$ P_n (m) = 1/(2^n) ell(m, n) $
+
+The number of paths, $ell$, can be determined recursively, since you can reach a position only from two positions before. That is,
+
+$ ell(m, n) = ell(m - 1, n - 1) + ell(m + 1, n - 1) $
+
+So now,
+
+$ 2P_n (m) = P_(n-1) (m-1) + P_(n-1) (m + 1) $
+
+And then we want to take macroscopic behavior so we use a large number of steps and pretend it is continuous:
+
+$
+  x = m Delta x \
+  t = n Delta t \
+  u(x, t) = (P_n (m)) / (Delta x)
+$
+
+And
+
+$
+  2 u(x, t) = u(x - Delta x, t - Delta t) + u(x + Delta x, t - Delta t)
+$
+
+Here we also do Taylor expansion
+
+$
+  u (x plus.minus Delta x, t - Delta t) &= u(x, t) plus.minus u_x (x, t) Delta x - u_t (x, t) Delta t + \
+  & + 1/2 (U_(x x) (Delta x)^2 plus.minus 2 u_(x t) Delta x Delta t + u_(t t) (Delta t)^2 )
+$
+
+So,
+
+$
+  2 u(x, t) & = u(x - Delta x, t - Delta t) + u(x + Delta x, t - Delta t) \
+  & 2u(x, t) - u_t(x, t) Delta t + u_(x x) (Delta x)^2/2 + u_(t t) (Delta t)^2/2 + ...
+$
+
+We set everything other than $2 u(x, t)$ t $0$, so we find
+
+$
+    0 & = -u_t Delta t + u_(x x) (Delta x)^2/2 + u_(t t) (Delta t)^2/2 + ... \
+  u_t & = (Delta x)^2/(2 Delta t) u_(x x) + O(Delta t) = D u_(x x) + O(Delta t)
+$
+
+So if $D -> oo$ as $Delta x, Delta t -> 0$, then $u_(x x) = 0$, so $u = a + b x$, but since $u$ is bounded $u = a$ and since we start with $u = 0$ at the limits, then $u$ is _always_ $0$. Nothing ever happens, and I wonder.
+
+And if $D -> oo$ then $u_t = 0$ so again it is a constant and is $0$.
+
+Therefore, we need that $D$ is non-zero and finite. Then, we get the equation
+
+$
+  u_t = D u_(x x)
+$
+
+This is the diffusion equation.
+
+==== Deriving the same equation as before
+
+Using
+
+$ n = t / (Delta t) quad m = x / (Delta x) $
+
+we can find that
+
+$
+  u(x, t) = (P_n (m)) / (Delta x) = sqrt(2 /(pi n)) e^(-m^2/(2n)) 1 / (Delta x)
+  = 1 / sqrt(pi D t) e^(-(x^2)/(4D t))
+$
+
+where $D = (Delta x)^2/(2 Delta t)$.
+
+=== Concentration
+
+The number of particles stays always the same at $N / sqrt(pi D t) exp(-x^2/(4 D t))$. We might care about the concentration f particles, which is
+
+$
+  C(x, t) = N/sqrt(4 D t pi) exp(-x^2/(4D t))
+$
+
+Properties of concentration:
+
++ $C(x, t)$ is a solution of the diffusion equation.
++ If $x != 0$, then $lim_(t -> 0^+) C(x, t) = 0$
++ $integral_(-oo)^oo C(x, t) dif x = N$
+
+From this we derive that $C(x, 0) = N delta(x)$.
+
+=== Fick's law
+
+Another derivation of the difusion equation.
+
+Imagine we have a region $Omega$ and a quantity $Q(t)$ that has a density $q(x, t)$ over $Omega$ such that
+
+$ Q(t) = integral_Omega q(x, t) dif^n x $
+
+Suppose there is also a current $J$ over the border
+
+$
+  dot(Q) = integral_Omega r(x, t) dif^n x - integral_(diff Omega) J dot hat(n) dif S
+$
+
+$
+  dot(Q) = integral_Omega q_t (x t) dif^n x = integral_Omega sigma (x, t) dif^n x - integral_Omega gradient dot J dif^n x
+$
+
+So,
+
+$ q_t = -gradient dot J + sigma $
+
+Conservative systems have $sigma = 0$, with $q_t + gradient dot J = 0$. This is called the continuity equatin.
+
+Non-conservative systems have $sigma != 0$
+
+Any brownian motion has to satisfy $c_t = - gradient dot J$. If we can specify $J$ as a function of $J$ we can solve this.
+
+So how do we find $J$? Suppose we have a distribution and the distribution is uneven. What tends to happen is that this uneveness tends to even out. That is, the loss should oppose the gradient of the concentration. So,
+
+$ J = - D gradient c $
+
+And thus,
+
+$ c_t = gradient dot (D gradient c) $
+
+We might have that $D$ is a function of $x$. For the case that this function is constant, we have the laplacian:
+
+$ c_t = D gradient^2 c = D laplace c $
+
+This is a nice result because it tells us in a very general sense that things tend to even out.
+
+=== Solving the diffusion equation in an infinite domain
+
+==== Fourier transform
+
+We quickly need to introduce the Fourier transform. So, for a function $f : RR^n -> CC$ in $L^2$, the Fourier transform we use is
+
+$
+  cal(F) [f] (q) = hat(f)(q) = 1/(2pi)^(n/2) integral_(RR^n) f(x) e^(-i q x) dif^n x
+$
+
+And the inverse Fourier transform:
+
+$
+  cal(F)^(-1) [hat(f)] (q) = f(q) = 1/(2pi)^(n/2) integral_(RR^n) hat(f)(x) e^(i q x) dif^n x
+$
+
+*Properties:*
+
++ Linearity:
+  $ cal(F) (alpha f + beta g) = alpha cal(F)(f) + beta cal(F)(g) $
++ Using the scaling operator $(Lambda_c f) (x) = f(c x)$
+  $ cal(F)(Lambda_c f)(x) = Lambda_(c^(-1)) cal(F)(f) $
++ Translation to phase change:
+  $ cal(T_a F) = e^(i q a) cal(F)0 $
++ $ cal(F)(gradient f) = i q cal(F)(f) $
++ Parseval's identity:
+  $ integral_(RR^n) abs(f(x))^2 dif^n x = integral_RR abs(hat(f)(q))^2 dif q $
++ Convolution: Given
+  $ (f convolve g)(x) = integral_(RR^n) f(y) g(x - y) dif^n y $
+  we have
+  $ cal(F) (f convolve g) = cal(F)(f) cal(F)(g) $
+
+
+Let's take a look at the Fourier transform of the delta distribution, where
+
+$
+  delta_a (x) = delta(x - a), quad integral_RR^n delta_a (x) f(x) dif^n x = f(a)
+$
+
+$ cal(F) (delta_a)(q) = (e^(-i q a))/(2pi)^(n/2) $
+
+
+The inverse Fourier transform of this is
+
+$
+  1/(2pi)^(n/2) integral_(RR^n) (e^(-i q a)) / (2pi)^(n/2) e^(i q x) dif^n x = delta(x - a)
+$
+
+This gives us a sort of orthogonality relation.
+
+==== Solving diffusion with Fourier transforms
+
+$ c_t = D laplace c $
+
+Initially it can be any function, $c(x, 0) = f(x)$.
+
+$
+      hat(c)_t & = D abs(i q)^2 hat(c) = - D abs(q)^2 hat(c) \
+  hat(c)(q, t) & = underbrace(hat(c)(q, 0), hat(f)(q)) e^(-laplace t abs(q))^2 \
+               & = integral_(RR^n) f(y) g(x y, t) diff^n y
+$
+
+$
+  cal(F)^(-1) (hat(g)) = g(x, t) & = 1/(2pi)^(n/2) integral_(RR^n) e^(-laplace t abs(q)^2 + i q x) dif^n q \
+  & = 1/(2pi)^(n/2) integral_(RR^n) e^(-D t sum_j q_j^2 + i sum_j q_j x_j) dif^n q \
+  & = product_(j=1)^n underbrace(
+    (
+      integral_(-oo)^oo 1/sqrt(2 pi) e^(-D t q_j^2 + i q_j x_j) dif q_j
+    ), w(x_j, t)
+  ) \
+$
+
+$
+  w_x & = i/sqrt(2pi) integral_(-oo)^oo q e^(-D t q^2) e^(i q x) dif q \
+  & = -i/(2 D t sqrt(2pi)) integral_(-oo)^oo (e^(-D t q^2))_q e^(i q x) dif q \
+  & = [-i/(2 D t sqrt(2pi)) e^(-D t q^2 + i q x)]_(-oo)^oo + (i(i x))/(2 D t sqrt(2 pi)) underbrace(integral_(-oo)^oo e^(-D t q^2) e^(i q x) dif q, w)
+$
+
+So it results in
+
+$
+  w_x = (-x)/(2 D t) w \
+  diff/(diff x) log w = -x/(2D t) \
+  log((w(x, t)/w(0, t))) = -x^2/(4D t) \
+  w(x, t) = w(0, t) e^(-x^2/(4D t)) \
+$
+
+where $ w(0, t) & = 1/sqrt(2pi) integral_(-oo)^oo e^(-D t q^2) dif q \
+        & = 1/sqrt(2pi D t) integral_(-oo)^oo e^(-s^2) dif s = 1/sqrt(2 D t) $
+
+So, $w(x, t) = 1/sqrt(2 D t) e^(-x^2/(4 D t))$
+
+And finally,
+
+$
+  g(x, t) = 1/(2 gradient t)^(n/2) e^(abs(x)^2/(4D t))
+$
+
+== A couple of things I missed
+
+#todo[]
+
+== Fluid droplet formaton
+
+#todo[]
+
+
+== Pattern formation
+
+We have the equation
+
+$
+  (diff h) / (diff t) = -nu diff_x^2 h - cal(K) diff_x^4 h
+$
+
+To solve this we go into frequency space:
+
+$
+  diff/(diff t) hat(h) = underbrace((v q^2 - k q^4), omega(q)) hat(h) \
+  => h(x, t) = 1/sqrt(2pi) integral_(-oo)^oo hat(h)(q) e^(omega(q) t + dot(q) q x)
+$
+
+$
+  h(x, t) = h_0 + epsilon(x, t) \
+  epsilon(x, t) = epsilon(q) e^(omega(q)t + dot(q) q x)
+$
+
+=== Morphogenesis
+
+From Alan Turing!
+
+Things like zebra stripes happen because you have an activator and an inhibitor. The inhibitor inhibits the activator but the activator promotes itself _and the inhibitor_, you get a certain chain reaction that activates but at some point it starts reducing and after a certain diffusion it activates again and so on.
+
+The equations are
+
+$
+  dot(u) = f(u, v) \
+  dot(v) = g(u, v)
+$
+
+Where $u$ is the activator and $v$ is the inhibitor. We assume there is a stable fixed point $(u_0, v_0)$ such that $f(u_0, v_0) = g(u_0, v_0) = 0$.
+
+We can write if $u_1 << u_0$ and $v_1 << v_0$
+
+$
+  u = u_0 + u_1 (x, t) \
+  v = v_0 + v_1 (x, t)
+$
+
+We can rewrite this as
+
+$
+  dif/(dif t) underbrace(mat(u_1; v_1), W) = underbrace(mat(f_u, f_v; g_u, g_v), A) underbrace(mat(u_1; v_1), W) \
+  (diff W) / (diff t) = A W - D (diff^2 W) / (diff x^2) \
+  D = mat(D_0, 0; 0, D_v)
+$
+
+The solution of this is
+
+$
+  w = hat(w)(q) e^(omega t + i q x)
+$
+
+And eventually you get
+
+$
+  omega hat(w)(q) = underbrace((A - q^2 D), A(q)) hat(w) (q)
+$
+
+And if we calculate $det(A(q) - omega I)$, we get
+
+$
+  det(A(q) - omega I) = omega^2 - tr A(q) omega + det A(q) = 0
+$
+
+This is the dispersion relation.
+
+The fact that $(u_0, v_0)$ is the stable point tells us that something about $A(0)$. Specifically, the trace and the determinant are on the stable region of the det/trace plot which means that
+$
+  det A(0) & = f_u g_v - f_v g_u > 0 \
+   tr A(0) & = f_u + g_v < 0
+$
+
+Now let's look at $A(q)$ itself. The trace and determinants are
+
+$
+   tr A(q) & = underbrace(tr A(0), < 0) - q^2 underbrace((D_u + D_v), > 0) < 0 \
+  det A(q) & = (f_u - q^2 D_u) (g_v - q^2 D_v) - f_v g_u \
+           & = det A(0) - q^2 (f_u D_v + g_v D_u) + q^4 D_u D_v
+$
+
+The trace is always negative but the determinant isn't necessarily determined. But the stability is determined now by the determinant (pun not intended) so if $det A(q) > 0$ it is stable and if $det A(q) < 0$ it is unstable (and if $det A(q) = 0$ it is marginally stable). Also the eigenvalues follow, in each case:
+
+- $det A(q) > 0 => Re(omega_(plus.minus)) < 0$ (stable)
+- $det A(q) < 0 => Re(omega_-) < 0 < Re (omega_plus)$ (unstable)
+- $det A(q) = 0 => Re(omega) = 0$ (marginally stable)
+
+Let $q_m$ be the solutions of $det A(q) = 0$. We can calculate the value of $q_m$ as
+
+$
+  q^2_m = (f_u D_v + g_v D_u) / (2 D_u D_v) = 1/2 ((f_u)/(D_v) + (g_v)/(D_v)) > 0 \
+  => (det A(0))/(D_u D_v) - underbrace(2q_m^2q_m^2 - q_m^4, -q_m^4) < 0 \
+$
+
+Wit h this we get the _Segel-Jacson's condition_:
+
+$
+  q_m^2 > sqrt((det A(0))/(D_u D_v))
+$
+
+Then, the conditions we have for instability is that
+
+$
+  cases(f_u + g_v < 0, (f_u)/(D_u) + (g_v)/(D_v) > 0)
+$
+
+The only way for this to happen is for one to be positive and one negative. Without loss of generallity, let's say $f_u > 0$ and $g_v < 0$. Then, we get from the first
+
+$
+  f_u + g_v < 0 => f_u < g_v => 1 < -(g_v)/(f_u) eq.triple r
+$
+
+And from the second:
+
+$
+  (f_u)/(D_u) > -(g_v) / (D v) => (D_v)/(D_u) > r
+$
+
+This is the more quantitative explanation of the qualitative behaviour we explained previously.
+
+If we examine $A(0)$ and name it as
+
+$
+  A(0) = mat(-(b+1) + 2u v, u^2; b - 2u v, -u^2)lr(|, size: #250%)_(u_0, v_0) = mat(b-1, a^2; -b, -a^2)
+$
+
+We get that
+
+$
+  tr A(0) = b - 1 - a^2 < 0
+  det A(0) = (1 - b) a^2 + a^2 b = a^2 > 0
+$
+
+which implies
+
+$
+  b < 1 + a^2
+$
+
+If we develop this in $q_m^2$ we get that
+
+$
+  (1 + a sqrt((D_u)/(D_v)))^2 < b < 1 + a^2
+$
+
+and
+
+$
+  q_c^2 = a / sqrt(D_u D_v)
+$
+
+== Rayleigh-Bénard convection
+
+These are governed by Swift-Hohenberg equation
+
+$
+  (diff phi)/(diff t) = [epsilon - (1 + diff^2/(diff x^2))^2] phi + alpha phi^2 - phi^3
+$
+
+We are going to solve this.
+
+First, we expand it:
+
+$
+  phi_t & = [epsilon - 1 - 2 diff^2_x - diff^4_x] phi + alpha phi^2 - phi^3 \
+  & = -2 phi_(x x) - phi_(x x x x) + (epsilon - 1) phi - phi^3 + alpha phi^2`
+$
+
+We do a small perturbation
+
+$
+  phi_0 = 0 quad quad phi = phi_1 (x, t) quad #quote[small] \
+  phi_1 = a(q) e^(i q x + omega t) \
+  omega phi_1 = [epsilon -(1 - q^2)^2] phi_1 \
+  omega = epsilon - (1 - q^2)^2 \
+$
+
+This is a dispersion relation. There is a critical value of $q$ where there is some instability.
+
+These equations are simple enough where we can calculate the region of instability.
+
+For $epsilon > 0$,
+
+$
+  1 - q^2 = plus.minus sqrt(epsilon) => q^2 = 1 plus.minus sqrt(epsilon) => q_plus.minus = sqrt(1 plus.minus sqrt(epsilon)) approx 1 plus.minus sqrt(epsilon)/2 \
+  Delta q = q_+ - q_- = sqrt(epsilon)
+$
+
+(we always assume that $epsilon$ is small, whether positive or negative).
+
+We are going to call $q_- (epsilon) < q < q_+ (epsilon) = B(epsilon)$ which is the unstable band.
+
+Assimptotically, the solution is going to be governed by $phi_1$, so
+
+$
+  phi_1 (x, t) & ~ integral_(B(epsilon)) a(q, t) e^(i q x) dif q \
+  "factor out dominant" quad & = e^(i q_c x) underbrace(integral_(B(epsilon)) a(q, t) e^(i (q - q_c) x) dif q, cal(A)(x, t))
+  & = e^(i q_c x) cal(A)(x, t)
+$
+
+We are going to factor $Q = (q - q_c)/sqrt(epsilon)$ and so
+
+$
+  cal(A)(x, t) & = integral_(-1/2)^(1/2) tilde(a)(Q, t) e^(i Q sqrt(epsilon x)) dif Q \
+  & = sqrt(epsilon) A(sqrt(epsilon) x, epsilon t)
+  & = sqrt(epsilon) A(X, T)
+$
+
+Then,
+
+$
+  phi_1 (x, t) = e^(i q_c x) sqrt(epsilon) A(X, T)
+$
+
+(for small amounts of time).
+
+Now,
+
+$
+  phi(x, t) = phi(x, X, T)
+$
+
+We are going to do perturbation analysis with multiple time-scales. So,
+
+$
+  diff_t -> epsilon diff_T \
+  diff_x -> diff_x + sqrt(epsilon) diff_X
+$
+
+So then
+
+$
+  phi_t & = [epsilon - (1 + diff_x^2)^2] phi + alpha phi^2 - phi^3
+  \ -> phi & = epsilon^(1/2) phi_1 + epsilon phi_2 + epsilon^(3/2) phi_3 + ... \
+  & = epsilon^(1/2) psi quad "where" quad psi = phi_1 + epsilon^(1/2) phi_2 + ... \
+  -> psi_t & = [epsilon - (1 + diff_x^2)^2]' psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3 \
+  -> epsilon psi_T & = [epsilon - (1 + diff_x^2 + 2 epsilon^(1/2) diff_x diff_X + epsilon diff_X^2)] psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3
+$
+
+Here we need to do term by term analysis which is annoying so we introduce a couple of operators:
+
+$
+  L = 1 + diff_x^2 \
+  D_(x X) = diff_x diff_X
+  D_(X X) = diff_X^2
+$
+
+so,
+
+$
+  epsilon psi_T & = [epsilon - L^2 - 4 epsilon^(1/2) D_(x X) L - 4epsilon D_(x X)^2 - 2 epsilon D_(X X) L + ...] psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3
+$
+
+Now we group terms. We get:
+
+#let eps = $epsilon$
+
+$
+  epsilon psi_T & = epsilon phi_1 T + ... \
+  epsilon psi & = epsilon phi_1 + ... \
+  L^2 psi & = L^2 phi_1 + epsilon^(1/2) L^2 phi_2 + epsilon L^2 phi_3 + ... \
+  4 eps^(1/2) D_(x X) L psi & = 4 eps^(1/2) D_(x X) L pi_1 + 4 eps D_(x X) L phi_2 + ... \
+  4 eps D_(x X)^2 psi & = 4 eps D_(x X)^2 phi_1 + ... \
+  2 eps D_(X X) L psi & = 2 eps D_(X X) L phi_1 + ... \
+  alpha eps^(1/2) psi^2 & = alpha eps^(1/2) phi_1^2 + 2 alpha eps phi_1 phi_2 + ... \
+  eps phi^3 & = eps phi_1^3 + ...
+$
+
+phew. Ok, so, for order $1$, we have $L^2 pi_1 = 0$ which is
+
+$
+  (diff^2/(diff x)^2 + 1)phi_1 = 0
+$
+
+we can solve this since it's homogeneous, and we get
+
+$ phi_1 = A e^(i x) + overline(A) e^(-i x) $
+
+We omit it for brevity, but all capital terms are assumed to be dependant on $X, T$. That is, $A = A(X, T)$.
+
+For the terms of order $eps^(1/2)$, we have
+
+$
+  0 = -L^2 phi_2 - cancel(4 D_(x X) L phi_1) + alpha phi_1^2 \
+  L^2 phi_2 = alpha phi_1^2 = alpha (A^2 e^(i 2x) + overline(A) e^(-i 2x) + 2 abs(A)^2) \
+  phi_2 = B e^(i x) + overline(B) e^(-i x) + gamma + xi e^(i 2x) + overline(xi) e^(-i 2 x)
+$
+
+And now we have to calculate $L^2 phi_2$ 🤣🔫. Eventually, we get:
+
+$
+  gamma = 2 alpha abs(A)^2, xi = (alpha A^2)/9
+$
+
+So we get
+
+$
+  phi_2 = B e^(i x) + overline(B) e^(-i x) + 2 alpha abs(A)^2 + (alpha A^2)/9 e^(i 2x) + overline((alpha A^2)/9) e^(-i 2 x)
+$
+
+Finally, we have to do order $eps$. This is going to be even longer.
+
+$
+  phi_(1 T) & = phi_1 - L^2 phi_3 - 4 D_(x X) L phi_2 - 4 D_(x X)^2 phi_1 - 2 cancel(D_(X X) L phi_1) + 2 alpha phi_1 phi_2 - phi_1^3 \
+  L^2 phi_3 & = phi_1 - phi_(1 T) - 4 D_(x X) L phi_2 - 4 D_(x X)^2 phi_1 + 2 alpha phi_1 phi_2 - phi_1^3
+$
+
+The homogeneous solution is of the type of $phi_1$. We have to kill the resonant terms. Fortunately, we can write it as the form:
+
+$
+  L^2 phi_3 = P e^(i x) + Q e^(i 2x) + R e^(i 3x) + "complx. conj."
+$
+
+We can deduce $P$ or something #todo[idk how really, but I also don't care really]
+
+$
+  P = A - A_T + 4A_(X X) + 4 alpha^2 A abs(A)^2 + 2 alpha^2 (A abs(A)^2)/9 - 3 A abs(A)^2
+$
+
+And since that is the amplitude of the resontant term, $P = 0$. So we can simplify
+
+$
+  0 = A - A_T + 4A_(X X) + 4 alpha^2 A abs(A)^2 + 2 alpha^2 (A abs(A)^2)/9 - 3 A abs(A)^2 \
+  A_T = 4 A_(X X) + A - (3 - 38/9 alpha^2) A abs(A)^2
+$
+
+We call this the amplitude equation.
+
+Here we do some things that I don't quite understand.
+
+$
+  (diff A)/(diff T) = 4 (diff^2 A)/(diff X^2) + A - (3 - 38/9 alpha^2) abs(A)^2 A \
+  phi = eps^(1/2) [A e^(i x) + overline(A) e^(-i x)] + ... \
+  (diff phi) / (diff t) = [eps - (1 + diff^2/(diff x^2))^2] phi + alpha phi^2 + phi^3
+$
+
+With a perturbation $phi(x+ x_0)$ we also conclude something I guess.
+
+We can write the amplitude in a more general form
+
+$
+  (diff A)/(diff T) = gamma_1 (diff^2 A)/(diff X^2) + gamma_2 A + gamma_3 abs(A)^2 A \
+  (diff overline(A))/(diff T) = overline(gamma_1) (diff^2 overline(A))/(diff X^2) + overline(gamma_2) overline(A) + overline(gamma_3) abs(A)^2 overline(A)
+$
+
+which implies that $gamma_1, gamma_2, gamma_3 in RR$.
+
+And we can write it in a universal form, where
+
+$
+  (diff a)/(diff tau) = (diff^2 a)/(diff xi^2) + a - abs(a)^2 a
+  "where" quad A = sqrt(gamma_2/gamma_3) a quad X = sqrt(gamma_1/gamma_2) xi quad T = tau/gamma_2 \
+$
+
+This equation is universal for any type I instability.
+
+== Traveling waves
+
+=== Fischer(-Kolmogorov-Petrovsky-Piscounov) equation
+
+$
+  diff_t A = k A(1 - A) + D diff_x^2 A
+$
+
+We want to look for travelling waves, so let's say $u(x, t) = U(z)$ where $z = x - c t$. The variable $c$ determines the direction of movement of the wave.
+
+Then,
+
+$
+    u_t & = u_(x x) \
+    u_t & = U'(-c) \
+    u_x & = U' \
+  -c U' & = U'' \
+     U' & = -c a e^(-c z) \
+      U & = a e^(-c z) + b
+$
+
+We are going to assume they're:
+- bounded: $abs(U) < oo$
+- and nonnegative: $U >= 0$
+
+Then, $a$ needs to be $0$ to not decay exponentially, so we get $U = b$. This is not really a travelling wave, so we conclude these equations don't have travelling waves.
+
+We need to modify the equation as so:
+
+$
+  -c U' = U'' + U (1 - U) \
+  U'' + c U' + U(1 - U) = 0
+$
+
+This is the FK equation.
+
+We are going to transform this into a system with
+$
+  cases(
+    U' = V,
+    V' = -c V - U(1 - U)
+  )
+$
+
+We have fixed points $(0, 0)$ and $(1, 0)$ #todo[he's calling it "rest points" for some reason].
+
+The jacobian of this is:
+
+$
+  Dif F = mat(0, 1; -1+2U, -c)
+$
+
+Assuming $c > 0$ (travelling waves going to the right):
+
+$
+    tau & = tr Dif F = -c < 0 \
+  Delta & = det Dif F = 1 - 2 U
+$
+
+Since $Delta(0, 0) = 1 > 0$, $(0, 0)$ is a stable fixed point (either node or focus).
+
+If $tau^2 >= 4Delta$ we get a node, if $tau^2 < 4A$ we get a focus. $tau^2 >= 4Delta$ gives the condition $c >= 2$.
+
+For $(1, 0)$ we get $Delta(1, 0) = -1$ which is a saddle point.
+
+There are some solutions (due to Kolmogorov). For instance, if we have
+
+$
+  u(x, 0) = cases(1 quad & x < x_1, 0 quad x > x_2) quad "where" x_1 < x_2
+$
+
+as initial condition, then we get a travelling wave of $c=2$, which is the minimum speed you can have (since for less, it is unstable).
+
+We can see this by discarding the quadratic term:
+
+$
+  u_t = u_(x x) + u (1 - u) \
+  -> u_t = u_(x x) + u
+$
+
+Then the solutions are
+
+$
+  U'' + c U' + U = 0 \
+  U = A e^(-a z) \
+  a^2 - c a + 1 = 0 \
+$
+
+where $c = (a^2 + 1)/a = a + 1/a$.
+
+Then, we can have $a < 1$ or $a > 1$. This determines whether $e^(-a z) < e^(-z)$. Apparently, the solution needs to be bounded by $e^(-z)$ wch happens for $a < 1$ but for $a > 1$ you need to be stopped at $e^(-z)$ so then you get that, in fact, for $a > 1$ you get $c=2$, which is the minimum speed. This is not a proof, it's just an informal argument to understand it.
+
+Now, if we have $u_t = u_(x x) + f(u)$ where $f$ has exactly two zeros and is positive otherwise, then we get the same behavior since qualitatively it's the same as the last example. Namely,
+
+$ u = u_1 + eta quad quad eta_t = eta_(x x) + f'(u_1) eta $
+
+where $eta$ is the thing we had before: $eta = U'' + c U' + f'(u_1) U = 0$.
+
+There's also an asymptotic solution in $c$. We are going to take
+
+$
+  U(-oo) & = 1 \
+   U(oo) & = 0 \
+    U(0) & = 1/2 \
+       0 & < eps = 1/c^2 <= 1/4 \
+       c & >> 1
+$
+
+We need to scale the coordnate $c$, which we do with $xi = z/c = eps^(1/2) z$. Then,
+
+$
+  U'' + c U' + U(1 - U) = 0 \
+  (dif U)/(dif z) = (dif U)/(dif xi) (dif x)/(dif z) \
+  eps U'' + U' + U(1 - U) = 0 quad ("now" U' "is with respect to" xi)
+$
+
+Now,
+
+$
+  U(x) = g_0 (xi) + eps g_1(xi) + ... \
+  eps (g''_0 + ...) + g'_0 + eps g_1' + ... + (g_0 + eps g_1 + ...) (1 - g_0 - eps g_1 - ...) = 0
+$
+
+- For order $1$, we have $g'_0 + g_0 (1 - g_0) = 0$.
+- For order $eps$, we have $g''_0 + g'_1 (1 - g_0) g_1 - g_0 g_1 => g'_1 + (1 - 2g_0) g_1 = -g_0''$
+
+To solve order $1$:
+
+$
+    g'_0 / (g_0 (1 - g_0)) & = -1 \
+  1/g_0 + 1/(1 - g_0) g_0' & = -1 \
+     (log(g_0/(1 - g_0)))' & = -1 \
+      log(g_0 / (1 - g_0)) & = log A - xi \
+           g_0 / (1 - g_0) & = A e^(-xi) \
+                       g_0 & = A e^(-xi) / (1 + A e^(-xi)) \
+                         A & = 1 quad ("using" g_0(0) = 1/2) \
+                   g_0(xi) & = 1/(1 + e^xi)
+$
+
+To solve order $eps$, we can take the derivative of the order 1 solution:
+
+$
+              g'_1 + (1 - 2 g_0) g_1 & = -g''_0 \
+             g''_0 + (1 - 2g_0) g'_0 & = 0 \
+                            1 - 2g_0 & = -g''/g'_0 \
+                 g'_1 - g''/g'_0 g-1 & = -g''_0 \
+      (g'_1 g'_0 - g_1 g''_0) / g'_0 & = -g''_0 quad "almost quotient rule!" \
+  (g'_1 g'_0 - g_1 g''_0) / (g'_0)^2 & = -g''/g'_0 \
+                       (g_1 / g'_0)' & = -g''_0 / g'_0 = -(log abs(g'_0))' \
+         (g_1/g'_0 + log abs(g_0'))' & = 0 \
+            g_1/g'_0 + log abs(g'_0) & = B \
+                                 g_1 & = B g'_0 - g'_0 log abs(g'_0) \
+                                   0 & = B g'_0 (0) - g'_0 log abs(g'_0 (0)) \
+                                   B & = log abs(g'_0 (0)) \
+                            g'_0(xi) & = - e^xi/(1 + e^xi)^2 \
+                             g'_0(0) & = 1/4 \
+                                 g_1 & = -g'_0 log 4 - g'_0 log abs(g'_0) \
+                                 g_1 & = -g'_0 log abs(4 g'_0)
+$
+
+So, finally,
+
+$
+  g_1 & = - e^xi/(1 + e^xi)^2 log ((4e^xi)/(1 + e^xi)^2)
+$
+
+And then,
+
+$
+  U(z) = g_0 (z/c) + 1/c^2 g_1 (z/c) + ...
+$
+
+We assumed $c$ is very big, but even if we take $c=2$ which is the worst case scenario, it is still accurate within a few percent. It's a reasonable solution.
+
+=== Multispecies systems and predator/prey coexistence
+
+$
+  (diff N_1)/(diff t) = A N_1 (1 - N_1/K) - B N_1 N_2 + D_1 (diff^2 N_1)/(diff x^2) \
+  (diff N_2)/(diff t) = C N_1 N_2 - D N_2 + D_2 (diff^2 N_2)/(diff x^2)
+$
+
+$
+  u = N_1 / K quad quad v = (B N_2)/A
+$
+
+$ t' = A t quad quad x' = x (A/D_2)^(1/2) $
+
+$
+  D' = D_1/D_2 quad a = (C K)/A quad b = D/(C K)
+$
+
+$
+  (diff u)/(diff t) & = u (1 - u - v) + D (diff^2 u)/(diff x^2) \
+  (diff v)/(diff t) & = a v (u - b) + (diff^2 v)/(diff x^2)
+$
+
+We assume that $u, v >= 0$ since they represent concentrations.
+
+Uniform solution is
+
+$
+  u (1 - u - v) = 0 \
+  v (u - b) = 0
+$
+
+this has solutions $u = 0$ and $u + v = 1$, or $v = 0$ and $u = b$. So the fixed points are $(0, 0)$ for exinctions, $(1, 0)$ is predator extintion and $(b, 1 - b)$ is coexistence, for $b < 1$. We are going to focus on this case.
+
+To check what kind of points these are, we calculate the jacobian and whatnot:
+
+$
+        Dif F & = mat(1 - 2u - v, -u; a v, a(u - b)) \
+  Dif F(0, 0) & = mat(1, 0; 0, -a b) \
+  Dif F(1, 0) & = mat(-1, -1; 0, a (1 - b)) \
+$
+
+Therefore $(0, 0)$ and $(1, 0)$ are saddles.
+
+$
+  Dif F(b, 1 - b) = mat(-b, -b; a (1 - b), 0)
+$
+
+Characteristic equation is $lambda^2 + lambda b$
+
+Trace is $tau = -b < 0$, determinant is $Delta = a b (1 b) > 0$. Therefore these points are attractors.
+
+It is a node if
+
+$
+  tau^2 & >= 4 Delta \
+    b^2 & >= 4 a b(1 - b) \
+      b & >= 4 a (1 - b) \
+      a & <= b/(4(1 - b)) \
+$
+
+It is a focus if
+
+$
+  tau^2 & < 4 Delta \
+      a & > b/(4(1-b))
+$
+
+So now, let's find travelling waves, using
+
+$
+    u(x, t) & = U(z) \
+    v(x, t) & = V(z) \
+  "where" z & = x + c t
+$
+
+The equations we now get are
+
+$
+  cases(
+    C U' & = V (1 - U - V) + D U'' \
+    C V' & = a V (U - b) + V'' \
+  )
+$
+
+We are going to have $D_1 << D_2$, $D << 1$ and actually just $D = 0$. So we get
+
+$
+  cases(
+    U' = 1/C U (1 - U - V) \
+    V' = W \
+    W' = C W - a V(U - b)
+  )
+$
+
+We are going to look at cases where we start at $(0, 0, 0)$ or $(1, 0, 0)$ and end at the coexistence region $(b, 1 - b, 0)$. This gives boundaries conditions
+
+$
+  U(-oo) = 1 quad U(oo) = b \
+  V(-oo) = 0 quad V(oo) = 1 - b
+$
+
+in one case, and
+
+$
+  U(-oo) = 0 quad U(oo) = b \
+  V(-oo) = 0 quad V(oo) = 1 - b
+$
+
+for the other. We are going to focus on the first one because it's more interesting but the second one can be analyzed in the same way.
+
+$
+           Dif F & = mat(1/C(1 - 2U - V), -1/C U, 0; 0, 0, 1; -a V, -a(U - b), c) \
+  Dif F(1, 0, 0) & = mat(-1/C, -1/C, 0; 0, 0, 1; 0, -a (1 - b), c)
+$
+
+The matrix is block diagonal, so one eigenvalue is $lambda_0 = -1/c$ and the other two are $lambda_(plus.minus) = (c plus.minus sqrt(c^2 - 4 a (1- b)))/2$. If the eigenvalues are real (i.e., $c^2 >= 4 a(a - b)$) then the square root is smaller than $c$ and so the eigenvalues are real. The other case doesn't happen because it would imply negative concentrations.
+
+Therefore, the point is a saddle-focus with $c_"min" = 2 sqrt(a(1-b))$.
+
+$
+  Dif F (b, 1 - b, 0) = mat(-b/C, -b/C, 0; 0, 0, 1; -a(1 - b), 0, c)
+$
+
+The characteristic polynomial turns out to be
+
+$
+  lambda^3 - (C - b/C) lambda^2 - b lambda - (a b (1 - b))/c = p(lambda)
+$
+
+This cannot be simplified, so we're screwed 🥺. But we can put $a = 0$ to at least see the shape of the polynomial or something.
+
+$
+  lambda (lambda^2 - (C - b/C) lambda - b) & = 0 \
+  lambda_0 & = 0 \
+  lambda_(1, 2) & = 1/2 (C - b/C plus.minus sqrt((C - b/C)^2 + 4b)) \
+  & = 1/(2C) (C^2 - b plus.minus sqrt((C^2-b)^2 + 4b C^2) \
+$
+
+We can also calculate the extrema:
+
+$
+           p'(lambda) & = 3 lambda^2 - 2(C - b/C) lambda - b \
+  lambda_(plus.minus) & = 1/6 (2 (C - b/C) plus.minus sqrt(4(C - b/C)^2) + 12 b) \
+                      & = 1/(3C) (C^2 - b plus.minus sqrt((C^2 - b)^2 + 3 b C^2)
+$
+
+=== Travelling waves that are actually sine waves that are moving
+
+The equations are
+
+$
+  (diff u)/(diff t) = lambda (a)u omega (a) v + (diff^2 u)/(diff x^2) \
+  (diff v)/(diff t) = lambda(a) v + omega(a) u + (diff^2 v)/(diff x^2) \
+$
+
+$
+  a = sqrt(u^2 + v^2) \
+  z = u + i v \
+  lambda + i omega
+$
+
+$
+  (diff z)/(diff t) = (lambda(a) + i omega (alpha)) (diff^2 z)/(diff x^2) \
+  z = a e^(i phi) \
+  a_t/a z + i phi_t z = (lambda(a) + i omega(a)) z + (a_(x x)/a - phi_x^2 + i(phi_(x x) + 2 a_x/a phi_x)) z \
+  a_t/a = lambda(a) + a_(x x)/a - phi_x^2 \
+$
+
+Here we have to calculate $z_x$ and $z_(x x)$.
+
+Finally,
+
+$
+    a_t & = a lambda(omega) a_(x x) - a phi_x^2 \
+  phi_t & = omega(a) + phi_(x x) + 2 phi_x a_x/a
+$
+
+There is a limit cycle at $omega(gamma)$ where $z = z_0 e^(i omega(gamma) t)$ and $z_0$ is an arbitrary phase $z_0 = gamma e^(nu phi_0)$
+
+*Finding the travelling wave*
+
+$
+  a = alpha \
+  phi = 6t - q x\
+$
+
+$
+  0 = alpha lambda(alpha) - a q^2 \
+  q = sqrt(lambda(a)) \
+  sigma = omega(a)
+$
+
+$
+  cases(
+    u = alpha cos(omega(alpha) t - sqrt(lambda(a)) x),
+    v = alpha sin(omega(alpha) t - sqrt(lambda(a)) x),
+  ) \
+             c & = omega(a) / sqrt(lambda(alpha)) \
+  "wavelength" & = 2pi/sqrt(lambda(a))
+$
+
+for $alpha < gamma$. The speed increases up to infinity and the wavelength diverges too so the whole system jumps to the limit cycle.
+

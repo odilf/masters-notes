@@ -627,3 +627,16 @@ $
   L U x = b => cases(L y = b ("backwards substitution"), U x = y ("forwards substitution"))
 $
 
+
+= Arnoldi iteration
+
+#theorem[
+  Let $A in CC^(n times n)$, $Q_k in CC^(n times k)$, $H_k in CC^(k times h)$
+
+  and $q_(k+1) in CC^n$ and $h_(k+1,k) in CC$ be as before.
+
+  If $(lambda, y) in CC times (CC^k \\ { 0 })$ is an eigenpair of $H_k$, then $(lambda, v)$ with $v = Q_y$ is a Ritz pair of $A$ with regard to $cal(K)_k (A, v)$ satisfying:
+
+  $ norm(A v - lambda v)_2 = abs(h_(k+1, k)) abs(e_k^T y) $
+]
+

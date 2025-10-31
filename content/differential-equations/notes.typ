@@ -569,3 +569,4 @@ We are going to do basically the same thing as for the 1D case. We...
   $
 + $ U_(i j) approx u(x_i, y_i), space i=0,1,...,m+1; space j=0,1,...,n+1 $
 + $u_(x x) + u_(y y) = u_(x x) + u_(y y)$
+
