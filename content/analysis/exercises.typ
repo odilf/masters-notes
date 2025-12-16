@@ -256,7 +256,7 @@ $
   & = 1/2 - 1/(2n) \
 $
 
-So then $integral_[0, 1] f dif m >= 1/2 - 1/(2n)$. To find an upper bound we can consider $tilde(f) = 1 - f$. We can do the same reasoning with $tilde(S)_n (x) = 1 - (k+1)/n quad x in [k/n, (k+1)/n)$, where we deduce that $integral_[0, 1] tilde(f) dif m >= 1/2 - 1/(2n)$, which implies that
+So then $integral_[0, 1] f dif m >= 1/2 - 1/(2n)$. To find an upper bound we can consider $tilde(f) = 1 - f$. We can do the same reasoning with $tilde(S)_n (x) = 1 - (k+1)/n$ where $x in [k/n, (k+1)/n)$, where we deduce that $integral_[0, 1] tilde(f) dif m >= 1/2 - 1/(2n)$, which implies that
 
 $
   integral_[0, 1] f dif m = 1 - (1/2 - 1/2m) = 1/2 + 1/(2m)
@@ -280,28 +280,36 @@ $
   & = { sum_(j=1)^(n-1) a_j 10^(-j) + 9 dot 10^(-n) + sum_(j=n+1)^oo a_j 10^(-j) : a_j in {0, 1, ..., 9} quad ("but not all are" 9)}
 $
 
-We want to rewrite this as a union.
+We want to rewrite this as a union. We can manipulate the expression of elements of $(B_n)^c$ a bit by factoring out a $10^(-n)$ and noticing we have a term that is no bigger than $1$:
 
 $
   10^(-n) sum_(j=1)^(n-1) (a_j 10^(n - j)) + 10^(-n) dot 9 + 10^(-n) underbrace(sum_(j=1)^oo a_(j + n) 10^(-j), <= 1)
 $
 
-We define $k$ as
+In fact, the term on the right forms the interval $[0, 10^(-n))$. The other "variable" we have is the term on the left, which we are going to call $k$:
 
 $
   k = sum_(j=1)^(n-1) (a_j 10^(n-j)) = sum_(j=1)^(n-1) a_(n - j) 10^j
 $
 
-The biggest value of $k$ we can reach is:
+and for each $k$ we form intervals
+
+$
+  [(k + 9)/10^n, (k+9+1)/10^n = (k+10)/10^n = k/10^n + 1/10^(n-1))
+$
+
+Given that the biggest value of $k$ we can reach is:
 
 $
   =9 (10^n - 10)/(10 - 1) = 10^n - 10
 $
 
-So then we can write $B_n$ as
+We can write $B_n$ as
 $
-  (B_n)^c = union_(k=0)^(10^n - 10) [k/10^n + 9/10^n, (k+1)/n)
+  (B_n)^c = union_(k=0)^(10^n - 10) [(k+9)/10^n, (k + 10)/10^n)
 $
+
+which a finite union of intervals, so we can see that $(B_n)^c$ is Borel. Then, $B_n$ is Borel too and thus so is $B$.
 
 = Best approximations in $norm(dot)_oo$
 
@@ -434,7 +442,7 @@ $
   & = 0.
 $
 
-In the last step we used the fact that the last row is the same as the $i^"th"$ row, which means that the matrix is linearly dependent and thus its determinant has to be $0$.
+In the last step we used the fact that the last row is the same as the $i^"th"$ row, which means that the matrix is linearly dependent and thus its determinant has to be $0$. This shows the othogonality condition we wanted to prove.
 
 = Best approximations in $L^1$
 
@@ -544,7 +552,7 @@ so indeed we see that $abs(integral_0^1 f(x) w(x) dif m(x))$ is a valid lower bo
 Now we want to show now that $abs(I)$ is the _maximum_ lower bound, meaning that some $g in A$ achieves it. But actually no single $g in A$ achieves this (proving this is part 2 of the question), so we have to show that some sequence $g_n$ has a limit in $A$ that achieves this value. To do this we are going to take a sequence $h_n$:
 
 $
-  h_n (x) = n chi_(1 - 1/n, 1) (x)
+  h_n (x) = n chi_((1 - 1/n, 1)) (x)
 $
 
 where the idea is that we are taking a region around where the weight is $1$, because if the weight was $1$ it would be easy to show that it holds. If we calculate the condition of being in $A$:
@@ -600,7 +608,7 @@ $
               & <= integral_0^1 abs(f(x) - g(x)) dot 1 dot dif m(x) \
 $
 
-This implies that $abs(f - g) w = abs(f - g) dot 1$ almost everywhere. However, we know that $w < 1$ almost everywhere, so we have to have that $f = g$ almost everywhere. But if this is the case then $f$ would need to be in $A$, which we deny. Therefore we have a contradiction and we conclude that there is no best approximation.
+In the last step we used the fact that $w < 1$ almost everywhere (i.e., in an interval of Lebesgue measure $0$).  This implies that $abs(f - g) w = abs(f - g) dot 1$ almost everywhere, and this can only happen if $f = g$ almost everywhere. But if this is the case then $f$ would need to be in $A$, which we deny. Therefore we have a contradiction and we conclude that there is no best approximation.
 
 = Splines
 
