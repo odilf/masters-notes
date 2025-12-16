@@ -1,6 +1,5 @@
 #set page(numbering: "1")
-// #set page(fill: black)
-// #set text(fill: white)
+#import "@preview/libra:0.1.0": balance
 
 #align(horizon)[
   #text(size: 42pt)[Exercises Analysis] \
@@ -24,7 +23,16 @@
   pagebreak(weak: true)
   set text(size: 2em)
   counter(page).update(i => i - 1)
-  align(center + horizon, it)
+  let supple = [#it.supplement #context { counter(heading).get().at(0) }]
+  let body = balance(it.body)
+
+  align(center + horizon)[
+    #grid(
+      columns: (3fr, 5fr),
+      align: (top + right, top + left),
+      [#supple:#sym.space], body,
+    )
+  ]
 }
 #show heading.where(level: 2): it => {
   pagebreak(weak: true)
@@ -295,7 +303,7 @@ $
   (B_n)^c = union_(k=0)^(10^n - 10) [k/10^n + 9/10^n, (k+1)/n)
 $
 
-= Best approximations \ in $norm(dot)_oo$
+= Best approximations in $norm(dot)_oo$
 
 == 46
 
@@ -428,7 +436,7 @@ $
 
 In the last step we used the fact that the last row is the same as the $i^"th"$ row, which means that the matrix is linearly dependent and thus its determinant has to be $0$.
 
-= Best approximations \ in $L^1$
+= Best approximations in $L^1$
 
 == 54
 
