@@ -1,6 +1,5 @@
 #import "@preview/lilaq:0.5.0" as lq
 
-#show heading.where(level: 1): set heading(numbering: "1.")
 #let faint = it => {
   set text(fill: white.darken(60%))
   strong(it)
@@ -26,6 +25,7 @@
   #faint[In the final he's going to asks us problems like this. One of the problems could be "consider this problem: solve it" or "write a numerical scheme to solve it" and we might have to write some pseudocode on how to solve this.]
 ]
 
+#show heading.where(level: 1): set heading(numbering: "1.")
 #pagebreak(weak: true)
 
 = Finite differences
