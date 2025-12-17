@@ -5,10 +5,13 @@
   set text(fill: white.darken(60%))
   strong(it)
 }
-// #show heading: it => {
-//   v(2cm)
-//   it
-// }
+
+#set math.mat(delim: "[")
+
+#show heading.where(level: 2): it => {
+  v(2cm)
+  it
+}
 
 #align(horizon)[
 
@@ -347,4 +350,312 @@ If $theta = 1$ we have Forward Euler. If $theta = 1/2$ Crank-Nicholson. If $thet
   + Derive absolute stability regions for Crank-Nicholson.
 ]
 
-=
+= Finite elements
+
+#faint[== Execrcise 1]
+
+We have points
+
+$
+  0 = x_0 < x_1 < x_2 < x_3 = 1
+$
+
+We set $x_1 = 1/6$ and $x_2 = 1/2$. We interpolate using $phi_0, phi_1, phi_2$ and $phi_3$. What is $phi_1$? Well, it interpolates linearly from $(0, 0)$ to $(1/6, 1)$ and then to $(1/2, 0)$, so
+
+$
+  phi_1(x) = cases(
+    6x quad & "for" x in [0, 1/6],
+    -1/(1/2 - 1/6) (x - 1/6) + 1 = 3(1/2 - x) quad & "for" x in [1/6, 1/2],
+    0 quad & "otherwise"
+  )
+$
+
+We now want to plot $v$, which is
+
+$
+  v(x) = -phi_0 (x) + phi_2(x) + 2 phi_3(x)
+$
+
+This is equivalent to interpolating to $-1, 0, 1, 2$ at the points $0, 1/6, 1/2, 1$.  The resulting plot is the following.
+
+#figure(lq.diagram(
+  lq.plot(
+    (0, 1 / 6, 1 / 2, 1),
+    (-1, 0, 1, 2),
+  ),
+  width: 80%,
+  height: 6cm,
+))
+
+it also asks about the slope. The slope is constant in each interval:
+
+#figure(lq.diagram(
+  lq.plot(
+    (0, 1 / 6, 1 / 6, 1 / 2, 1 / 2, 1),
+    (6, 6, 2, 2, 1, 1),
+  ),
+  ylim: (0, 6.5),
+  width: 80%,
+  height: 5cm,
+))
+
+
+#faint[== Exercise 2]
+
+Now we have $x_1 = 1/3$ and $x_2 = 2/3$. We want to find the Lagrange interpolant $pi f in V_h$ of $f$, for the cases
++ $ f(x) = x^2 + 1 $
++ $ f(x) = cos(pi x) $
+
+#let span = $"span"$
+
+The space $V_h$ is defined as
+
+$ V_h = span { phi_0, phi_1, phi_2, phi_3 } $
+
+$
+  pi f = sum_(i=1)^4 f(x_i) phi_i (x)
+$
+
+The interpolant is a straight line connecting the points:
+
+#for (f, f-display) in (
+  (x => calc.pow(x, 2) + 1, $x^2 + 1$),
+  (x => calc.cos(calc.pi * x), $cos(pi x)$),
+) {
+  figure(
+    lq.diagram(
+      lq.plot(
+        lq.linspace(-0.1, 1),
+        lq.linspace(-0.1, 1).map(f),
+        mark: none,
+        stroke: (dash: "loosely-dashed"),
+      ),
+      lq.plot(
+        (0, 1 / 3, 2 / 3, 1),
+        (0, 1 / 3, 2 / 3, 1).map(f),
+        stroke: 1.5pt,
+      ),
+      width: 80%,
+      height: 8cm,
+    ),
+    caption: [Interpolant of $f(x) = #f-display$],
+  )
+}
+
+because the basis functions $phi_i$ are linear too.
+
+#faint[== Exercise 3]
+
+We have interval $I = [0, 1]$ and function $f(x) = x^2$
+
+*a)* We want to find the linear interpolant $u(x) = c_0 + c_1 x$ that minimixes $norm(f - f)_2^2$. So $u = P_h f(x) in V_h$.
+
+We can find the coefficients we have to calculate the innerproducts:
+
+$
+  sum_i (phi_i, phi_j) c_i = (f, phi_j) quad forall j
+$
+
+The basis of $V_h$ we have is
+
+$
+  { phi_0, phi_1 } = { 1, x }
+$
+
+so the innerproduct gives equations
+
+$
+  && mat((1, 1), (1, x); (x, 1), (x, x)) mat(c_0; c_1) & = mat((x^2, 1); (x^2, x)) \
+  && => mat(1, 1/2; 1/2, 1/3) mat(c_0; c_1) & = mat(1/3; 1/4) \
+$
+
+The solutions are
+
+$
+  c_0 = -1/6, quad c_1 = 1
+$
+
+Therefore,
+
+$
+  u = x - 1/6
+$
+
+*b)* We now divide $I$ into two subintervals of equal length. So now we are going to have a 2-piece linear function. We again have to solve the innerproducts but now it's a slightly bigger pain in the ass:
+
+$
+  b_0 = (f, phi_0) = integral_0^(0.5) x^2 (1 - 2x) dif x = 1/48 \
+  b_1 = (f, phi_1) = integral_0^(0.5) x^2 (2x) dif x + integral_0.5^1 x^2 (2 - 2x) dif x = 7/24 \
+  b_2 = (f, phi_2) = integral_0.5^1 x^2 (2x - 1) dif x = 17/48 \
+$
+
+Then we have $M_(i, j) = (phi_i, phi_j)$ which is always:
+
+$
+  M = h/6 mat(2, 1, 0; 1, 4, 1; 0, 1, 2)
+$
+
+And then we get the coefficients $arrow(xi)$ by solving
+
+$
+  M arrow(xi) = arrow(b)
+$
+
+So our solution is $P_h f = xi_0 phi_0 + xi_1 phi_1 + xi_2 phi_2$.
+
+This is going to be similar but not exactly the same as the linear interpolant. The $L^2$ projection does not necessarily interpolate the points.
+
+#faint[== Exercise 5]
+
+We have basis ${ 1, x, (3x^2 - 1)/2 }$ which is an orthogonal basis (because they are Legendre) on the interval $I = [-1, 1]$. We are going to compute and draw the $L^2$ projection.
+
+*a)* For the function $f(x) = 1 + 2x$ we can easily see that it is formed by
+$
+  f = p_0 + 2p_1
+$
+
+*b)* $f(x) = x^3$. This is not an element of the basis so we need to find the coefficients:
+
+$
+  c_0 = ((x^3, p_0))/((p_0, p_0)) \
+  c_1 = ((x^3, p_1))/((p_1, p_1)) \
+  c_2 = ((x^3, p_2))/((p_2, p_2)) \
+$
+
+we know because of parity that $c_0$ and $c_2$ are $0$, so we only need to compute $c_1$ which turns out to be $3/5$, so
+
+$ v(x) = 3/5 x approx x^3 $
+
+#faint[== Exercise 6]
+
+We have the problem
+
+$-u'' = 7$ for $x in I = [0, 1]$
+with initial conditions $u(0) = 2$ and $u(1) = 3$.
+
+*a)* We are going to take finite element space
+
+$
+  V_h = { v in C^0([0, 1]) | v|_I "is linear" med }
+$
+
+we are going to do a trick to satisfy the boundary conditions:
+
+$
+  u = u_h + u_D
+$
+
+where $u_h$ is the solution to the $0$ boundary conditions and $u_D = 2 + x$ to satisfy the boundary conditions. We can do this because the differential equation is linear.
+
+*b)* We are going to write the problem in variational form. This consists in findinfg a $u in V_h$ such that
+
+$
+  integral_0^1 u' v' dif x = integral_0^1 7 v dif x quad forall v in V_(h, 0)
+$
+
+where $V_(h, 0)$ is the version with the $0$ boundary conditions.
+
+*c)* We are going to take equispaced points $x_1 = 1/3$ and $x_2 = 2/3$.
+
+The way to solve this is similar to before, by solving the system
+$
+  M arrow(xi) = arrow(F)
+$
+
+where $xi_i$ are the coefficients of the basis with the hat functions. For it to satisfy the boundary conditions we already know that $xi_0 = 2$ and $xi_3 = 3$. Then, the unknowns are
+
+$
+  k = 1/h mat(2, -1; -1, 2) = 3 mat(2, -1; -1, 2)
+$
+
+$k$ is the _stiffness matrix_. The right hand side is given by:
+
+$
+  F = integral_0^1 7 phi_i = 7/3
+$
+
+So the system to solve is
+
+$
+  cases(
+    3(2 xi_1 - xi_2) = 7/3 + 3 xi_0,
+    3(-xi_1 + 2xi_2) = 7/3 + 3 xi_3
+  )
+$
+
+And from here it's easy to find the coefficients.
+
+#faint[== Exercise 9]
+
+We have problem
+
+$
+  -u'' = f quad "for" x in I = [0, L]
+$
+
+with boundary conditions
+
+$
+  x(0) = x(L) = 0
+$
+
+We want to show that the solution $u in V_0$ minimizes the functional
+
+$
+  F(w) = 1/2 integral_I w'^2 dif x - integral_I f w dif x
+$
+
+So,
+
+$
+  F(w) = 1/2 a(w, w) - L(w)
+$
+
+given $w = u + v$ we have
+
+$
+  F(u + v) & = 1/2 a(u + v, u + v) - L(u + v) \
+  & = 1/2 a(u, u) + a(u, v) + 1/2 a(v, v) - L(u) - L(v) \
+  & = (1/2 a(u, u) - L(u)) + underbrace((a (u, v) - L(v)), "FEM (variational solution)") + 1/2 a(u, v)
+$
+
+and then
+
+$
+  F(u + v) = F(u) + underbrace(1/2 integral (v')^2 dif x, >= 0) >= F(u)
+$
+
+= Spectral methods
+
+Let's explain the spectral methods matrix
+
+$
+  D_n = cases(
+    0 quad & "if" i = j,
+    1/2 (-1)^(i + j) cot((x_i - x_i)/h) quad & "if" i != j
+  )
+$
+
+The reason this matrix appears is because the inteprolant is because if you do a bunch of algebra
+
+$
+  p(x) &= h/(2pi) sum_(k=-N/2)^(N/2) e^(i k x) \
+  &= h/(2pi) (1/2 sum_(k=-N/2)^(N/2 - 1) e^(i k x) + 1/2 sum_(k=N/2 + 1)^(N/2) e^(i k x)) \
+  & dots.v quad #text(fill: gray)[(exercise for the reader)] \
+  & = h/(2pi) cos(x/2) sin((N x)/2)/sin(x/2)
+$
+
+you get
+
+$
+  S_n (x) = sin((pi pi)/h)/((2pi)/h tan(x/2))
+$
+
+And from this you get
+
+$
+  S'_N (x_j) = cases(
+    0 quad & "if" j = 0,
+    ... quad & "if" j != 0,
+  )
+$

@@ -7,3 +7,4 @@ build-all:
         fi \
     done
     cd content && typst compile "analysis/exercises.typ" "../build/analysis-exercises.pdf" --root .;
+    cd content && typst compile "differential-equations/exercises.typ" "../build/differential-equations-exercises.pdf" --root .;
