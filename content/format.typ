@@ -9,7 +9,7 @@
   set heading(numbering: "1.1)")
 
   // set page(height: auto, width: 15cm, margin: 1cm)
-  // set page(height: auto, width: 15cm, margin: 1cm)
+  set page(height: 50cm, width: 15cm, margin: 1cm)
   set page(fill: oklch(23%, 2.5%, 260deg), numbering: "1")
   set text(fill: white)
   set table(stroke: white + 0.5pt)
@@ -60,17 +60,15 @@
 
     v(5mm)
     outline()
-
-    show heading.where(
-      level: 1,
-    ): it => {
-      pagebreak(weak: true)
-      it
-    }
-
-    it
-    v(10cm)
   })
+  show heading.where(
+    level: 1,
+  ): it => {
+    pagebreak(weak: true)
+    it
+  }
+  it
+  v(10cm)
 }
 
 #let exercises(title) = it => {

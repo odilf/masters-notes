@@ -28,6 +28,7 @@
 
               pkgs.jujutsu
               pkgs.just
+              pkgs.parallel
 
               pkgs.pnpm_9
               pkgs.nodejs_24
