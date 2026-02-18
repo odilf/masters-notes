@@ -167,7 +167,45 @@ $
 
 == Simplex method
 
-#faint[Presentation by Jaime and Miró]
+#todo[Presentation by Jaime and Miró]
+
+== Interior point methods
+
+The motivation is that it improves certain aspects of simplex, including that it has worst-case exponential complexity.
+
+The main idea of IPMs is to turn a constrained optimization problem into a sequence of unconstrainted problems. While simplex methods explore the edge of the simplex, IPMs explore the inside region.
+
+So, the number of iterations in IPMs are approximately constant while for simplex the number of iteration grow linearly, but the step per iteration in simplex is constant and cheap, while in IPMs it's more expensive (since we have to do Cholesky for Newton).
+
+So, for a problem
+
+$
+  min c^t x \
+  "s.t." quad A x = b quad x >= 0
+$
+
+we are going to add a penalty for getting close to the barrier, so we instead minimize
+
+$
+  min B(x, mu) = c^t x - mu sum_(i=1)^n ln(x_i)
+$
+
+where $mu$ is the barrier parameter.
+
+So, for every $mu$ there is an optimal solution $x^*(mu)$ and as $mu -> 0$, the $mu$-specific optimal approaches the original optimal solution.
+
+Then, the conditions we need (called the KKT conditions) are:
++ Primal feasibility: $A x = b$
++ Dual feasibility: $A^t y + s = c$
++ Perturbed complementarity: $x_i s_i = mu$ (which in Simplex is just $mu = 0$)
+
+And then, to solve this, we just use Newton's, which computes a step direction. Then, we choose a step size ensuring that $x_(k+1) > 0$. How? idk.
+
+=== Dual formulation
+
+#todo[This was poorly explained.]
+
+
 
 = Unconstrainted problems
 
@@ -458,7 +496,7 @@ $
 //   We want to find the min or max of $f(x, y) = x^2 + 2y^2$ subjecy yo $x^2 + y^2 = 4$
 // ]
 
-== Algorithmse
+== Algorithms
 
 For the problem
 
@@ -565,3 +603,46 @@ Funnily enough, if the starting point is unfeasible you can get to a feasible po
 $
   mat(gradient^2 f(x), A^t; A, 0) mat(Delta x; lambda) = -mat(gradient f; A x - b)
 $
+
+= Min cut/max flow
+
+This is a problem where in a directed weighted graph, we want to find the maximum flow that can be transported in a graph between a source and a sink node; or equivalently, find the cut with the minimum weight that disconnects the graph. This is because the min cut is the bottleneck of the maximum flow.
+
+The problem is find a flow $f: V times V -> RR_(>= 0)$, such that $f(u, v) <= c(u, v)$ and we maximize $sum f$.
+
+The cut formulation is cutting a graph of $V$ into two disjoint sets $S$ and $T$ where we minimize the sum of the capacities that join $S$ to $T$.
+
+== Ford Fulkerson
+
+First we choose an _augmenting path_, which is a simple path from source to sink such that we can add a flow. We need that
+- $c(u, v) - f(u, v) - gamma >=$ for forward edges
+- $f(u, v) - gamma >= 0$ for backward edges (but not $s$ or $t$)
+
+To find the maximum flow you can add is $gamma(u, v) = c(u, v) - f(u, v)$ for forward edges and $f(u, v)$ for the backwards ones, and the minimum of all these is the maximum flow we can add.
+
+If no other augmenting path is found, we stop. This algorithm is guaranteed to terminate (for rational flows) and find the maximum flow. The time complexity is $O(abs(E) dot abs(f^*))$, which is pseudo-polynomial. For a different algorithm (Edmonds-Karp) has complexity $O(V dot E^2)$.
+
+== LP formulation
+
+As we might have guessed, the max flow and the min cut are _duals_.
+
+In matrix form,
+
+$
+  sum_u f_(u v) - sum_w f_(v w)
+$
+
+In the dual, capacity constraints become positive variables (say, $d_(u v)$), and the conservation constraints become unbounded variables (say, $z_v$).
+
+The variables then become constraints, so we want to solve
+
+$
+  min sum_(u v) c_(u v) d_(u v) \
+  "s.t." quad d_(u v) - z_u + z_v >= 0 quad "with" z_s = 1, z_t = 0
+$
+
+the interpretation is that $z_v$ creates a partition into source set ($z = 1$) and sink set ($z = 0$). This is because all variables are binary, so the $d_(u v)$ chooses whether we include the edge $u v$ in the cut.
+
+By strong duality, we deduce that the max flow is the same as the minimum cut.
+
+In the dual, the dual variables $lambda_(u v)$ which are generally the shadow prices, it means that if $lambda_(u v) = 0$ it means that the dual constraint is not saturated. That is, $lambda_(u v)$ tells us if we have to "invest" (read, increase flow) in certain edges.

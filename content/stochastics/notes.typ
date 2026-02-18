@@ -107,13 +107,13 @@ $
   => & G_X (k) && = integral_(-oo)^oo P_X (x) sum_(m = 0)^oo (i k)^m / m! x^m dif x \
   & && = sum_(m = 0)^oo (i k)^m / m! integral_(-oo)^oo P_X (x) x^m dif x \
   & && = sum_(m = 0)^oo (i k)^m / m! EE[X^m] \
-  & && = sum_(m = 0)^oo k^m / m! [(diff^((m)) G_X (k))/(diff k^m)]_(k = 0) \
+  & && = sum_(m = 0)^oo k^m / m! [(partial^((m)) G_X (k))/(partial k^m)]_(k = 0) \
 $
 
 where we used
 
 $
-  (diff^((m)) G_X (k))/(diff k^m) |_k=0 = -i^m EE[x^m]
+  (partial^((m)) G_X (k))/(partial k^m) |_k=0 = -i^m EE[x^m]
 $
 
 This gives the following result:
@@ -256,7 +256,7 @@ where we used $phi(-Delta) = phi(Delta)$.
 We Taylor expand $f(x, t + tau)$ to get everything evaluated at $tau$, and eventually we reach
 
 $
-  (diff f)/(diff t) = D (diff^2 f)/(diff x^2)
+  (partial f)/(partial t) = D (partial^2 f)/(partial x^2)
 $
 
 where $D = VV[Delta]/(2tau)$.
@@ -264,9 +264,9 @@ where $D = VV[Delta]/(2tau)$.
 We can solve this using Fourier:
 
 $
-  cal(F) [(diff f)/(diff t)] & = cal(F)[ D (diff^2 f)/(diff x^2)] \
-  (diff tilde(f))/(diff tau) & = -D k^2 tilde(f) \
-           => tilde(f)(k, t) & = tilde(f)(k, 0) e^(-D k^2 t) \
+  cal(F) [(partial f)/(partial t)] & = cal(F)[ D (partial^2 f)/(partial x^2)] \
+  (partial tilde(f))/(partial tau) & = -D k^2 tilde(f) \
+                 => tilde(f)(k, t) & = tilde(f)(k, 0) e^(-D k^2 t) \
 $
 
 Assuming initial condition $f(x, 0) = delta(x)$, the solution is $tilde(f)(k, 0) = e^(-i k dot 0) = 1$.
@@ -373,7 +373,7 @@ This shows that the expectation of the stochastic integral is $0$, since $EE[1/2
   $
     EE[(integral_a^b f(t, W_t) dif W_t)^2]
     & = EE[(lim_(norm(Pi_n) -> 0) sum_(j=1)^n f_(j - 1) (W_j - W_(j-1)))^2] \
-    & = EE[lim_(norm(Pi_n) -> 0) sum_(j=1)^n f_(j - 1)^2 (W_j - W_(j-1))^2 \ & + 2(lim_(norm(Pi_n) -> 0) sum_(1 <= j < k <= n) f_(j - 1) f_(k-1) (W_j - W_(j-1))(W_k - W_(k - 1)) ] \
+    & = EE[lim_(norm(Pi_n) -> 0) sum_(j=1)^n f_(j - 1)^2 (W_j - W_(j-1))^2] \ & + 2(lim_(norm(Pi_n) -> 0) sum_(1 <= j < k <= n) f_(j - 1) f_(k-1) (W_j - W_(j-1))(W_k - W_(k - 1)) ] \
     ("because of independence") & = EE[lim_(norm(Pi_n) -> 0) sum_(j=1)^n f_(j - 1)^2 (W_j - W_(j-1))^2] \
     & = lim_(norm(Pi_n) -> 0) sum_(j=1)^n EE[f_(j - 1)^2 (W_j - W_(j-1))^2] \
     & = lim_(norm(Pi_n) -> 0) sum_(j=1)^n EE[f_(j - 1)^2] EE[(W_j - W_(j-1))^2] \
@@ -441,14 +441,14 @@ The solution of a SDE is a stochastic process. That is, we get a pdf at every mo
     dif Y_t = \
               & underbrace(
                   (
-                    (diff F)/(diff t) (t, X_t) + mu (t, X_t) (diff F) / (diff y) (t, X_t) + (sigma^2(t, X_t))/2 (diff^2 F)/(diff y^2) (t, X_t)
+                    (partial F)/(partial t) (t, X_t) + mu (t, X_t) (partial F) / (partial y) (t, X_t) + (sigma^2(t, X_t))/2 (partial^2 F)/(partial y^2) (t, X_t)
                   ), "drift"
                 ) dif t \
               & + underbrace(
                   (
-                    sigma(t, X_t) (diff F)/(diff y) (t, X_t)
+                    sigma(t, X_t) (partial F)/(partial y) (t, X_t)
                   ), "diffusion"
-                )diff W_t
+                )partial W_t
   $
 
   If we now assume $Y_t = W_t^2$, we get that $F(t, y) = y^2$. The _underlying_ is the Weiner process. And, by definition, the drift is $mu = 0$ and the diffusion is $sigma = 1$. #todo[????]
@@ -475,7 +475,7 @@ The solution of a SDE is a stochastic process. That is, we get a pdf at every mo
   #todo[Something]
 
   $
-    dif F = (diff F)/(diff t) dif t + (diff F)/(diff y) dif y
+    dif F = (partial F)/(partial t) dif t + (partial F)/(partial y) dif y
   $
 
   #todo[I got tiwed.]
@@ -494,9 +494,9 @@ The solution of a SDE is a stochastic process. That is, we get a pdf at every mo
   If we compute the partial derivatives of $f$,
 
   $
-      (diff f)/(diff t) & = 0 \
-      (diff f)/(diff x) & = 4x^3 \
-    (diff f)/(diff x^2) & = 12 x^2 \
+      (partial f)/(partial t) & = 0 \
+      (partial f)/(partial x) & = 4x^3 \
+    (partial f)/(partial x^2) & = 12 x^2 \
   $
 
   So,
@@ -575,9 +575,9 @@ $
     Y_t = e^(alpha W_t) \
     dif W_t = 0 dif t + 1 dif W_t \
     f(t, xi) = e^(alpha xi) \
-    (diff f)/(diff t) = 0 \
-    (diff f)/(diff xi) = alpha e^(alpha xi) \
-    (diff f)/(diff xi^2) = alpha^2 e^(alpha xi) \
+    (partial f)/(partial t) = 0 \
+    (partial f)/(partial xi) = alpha e^(alpha xi) \
+    (partial f)/(partial xi^2) = alpha^2 e^(alpha xi) \
     Y_0 = e^(alpha W_0) = 1
   $
 
@@ -645,7 +645,7 @@ holds since $abs(mu) + abs(sigma)$ is a nonnegative constant.
   $
     Y_0 = log(x_0) \
     f(t, x) = log x \
-    (diff f)/(diff t) = 0, (diff f)/(diff x) = 1/2, (diff^2 f)/(diff x^2) = -1/x^2
+    (partial f)/(partial t) = 0, (partial f)/(partial x) = 1/2, (partial^2 f)/(partial x^2) = -1/x^2
   $
 
   Plugging it into the formula,
@@ -748,3 +748,206 @@ $
 This model is nice for spikes.
 
 This model doesn't preserve positivity, so people thought it couldn't be used for stock prices, but actually the houses went negative at some point so nobody here knows what they're doing I guess.
+
+== Malthusian SDE
+
+We want to model the number of individuals in a population $N(t)$, where
+
+$
+  dif N = (b - d) N dif t
+$
+
+where $b$ is the probability of birth and $d$ is the probability of death. The resulting equation is the classic exponential:
+
+$
+  N(t) = N_0 e^((b-d)t)
+$
+
+However, this explodes as time goes on, and doesn't consider extinction _probability_. Let's stochastify the model, then:
+
+$
+  dif N_t = r N_t dif t + sigma N_t dif W_t
+$
+
+where here we essentially add some noise to the growth rate $r$. This is GBM which we know how to describe:
+
+$
+  N_t = N_0 exp((r - sigma^2/2)t + sigma W_t)
+$
+
+This case is an example where the initial condition $N_0$ makes sense to be a distribution.
+
+Now, let's examine extinction.
+
+=== Extinction
+
+We want to calculate the probability that the species goes extinct at some $T$ or before, which is
+
+$
+  PP[min_(0<t<T) N_t < e]
+$
+
+where $e$ is the extinction threshold. Numerically, if we can launch trajectories of the SDE (for instance, using Euler-Maruyama (@sec-euler-maruyama)) we can just count the number of trajectories that go below the extinction threshold over the total number of trajectories.
+
+Notice that we can't look at only the endpoint, we have to look if *at any point* the population crosses the threshold. Numerically, this is actually very hard to do this because between any two discrete samples there could be stochastic variation that crosses the threshold, but we wont bother with that now.
+
+On the other hand, we can solve this analytically, since we just have log-normals, using the reflection principle.
+
+#theorem[Reflection principle][
+  $
+    PP[min_(0<t<T) W_t < b] = 2 PP[W_T >= b]
+  $
+
+  That is, the probability of a Weiner process crossing a barrier at a value $b$ is twice the probability of the process _ending_ above $b$.
+]
+
+#proof[
+  If a Weiner process reaches $b$, by symmetry it will end up the same above and below $b$. Therefore, $1/2 PP[W_t "crossing" b] = PP[W_t >= b]$, which implies $PP[W_t "crossing" b] = 2 PP[W_t >= b]$.
+]
+
+This actually also helps numerically, but in our case we just have to compute $2 PP[N_T < e]$. Given that $N_t$ is GBM, then $X_t = log(N_t)$ is ABM, with $dif X_t = (r - sigma^2/2) dif t + sigma dif W_t$.
+
+Then, we can compute
+
+$
+  PP[N_t "crossing" e] = PP[X_t "crossing" log e]
+$
+
+== Logistic SDE
+
+A more accurate population model, that takes into account carrying capacity of environment. Namely,
+$
+  dif N_t = r N_t (1 - N_t/K) dif t + sigma N_t dif W_t.
+$
+
+the two absorbing states are $K$ and $0$, so either the poppulation gets extinct, or when it saturates the environment.
+
+How to calculate extinction probability here? Well, the SDE doesn't have closed-form solution
+
+
+== Random problems
+
+#example[
+  Let's solve
+
+  $
+    dif X_t = dif t + 2 sqrt(X_t) dif W_t, quad X_0 = x_0 > 0
+  $
+
+  we do a change of variable $Y_t = sqrt(X_t)$, so $f(x) = sqrt(x)$ and $Y_0 = sqrt(X_0)$. Then, Itô's lemma gives:
+
+  $
+    dif Y_t & = (0 + frac(1, 2 sqrt(X_t)) - 1/2 1/4 X_t^(-3/2) dot 2 sqrt(X_t) ) dif t + 2 sqrt(X_t) 1/(2sqrt(X_t)) dif W_t \
+    & = dif W_t
+  $
+
+  So $Y_t = W_t + sqrt(x_0)$, and finally
+
+  $
+    X_t = (sqrt(x_0) + W_t)^2
+  $
+
+  This is another example of a process that preserves positivity.
+]
+
+
+= Numerical methods
+
+Maybe this didn't need a section because we only have one method? And it's not even that sophisticated.
+
+== Euler-Maruyama method <sec-euler-maruyama>
+
+This is like the Euler method, but for stochastics, with a source of randomness.
+Namely, we discretize as
+
+$
+  && dif X_t & = & X_t r dif t & + & X_t sigma dif W_t \
+  ~~> && hat(X)_(k+1) - hat(X)_k & = & hat(X_k) r h & + & hat(X)_k sigma cal(N) [0, h] \
+  ==> && hat(X)_(k+1) & = hat(X)_k & + hat(X_k) r h & + & hat(X)_k sigma cal(N) [0, h] \
+$
+
+In general, if we have
+
+$
+  dif X_t = f(t, X_t) dif t + g(t, X_t) dif W_t
+$
+
+we discretize as
+
+$
+      hat(X)_0 & = X_0 \
+  hat(X)_(k+1) & = hat(X)_k + f(k h, hat(X)_k) h + g(k h, hat(X)_k) sqrt(h) eta_k \
+         eta_k & tilde cal(N)[0, 1]
+$
+
+=== Errors
+
+There are two main errors we can think of:
+
+#definition[Strong error][
+  Difference between trajectories #todo[?]
+]
+
+#definition[Weak error][
+  When trying to compute $ EE[phi(X_t)] $
+
+  the weak error is $ e_w = EE[phi(X_T)] - EE[phi(hat(X)_T)] $
+]
+
+The weak error is more often used, especially in things like finance.
+
+We know that for Euler-Maruyama has linear weak error.
+
+= Feynman-Kac formula
+
+Given, $phi, c : RR^2 -> RR$ and
+$
+  I_t = phi(t, X_t) e^(integral_0^t c(s, X_s) dif s)
+$
+
+and SDE
+
+$
+  dif X_t = b(t, X_t) dif t + a(t, X_t) dif W_t
+$
+
+we want to find a function such that
+
+$
+  I_t = f(t, X_t)
+$
+
+We could think that we can use
+
+$
+  f(t, y) = phi(t, y) e^(integral_0^t c(s, y) dif s) quad "(WRONG)"
+$
+
+but this is incorrect, since for $y = X_t$, the integrand of the exponential has a $X_t$ instead of a $X_s$!
+
+Ok, so let's do it properly. We start with
+
+$
+  cal(Z)_t & = integral_0^t c(s, X_s) dif s \
+  =>^"Leibniz's" quad dif cal(Z)_t & = c(t, X_t) dif t \
+  =>^"Ito" quad Y_t & = e^(integral_0^t c(s, X_s) dif s) \
+  & = e^(cal(Z)_t) quad "for" quad f(t, z) = e^z \
+  dif Y_t & = (0 + e^(cal(Z)_t) c(t, X_t) + 0) dif t + 0 dif W_t \
+  & = c(t, X_t) e^(integral_0^t c(s, X_s) dif s) dif t
+$
+
+Now let's try to get $dif I_t$:
+
+$
+          I_t & = phi(t, X_t) e^(cal(Z)_t) Y_t \
+      dif I_t & = Y_t dif phi + phi dif Y_z \
+  phi dif Y_z & = e^(integral_0^t c(s, X_s) dif s) phi(t, X_t) c(t, X_t) \
+  Y_t dif phi & = e^(integral_0^t c(s, X_s) dif s) (#todo[a shit ton of terms]) \
+      dif I_t & = e^integral (
+                  ((partial phi)/(partial t) + b (partial phi)/(partial x) + a^2/2 (partial phi)/(partial x^2) + phi c) dif t + ( ... ) dif W_t
+                )
+$
+
+The idea to Feynman-Kac is that you have a parabolic equation $alpha u = (partial u)/(partial t)$ and you can find the solution at certain points by simulating random stochastic paths. Also, if you solve the equation you can get some nice expectations needed in stochastics.
+
+Professor says this is the best idea in math of the past 50 years, so it seems to be a big deal.

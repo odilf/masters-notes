@@ -20,7 +20,7 @@
   - approximate (analytically or numerically)
 + Contrast model predictions with experimental data (falsify the model)
 
-Examples: 3 body problem, traveling waves (Fischer's equation: $diff_t A = k A(1 - A) + D gradient^2 A$),
+Examples: 3 body problem, traveling waves (Fischer's equation: $partial_t A = k A(1 - A) + D gradient^2 A$),
 
 == What makes a good model?
 
@@ -340,7 +340,7 @@ Something insightful is that with this analysis we get the reason why dimensionl
   Let's start with the diffusion equation:
 
   $
-    D (diff^2 x)/(diff x^2) = (diff u)/(diff t)
+    D (partial^2 x)/(partial x^2) = (partial u)/(partial t)
     \ [u] = M L^-3
   $
 
@@ -348,7 +348,7 @@ Something insightful is that with this analysis we get the reason why dimensionl
 
 
   $
-    [D (diff^2 x)/(diff x^2)] = [(diff u)/(diff t)]
+    [D (partial^2 x)/(partial x^2)] = [(partial u)/(partial t)]
     \ [D] [u]/[x^2] = [u]/[t]
     \ [D] cancel([u])/[x^2] = cancel([u])/[t]
     \ [D] = L^2 T^(-1)
@@ -390,18 +390,18 @@ Something insightful is that with this analysis we get the reason why dimensionl
   But we can look at the derivatives, both in $t$...
 
   $
-    (diff u)/(diff t) & = u_0 F'(eta) (diff eta)/(diff t) \
-                      & = u_0 F'(eta) x/sqrt(D) (-1/(2 t^(3/4))) \
-                      & = u_0 F'(eta) (-1/(2 t) eta)
+    (partial u)/(partial t) & = u_0 F'(eta) (partial eta)/(partial t) \
+                            & = u_0 F'(eta) x/sqrt(D) (-1/(2 t^(3/4))) \
+                            & = u_0 F'(eta) (-1/(2 t) eta)
   $
 
   ...and in $x$:
 
   $
-        (diff u)/(diff x) & = u_0 F'(eta) (diff eta)/(diff x) \
-                          & = u_0 (F'(eta)) / sqrt(D t) \
-    (diff^2 u)/(diff x)^2 & = u_0 (F''(eta))/sqrt(D t) (diff eta)/(diff t) \
-                          & = u_0 (F''(eta)) / (D t)
+    (partial u)/(partial x) & = u_0 F'(eta) (partial eta)/(partial x) \
+    & = u_0 (F'(eta)) / sqrt(D t) \
+    (partial^2 u)/(partial x)^2 & = u_0 (F''(eta))/sqrt(D t) (partial eta)/(partial t) \
+    & = u_0 (F''(eta)) / (D t)
   $
 
   And we substitute them in
@@ -540,7 +540,7 @@ It's a good idea to figure out typical lengths in your problem and non-dimension
 #example[Natural units in projectile problem][
   Remember the initial equation:
 
-  $ (diff^2 x) / (diff t^2) = - (g R^2) / (R + x)^2 $
+  $ (partial^2 x) / (partial t^2) = - (g R^2) / (R + x)^2 $
 
   We want to find the natural scale of this problem. This is not clear as for the previous example. What we have to do instead is just assume there exist natural scales of space and time, $x = x_c u$ and $t = t_c tau$, and work accordingly.
 
@@ -881,10 +881,10 @@ To put this in more general terms, sadle-node bifurcation happens when we have a
 
 $
   f(x, r) & = underbrace(f(x^*, r_c), 0) \
-  & + underbrace((diff f)/(diff x) (x^*, r_c), 0) (x - x^*) \
-  & + underbrace((diff f)/(diff r)(x^*, r_c), a) (r - r_c) \
-  & + underbrace(1/2 (diff^2 f)/(diff x^2), b) (x^*, r_c) (x - x^*)^2 \
-  & + underbrace((diff^2 f)/(diff x diff r)(x^*, r_c), c) (r - r_c)(x - x^*) \
+  & + underbrace((partial f)/(partial x) (x^*, r_c), 0) (x - x^*) \
+  & + underbrace((partial f)/(partial r)(x^*, r_c), a) (r - r_c) \
+  & + underbrace(1/2 (partial^2 f)/(partial x^2), b) (x^*, r_c) (x - x^*)^2 \
+  & + underbrace((partial^2 f)/(partial x partial r)(x^*, r_c), c) (r - r_c)(x - x^*) \
   & = a Delta r + b (Delta x)^2 + c Delta r Delta x \
   & = b (Delta x + c/(2b) Delta r)^2 - c^2/4d (Delta r)^2 + a Delta r
 $
@@ -932,7 +932,7 @@ $
          & = (G N_0 - k) n - alpha G
 $
 
-This is the normal form of the transcritical bifurcation, so we have that at $N_0 < k/G$ the stable point is $n^* = 0$ and for $N_0 > k/G$ the stable point is $n^* = G(N_0 - k) / (G alpha)$. This shows that below a certain threshold, you have no laser emission, but after the threshold the emmissions can grow.
+This is the normal form of the transcritical bifurcation, so we have that at $N_0 < k/G$ the stable point is $n^* = 0$ and for $N_0 > k/G$ the stable point is $n^* = G(N_0 - k) / (G alpha)$. This shows that below a certain threshold, you have no laser emission, but after the threshold the emissions can grow.
 
 == Pitchfork bifurcation
 
@@ -1789,7 +1789,7 @@ We are going to take a look at _gradient systems_ which have no closed orbit. We
 
 $ dot(x) = F(x) -gradient V(x) $
 
-We have that $dot(x) = f(x, y) = -(diff V)/(diff x)$ and $dot(y) = g(x, y) = -(diff V)/(diff y)$. We can check if these form a gradient if $(diff f)/(diff y) = (diff g)/(diff x)$.
+We have that $dot(x) = f(x, y) = -(partial V)/(partial x)$ and $dot(y) = g(x, y) = -(partial V)/(partial y)$. We can check if these form a gradient if $(partial f)/(partial y) = (partial g)/(partial x)$.
 
 If there is a closed orbit, we would have that $x(0) = x(T)$ for some period $T > 0$.
 
@@ -2141,7 +2141,7 @@ we can collect same order terms and set them to $0$.
 
   One side is
   $
-    x_(0 tau T) & = diff/(diff T) (-r(T) sin(tau + phi(T))) \
+    x_(0 tau T) & = partial/(partial T) (-r(T) sin(tau + phi(T))) \
                 & = -r' sin(tau + phi) - r phi' cos(tau + phi) \
   $
   and the other side
@@ -2175,7 +2175,7 @@ We can differentiate to get maxima and minima, which are $x = plus.minus l_0 sqr
 The equation of motion is
 
 $
-        m dot.double(x) + mu dot(x) + (diff E)/(diff x) & = 0 \
+  m dot.double(x) + mu dot(x) + (partial E)/(partial x) & = 0 \
     m dot.double(x) + mu dot(x) - k xi x + k/(2l_0) x^3 & = 0 \
   dot.double(x) + mu/m dot(x) - k xi x + k/(2l_0 m) x^3 & = 0 \
 $
@@ -2663,11 +2663,11 @@ So the expected value is
 $
   mean(n_1) & = sum_(n_1 = 0)^n n_1 P_n (m) \
             & = sum_(n_1=0)^oo n_1 mat(n; n_1) p^(n_1) q^(n - n_1) \
-            & = p diff/(diff p) (
+            & = p partial/(partial p) (
                 sum_(n_1=0)^oo mat(n; n_1) p^(n_1) q^(n - n_1)
               )
               #todo[what??] \
-            & = p diff/(diff p) (p + q)^n \
+            & = p partial/(partial p) (p + q)^n \
             & = p n (p + q)^(n - 1) \
             & = n p \
 $
@@ -2870,7 +2870,7 @@ $ Q(t) = integral_Omega q(x, t) dif^n x $
 Suppose there is also a current $J$ over the border
 
 $
-  dot(Q) = integral_Omega r(x, t) dif^n x - integral_(diff Omega) J dot hat(n) dif S
+  dot(Q) = integral_Omega r(x, t) dif^n x - integral_(partial Omega) J dot hat(n) dif S
 $
 
 $
@@ -2960,7 +2960,7 @@ Initially it can be any function, $c(x, 0) = f(x)$.
 $
       hat(c)_t & = D abs(i q)^2 hat(c) = - D abs(q)^2 hat(c) \
   hat(c)(q, t) & = underbrace(hat(c)(q, 0), hat(f)(q)) e^(-laplace t abs(q))^2 \
-               & = integral_(RR^n) f(y) g(x y, t) diff^n y
+               & = integral_(RR^n) f(y) g(x y, t) partial^n y
 $
 
 $
@@ -2983,7 +2983,7 @@ So it results in
 
 $
   w_x = (-x)/(2 D t) w \
-  diff/(diff x) log w = -x/(2D t) \
+  partial/(partial x) log w = -x/(2D t) \
   log((w(x, t)/w(0, t))) = -x^2/(4D t) \
   w(x, t) = w(0, t) e^(-x^2/(4D t)) \
 $
@@ -3013,13 +3013,13 @@ $
 We have the equation
 
 $
-  (diff h) / (diff t) = -nu diff_x^2 h - cal(K) diff_x^4 h
+  (partial h) / (partial t) = -nu partial_x^2 h - cal(K) partial_x^4 h
 $
 
 To solve this we go into frequency space:
 
 $
-  diff/(diff t) hat(h) = underbrace((v q^2 - k q^4), omega(q)) hat(h) \
+  partial/(partial t) hat(h) = underbrace((v q^2 - k q^4), omega(q)) hat(h) \
   => h(x, t) = 1/sqrt(2pi) integral_(-oo)^oo hat(h)(q) e^(omega(q) t + dot(q) q x)
 $
 
@@ -3054,7 +3054,7 @@ We can rewrite this as
 
 $
   dif/(dif t) underbrace(mat(u_1; v_1), W) = underbrace(mat(f_u, f_v; g_u, g_v), A) underbrace(mat(u_1; v_1), W) \
-  (diff W) / (diff t) = A W - D (diff^2 W) / (diff x^2) \
+  (partial W) / (partial t) = A W - D (partial^2 W) / (partial x^2) \
   D = mat(D_0, 0; 0, D_v)
 $
 
@@ -3167,7 +3167,7 @@ $
 These are governed by Swift-Hohenberg equation
 
 $
-  (diff phi)/(diff t) = [epsilon - (1 + diff^2/(diff x^2))^2] phi + alpha phi^2 - phi^3
+  (partial phi)/(partial t) = [epsilon - (1 + partial^2/(partial x^2))^2] phi + alpha phi^2 - phi^3
 $
 
 We are going to solve this.
@@ -3175,7 +3175,7 @@ We are going to solve this.
 First, we expand it:
 
 $
-  phi_t & = [epsilon - 1 - 2 diff^2_x - diff^4_x] phi + alpha phi^2 - phi^3 \
+  phi_t & = [epsilon - 1 - 2 partial^2_x - partial^4_x] phi + alpha phi^2 - phi^3 \
   & = -2 phi_(x x) - phi_(x x x x) + (epsilon - 1) phi - phi^3 + alpha phi^2`
 $
 
@@ -3236,26 +3236,26 @@ $
 We are going to do perturbation analysis with multiple time-scales. So,
 
 $
-  diff_t -> epsilon diff_T \
-  diff_x -> diff_x + sqrt(epsilon) diff_X
+  partial_t -> epsilon partial_T \
+  partial_x -> partial_x + sqrt(epsilon) partial_X
 $
 
 So then
 
 $
-  phi_t & = [epsilon - (1 + diff_x^2)^2] phi + alpha phi^2 - phi^3
+  phi_t & = [epsilon - (1 + partial_x^2)^2] phi + alpha phi^2 - phi^3
   \ -> phi & = epsilon^(1/2) phi_1 + epsilon phi_2 + epsilon^(3/2) phi_3 + ... \
   & = epsilon^(1/2) psi quad "where" quad psi = phi_1 + epsilon^(1/2) phi_2 + ... \
-  -> psi_t & = [epsilon - (1 + diff_x^2)^2]' psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3 \
-  -> epsilon psi_T & = [epsilon - (1 + diff_x^2 + 2 epsilon^(1/2) diff_x diff_X + epsilon diff_X^2)] psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3
+  -> psi_t & = [epsilon - (1 + partial_x^2)^2]' psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3 \
+  -> epsilon psi_T & = [epsilon - (1 + partial_x^2 + 2 epsilon^(1/2) partial_x partial_X + epsilon partial_X^2)] psi + alpha epsilon^(1/2) psi^2 - epsilon psi^3
 $
 
 Here we need to do term by term analysis which is annoying so we introduce a couple of operators:
 
 $
-  L = 1 + diff_x^2 \
-  D_(x X) = diff_x diff_X
-  D_(X X) = diff_X^2
+  L = 1 + partial_x^2 \
+  D_(x X) = partial_x partial_X
+  D_(X X) = partial_X^2
 $
 
 so,
@@ -3282,7 +3282,7 @@ $
 phew. Ok, so, for order $1$, we have $L^2 pi_1 = 0$ which is
 
 $
-  (diff^2/(diff x)^2 + 1)phi_1 = 0
+  (partial^2/(partial x)^2 + 1)phi_1 = 0
 $
 
 we can solve this since it's homogeneous, and we get
@@ -3342,9 +3342,9 @@ We call this the amplitude equation.
 Here we do some things that I don't quite understand.
 
 $
-  (diff A)/(diff T) = 4 (diff^2 A)/(diff X^2) + A - (3 - 38/9 alpha^2) abs(A)^2 A \
+  (partial A)/(partial T) = 4 (partial^2 A)/(partial X^2) + A - (3 - 38/9 alpha^2) abs(A)^2 A \
   phi = eps^(1/2) [A e^(i x) + overline(A) e^(-i x)] + ... \
-  (diff phi) / (diff t) = [eps - (1 + diff^2/(diff x^2))^2] phi + alpha phi^2 + phi^3
+  (partial phi) / (partial t) = [eps - (1 + partial^2/(partial x^2))^2] phi + alpha phi^2 + phi^3
 $
 
 With a perturbation $phi(x+ x_0)$ we also conclude something I guess.
@@ -3352,8 +3352,8 @@ With a perturbation $phi(x+ x_0)$ we also conclude something I guess.
 We can write the amplitude in a more general form
 
 $
-  (diff A)/(diff T) = gamma_1 (diff^2 A)/(diff X^2) + gamma_2 A + gamma_3 abs(A)^2 A \
-  (diff overline(A))/(diff T) = overline(gamma_1) (diff^2 overline(A))/(diff X^2) + overline(gamma_2) overline(A) + overline(gamma_3) abs(A)^2 overline(A)
+  (partial A)/(partial T) = gamma_1 (partial^2 A)/(partial X^2) + gamma_2 A + gamma_3 abs(A)^2 A \
+  (partial overline(A))/(partial T) = overline(gamma_1) (partial^2 overline(A))/(partial X^2) + overline(gamma_2) overline(A) + overline(gamma_3) abs(A)^2 overline(A)
 $
 
 which implies that $gamma_1, gamma_2, gamma_3 in RR$.
@@ -3361,7 +3361,7 @@ which implies that $gamma_1, gamma_2, gamma_3 in RR$.
 And we can write it in a universal form, where
 
 $
-  (diff a)/(diff tau) = (diff^2 a)/(diff xi^2) + a - abs(a)^2 a
+  (partial a)/(partial tau) = (partial^2 a)/(partial xi^2) + a - abs(a)^2 a
   "where" quad A = sqrt(gamma_2/gamma_3) a quad X = sqrt(gamma_1/gamma_2) xi quad T = tau/gamma_2 \
 $
 
@@ -3372,7 +3372,7 @@ This equation is universal for any type I instability.
 === Fischer(-Kolmogorov-Petrovsky-Piscounov) equation
 
 $
-  diff_t A = k A(1 - A) + D diff_x^2 A
+  partial_t A = k A(1 - A) + D partial_x^2 A
 $
 
 We want to look for travelling waves, so let's say $u(x, t) = U(z)$ where $z = x - c t$. The variable $c$ determines the direction of movement of the wave.
@@ -3544,8 +3544,8 @@ We assumed $c$ is very big, but even if we take $c=2$ which is the worst case sc
 === Multispecies systems and predator/prey coexistence
 
 $
-  (diff N_1)/(diff t) = A N_1 (1 - N_1/K) - B N_1 N_2 + D_1 (diff^2 N_1)/(diff x^2) \
-  (diff N_2)/(diff t) = C N_1 N_2 - D N_2 + D_2 (diff^2 N_2)/(diff x^2)
+  (partial N_1)/(partial t) = A N_1 (1 - N_1/K) - B N_1 N_2 + D_1 (partial^2 N_1)/(partial x^2) \
+  (partial N_2)/(partial t) = C N_1 N_2 - D N_2 + D_2 (partial^2 N_2)/(partial x^2)
 $
 
 $
@@ -3559,8 +3559,8 @@ $
 $
 
 $
-  (diff u)/(diff t) & = u (1 - u - v) + D (diff^2 u)/(diff x^2) \
-  (diff v)/(diff t) & = a v (u - b) + (diff^2 v)/(diff x^2)
+  (partial u)/(partial t) & = u (1 - u - v) + D (partial^2 u)/(partial x^2) \
+  (partial v)/(partial t) & = a v (u - b) + (partial^2 v)/(partial x^2)
 $
 
 We assume that $u, v >= 0$ since they represent concentrations.
@@ -3692,8 +3692,8 @@ $
 The equations are
 
 $
-  (diff u)/(diff t) = lambda (a)u omega (a) v + (diff^2 u)/(diff x^2) \
-  (diff v)/(diff t) = lambda(a) v + omega(a) u + (diff^2 v)/(diff x^2) \
+  (partial u)/(partial t) = lambda (a)u omega (a) v + (partial^2 u)/(partial x^2) \
+  (partial v)/(partial t) = lambda(a) v + omega(a) u + (partial^2 v)/(partial x^2) \
 $
 
 $
@@ -3703,7 +3703,7 @@ $
 $
 
 $
-  (diff z)/(diff t) = (lambda(a) + i omega (alpha)) (diff^2 z)/(diff x^2) \
+  (partial z)/(partial t) = (lambda(a) + i omega (alpha)) (partial^2 z)/(partial x^2) \
   z = a e^(i phi) \
   a_t/a z + i phi_t z = (lambda(a) + i omega(a)) z + (a_(x x)/a - phi_x^2 + i(phi_(x x) + 2 a_x/a phi_x)) z \
   a_t/a = lambda(a) + a_(x x)/a - phi_x^2 \

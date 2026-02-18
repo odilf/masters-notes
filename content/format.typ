@@ -61,10 +61,12 @@
     v(5mm)
     outline()
   })
-  show heading.where(
-    level: 1,
-  ): it => {
-    pagebreak(weak: true)
+  show heading: it => {
+    if it.level == 1 {
+      pagebreak(weak: true)
+    } else if it.level == 2 {
+      v(1cm)
+    }
     it
   }
   it
@@ -134,7 +136,7 @@
 #let lq = lq
 
 // Convenience functions
-#let todo = body => text(fill: red)[*#sym.angle.l #body #sym.angle.r*]
+#let todo = body => text(fill: red)[*#sym.chevron.l #body #sym.chevron.r*]
 #let faint(..args) = text(fill: white.transparentize(50%), ..args)
 
 // Convenience math definitions

@@ -3,7 +3,7 @@
 _By Odysseas Machairas_
 
 $
-  diff_t u = D diff_x^2 u - c diff_x u, quad "for" cases(-oo < x < oo, 0 < t)
+  partial_t u = D partial_x^2 u - c partial_x u, quad "for" cases(-oo < x < oo, 0 < t)
   \ \ u(x,0) = f(x), D > 0
 $
 
@@ -12,11 +12,11 @@ $
 Taking the Fourier transform of $u$, $cal(F)[u](x) = hat(u) (q)$, using properties of the Fourier transform we can write:
 
 $
-          diff_t u & = D diff_x^2 u - c diff_x u \
-  cal(F)(diff_t u) & = cal(F)(D diff_x^2 u - c diff_x u) \
-     diff_t hat(u) & = D (i q)^2 hat(u) - c (i q) hat(u) \
-     diff_t hat(u) & = (-D q^2 - c i q) hat(u) \
-      hat(u)(q, t) & = A e^(-t(D q^2 + c i q)) \
+          partial_t u & = D partial_x^2 u - c partial_x u \
+  cal(F)(partial_t u) & = cal(F)(D partial_x^2 u - c partial_x u) \
+     partial_t hat(u) & = D (i q)^2 hat(u) - c (i q) hat(u) \
+     partial_t hat(u) & = (-D q^2 - c i q) hat(u) \
+         hat(u)(q, t) & = A e^(-t(D q^2 + c i q)) \
 $
 
 The initial condition is given by $hat(u)(q, 0) = cal(F)[f](x) = hat(f)(q)$, so
@@ -53,16 +53,16 @@ $
 Taking $xi = x - c t$, $tau = t$ and $v(xi, tau) = u(x, t)$ we have that
 
 $
-  diff_tau v = diff_t u + c diff_x u \
-  diff_xi v = diff_x u
+  partial_tau v = partial_t u + c partial_x u \
+  partial_xi v = partial_x u
 $
 
 The original equation, then, becomes
 
 $
-                    diff_t u & = D diff_x^2 u - c diff_x u \
-  -> diff_tau v - c diff_x u & = D diff_xi v - c diff_x u \
-                 => diff_t v & = D diff_x^2 v
+                       partial_t u & = D partial_x^2 u - c partial_x u \
+  -> partial_tau v - c partial_x u & = D partial_xi v - c partial_x u \
+                    => partial_t v & = D partial_x^2 v
 $
 
 which is indeed the diffusion equation. The diffusion equation has solution
@@ -87,7 +87,7 @@ And, to complete the physical interpretation, while $c$ is the velocity of the m
 We have equation
 
 $
-  diff_t u = D diff_x^2 u - c u
+  partial_t u = D partial_x^2 u - c u
 $
 
 For this equation we have a term of diffusion but we have another term that makes the derivative decrease proportionally to the current concentration. $c$ is constant in space so it corresponds to some sort of exponential decay. We could see this for the diffusion of an element where the half-life is short enough compared to the timescale of interest where we have to take into account the radioactive decay, which is this sort of exponential decay.
@@ -95,9 +95,9 @@ For this equation we have a term of diffusion but we have another term that make
 We can solve it again by taking the Fourier transform and solving in in the frequency domain:
 
 $
-  frac(diff hat(u), diff t) & = -D k^2 hat(u) - c hat(u) \
-                            & = -(D k^2 + c) hat(u) \
-             => hat(u)(k,t) & = hat(f)(k) e^(-(D k^2 + c)t)
+  frac(partial hat(u), partial t) & = -D k^2 hat(u) - c hat(u) \
+                                  & = -(D k^2 + c) hat(u) \
+                   => hat(u)(k,t) & = hat(f)(k) e^(-(D k^2 + c)t)
 $
 
 then taking the inverse transform as before:
@@ -120,18 +120,18 @@ $
 From the previous exercise it's pretty clear that $a = -c$, so that $u = v e^(-c t)$. This means that $v = u e^(c t)$ and thus
 
 $
-  diff_t u = diff/(diff t) v e^(-c t) = diff_t v e^(-c t) - c v e^(-c t) \
-  diff_x u = diff/(diff x) v e^(-c t) = e^(-c t) diff_x v \
-  diff_x^2 u = diff/(diff x) e^(-c t) diff_x v = e^(-c t) diff_x^2 v \
+  partial_t u = partial/(partial t) v e^(-c t) = partial_t v e^(-c t) - c v e^(-c t) \
+  partial_x u = partial/(partial x) v e^(-c t) = e^(-c t) partial_x v \
+  partial_x^2 u = partial/(partial x) e^(-c t) partial_x v = e^(-c t) partial_x^2 v \
 $
 
 Then, the equation to solve becomes:
 
 $
-                          diff_t u & = D diff_x^2 u - c u \
-  diff_t v e^(-c t) - c v e^(-c t) & = D e^(-c t) diff_x^2 v - c v e^(-c t) \
-                 diff_t v e^(-c t) & = D e^(-c t) diff_x^2 v \
-                          diff_t v & = D diff_x^2 v \
+                          partial_t u & = D partial_x^2 u - c u \
+  partial_t v e^(-c t) - c v e^(-c t) & = D e^(-c t) partial_x^2 v - c v e^(-c t) \
+                 partial_t v e^(-c t) & = D e^(-c t) partial_x^2 v \
+                          partial_t v & = D partial_x^2 v \
 $
 
 Once again we have the standard diffusion equation, with the solution equivalent to the previous exercise:
