@@ -437,7 +437,9 @@ $
 
 So if we have the A-conjugate directions we can easily find the minimum.
 
-= Optimization with equality constraints
+= Non-linear optimization
+
+== Optimization with equality constraints
 
 #example[
   We want to design a bottle of  given volume $V$ and minimal surface area. Therefore, we want to minimize
@@ -456,7 +458,7 @@ So if we have the A-conjugate directions we can easily find the minimum.
   However, it is often not feasible to get analytical solutions.
 ]
 
-== Lagrange multipliers
+=== Lagrange multipliers
 
 The idea is that the level set curve of a function $f$ is *tangent* to the curve defined by the constraint. That is, if we have problem
 
@@ -496,7 +498,7 @@ $
 //   We want to find the min or max of $f(x, y) = x^2 + 2y^2$ subjecy yo $x^2 + y^2 = 4$
 // ]
 
-== Algorithms
+=== Algorithms
 
 For the problem
 
@@ -514,7 +516,7 @@ This problem has a unique solution since both the function and the constraints a
 - For quadratic problems use null-space or QR
 - Use Newton's method
 
-=== Eliminate affine equality constraints
+==== Eliminate affine equality constraints
 
 Since $A$ is a fat matrix, we can write it as
 $
@@ -538,7 +540,7 @@ $
 
 so $Q_2$ forms a basis for the nullspace of $A^t$.
 
-=== KKT-method
+==== KKT-method <sec-kkt>
 
 We can consider the first order conditions:
 
@@ -582,7 +584,7 @@ This problem is in general nonlinear, but for the quadratic case we can solve it
 
 We can generalize this to non-quadratic problems...
 
-=== Newton's method
+==== Newton's method
 
 Same as Newton's method for unconstrained problems, except that we have to start at a feasible point and the steps must be feasible. The way we do this is by replacing the problem with a quadratic approximation:
 
@@ -604,7 +606,68 @@ $
   mat(gradient^2 f(x), A^t; A, 0) mat(Delta x; lambda) = -mat(gradient f; A x - b)
 $
 
-= Min cut/max flow
+== Optimization with inequality constraints
+
+we have problem
+
+$
+  max f(x) \
+  "s.t." quad g(x) <= b
+$
+
+Note that in this kind of problem we have no maximum number of constraints.
+
+#definition[Binding and non-binding restrictions][
+  A restriction is _binding_ or _active_ at a point $x_0$ if $g_i(x_0) = b_i$. Otherwise, it is _non-binding_ or _non-active_.
+]
+
+#definition[Regular point][
+  Given that $gradient g_i (x)$ exists, a point $x_0$ is _regular_ if either
+  + No restriction is binding at $g_i$
+  + All $gradient g_i$ that bind $x$ are linearly independent.
+]
+
+The way we solve these is by splitting the cases in two:
++ If the optimum $x^*$ is at the boundary (s.t. $g(x^*) = 0$), then $gradient f(x^*)$ and $gradient g(x^*)$ are parallel, so
+  $ gradient f(x^*) = lambda gradient g(x^*) $
+  with $lambda > 0$ (if $lambda < 0$, we could move inside the valid region to increase $f$).
++ If the optimum $x^*$ is inside the region (s.t. $g(x^*) < 0$). Then, $gradient f(x^*) = 0$ so the previous equation still holds.
+
+Therefore, the optimality condition is just
+
+$
+  gradient f(x^*) = lambda gradient g(x^*) \
+  lambda > 0
+$
+
+We can write this condition using _complementary slackness_:
+
+$
+  L(x; lambda) = f(x) + lambda (b - g(x))
+$
+
+and the condition becomes:
+
+$
+  gradient_x L(x^*; lambda^*) = 0
+$
+
+since that gives:
+
+$
+  gradient_x L(x; lambda) = gradient f(x) - lambda gradient g(x) & = 0 \
+  gradient f(x) & = lambda gradient g(x)
+$
+
+Apparently you can do this with KKT conditions (@sec-kkt), and if $x^*$ is a KKT point of a convex problem, $x^*$ is the global optimum.
+
+Note that if $g$ is concave, $-g$ is convex. So for a convex $f$ and concave $g$ then the problem $min f(x) "s.t." g >= b$ is convex.
+
+#todo[There are barrier methods in the slides, but I think we didn't see them in class.]
+
+= Cut problems
+
+== Min-cut/max flow
 
 This is a problem where in a directed weighted graph, we want to find the maximum flow that can be transported in a graph between a source and a sink node; or equivalently, find the cut with the minimum weight that disconnects the graph. This is because the min cut is the bottleneck of the maximum flow.
 
@@ -612,7 +675,7 @@ The problem is find a flow $f: V times V -> RR_(>= 0)$, such that $f(u, v) <= c(
 
 The cut formulation is cutting a graph of $V$ into two disjoint sets $S$ and $T$ where we minimize the sum of the capacities that join $S$ to $T$.
 
-== Ford Fulkerson
+=== Ford Fulkerson
 
 First we choose an _augmenting path_, which is a simple path from source to sink such that we can add a flow. We need that
 - $c(u, v) - f(u, v) - gamma >=$ for forward edges
@@ -622,7 +685,7 @@ To find the maximum flow you can add is $gamma(u, v) = c(u, v) - f(u, v)$ for fo
 
 If no other augmenting path is found, we stop. This algorithm is guaranteed to terminate (for rational flows) and find the maximum flow. The time complexity is $O(abs(E) dot abs(f^*))$, which is pseudo-polynomial. For a different algorithm (Edmonds-Karp) has complexity $O(V dot E^2)$.
 
-== LP formulation
+=== LP formulation
 
 As we might have guessed, the max flow and the min cut are _duals_.
 
@@ -646,3 +709,181 @@ the interpretation is that $z_v$ creates a partition into source set ($z = 1$) a
 By strong duality, we deduce that the max flow is the same as the minimum cut.
 
 In the dual, the dual variables $lambda_(u v)$ which are generally the shadow prices, it means that if $lambda_(u v) = 0$ it means that the dual constraint is not saturated. That is, $lambda_(u v)$ tells us if we have to "invest" (read, increase flow) in certain edges.
+
+== Max-cut problem
+
+#example[
+  Imagine we have a class of people and want to split it to make two groups that are as quiet as possible. We can build a weighted graph where the weight of each edge represent how loud those two people are together. Therefore, if we want to minimize the loudness we want to cut the graph in such a way that we remove the maximum number of loudness. I.e., a max-cut.
+]
+
+Inn general, we have a graph $G = (V, E)$ and we want to take a cut $S$ such that the value of the cut
+
+#let cut = "cut"
+
+$
+  cut(S) = abs({ (i, j) in E : i in S, j in overline(S) })
+$
+
+is maximized.
+
+#import "@preview/fletcher:0.5.8" as fletcher: diagram, edge, node
+
+This is an NP-hard problem.
+
+#example[
+
+  #diagram(
+    node-stroke: white,
+    edge-stroke: white,
+    $
+      1 edge() edge("rd") edge("d") & 2 edge("d") \
+      3 edge() edge("ru") edge("u") & 4 \
+    $,
+  )
+
+  Here, any two vertices form the max-cut:
+
+  #diagram(
+    node-stroke: white,
+    edge-stroke: white,
+    $
+      1 edge("d") & 2 edge("d") \
+      3 edge("u") & 4 \
+    $,
+  )
+]
+
+*Algebraic formulation*: We have variable $x$ where $x_i in {1, -1}$. An edge contributes to the cut if $x_i x_j = -1$ (i.e., they have opposite signs). With this, we can pose it as an optimization problem. Namely,
+
+$
+  max sum_(i j in E) (1 - x_i x_j)/2 \
+  "s.t." quad x in {1, -1}^n
+$
+
+Let's try to get a lower bound for an expected value. If we choose half the edges at random, the expected value of the cut is $1/2 abs(E)$, and the maximum possible value of the cut is $abs(E)$, so the expectation is that we are going to get at least $50%$ of the actual value of the max cut.
+
+Now, let's try to improve this lower bound. We are going to do this via *relaxation*.
+
+=== Relaxation (Goemans-Williamson, 1995)
+
+The nature of the difficulty of this problem is that the variables are  #todo[disconnected (?)], so instead of taking vectors in $x_i in {1, -1}$, we are going to take unit vectors in $v in RR^n$, so that $x_i x_j => v_i^t v_j$. Then, the problem becomes
+
+$
+  max sum_(i j in E) (1 - v_i^t v_j)/2 \
+  "s.t." quad norm(v_i) = 1
+$
+
+We can take a matrix of inner products $X_(i j) = v_i^t v_j$ and transform the problem
+
+$
+  sum_(i j in E) (1 - v_i^t v_j)/2 = sum_(i j in E) (1 - X_(i j))/2 = abs(E)/2 - 1/2 sum_(i j in E) X_(i j)
+$
+
+and finally, we get the problem
+
+$
+  max 1/2 sum_(i j in E) (1 - X_(i j))/2 \
+  "s.t." quad X_(i i) = 1 " and " X succ.eq 0
+$
+
+This is a _semidefinite linear program_, which is a generalization of linear programming for matrices. The point is that this can be solved in polynomial time.
+
+Now, given a solution of the relaxed problem, how can we go back to the original problem? Well, given the vectors $v_i$ we just choose half of the unit sphere (one way to do this is choose a random vector $r in RR^n$ and then assign $+1$ or $-1$ based on the sign of the innerproduct with each vector).
+
+How good is this solution? For one edge $(i, j)$, what is the probability of this edge being cut? Well, it's $theta_(i j)/pi$, where $theta_(i j)$ is the angle between $v_i$ and $v_j$. The problem minimizes $(1 - v_i^t v_j)/2 = (1 - cos theta_(i j))/2$ and the value where the desired quantity is minimal is $0.878$ (that is, the minimum of $(theta/pi)/((1-cos theta)/2) = 2/pi theta/(1 - cos theta)$).
+
+Therefore, the expected value of the cut is, at least, $87.8%$ of the real max-cut.
+
+= Lagrange duality
+
+We've seen this for linear programming, and it generalizes to general constrained optimization problems in a natural way. Given a problem
+
+$
+  min f(x) \
+  "s.t." quad f(x) <= 0
+$
+
+we can form the Lagrange function
+
+$
+  cal(L)(x, lambda) = f_0 (x) + sum_(i=1)^m lambda_i f_i (x); lambda_i >= 0
+$
+
+and we can convert the problem to
+
+$
+  min_x cal(L)(x, lambda) = min_x f_0 (x) + sum_(i=1)^m lambda_i f_i (x)
+$
+
+this also works for supremum:
+
+$
+  sup_x cal(L)(x, lambda) = sup_x f_0 (x) + sum_(i=1)^m lambda_i f_i (x)
+$
+
+This problem is easier to solve because it's unconstrained, but it now depends on $lambda$ too.
+
+*Remark*: for any feasible $x$,
+$
+  f_0 (x) >= f_0 (x) + sum_i lambda_i f_i (x).
+$
+
+\
+
+Ok, so now let's consider the supremum of the Lagrangian:
+
+$
+  sup_(lambda >= 0) cal(L)(x, lambda) = sup_(lambda >= 0) (f_0 (x) + sum_i lambda_i f_i (x))
+$
+
+What happens if $x$ is not feasible? At least one of the conditions $f_i (x) <= 0$ is violated, so there is a $j$ such that $f_j (x) > 0$. But since $lambda_j >= 0$, the supremum just takes the $lambda_j -> oo$, so the supremum of the Lagrangian is unbounded!
+
+So, we deduce
+
+$
+  sup_lambda cal(L)(x, lambda) = cases(
+    f_0 (x) quad & "if" forall i\, f_i (x) <= 0,
+    oo quad & "if" exists j\, f_j (x) > 0,
+  )
+$
+
+As in linear programming, the primal is
+
+$
+  p^* = inf_x sup_lambda cal(L)(x, lambda)
+$
+
+and the dual is obtained by swapping the operations
+
+$
+  d^* = sup_lambda inf_x cal(L)(x, lambda)
+$
+
+Remember that the inner operation "matters more", which is from where we can remember _weak duality_:
+
+$
+  p^* >= d^*
+$
+
+And for the case when $p^* = d^*$, we have _strong duality_.
+
+Strong duality only holds with _Slater's condition_.
+
+#definition[Strictly feasible problem][
+  A problem $min f(x)$ subject to $g_i (x) <= 0$ is _strictly feasible_ if there is some point where all inequality constraints are strictly held (i.e., $exists x forall i, g_i (x) < 0$).
+]
+
+#theorem[Slater's condition for convex problems][
+  Given a convex problem
+
+  $
+    min f(x) \
+    "s.t." quad g_i (x) <= 0
+  $
+
+  where all $f$ and $g_i$s are convex, if the convex problem is strictly feasible, then the problem has _strong duality_.
+
+  #faint[Note: This is a regularity condition.]
+]
+
+Note: unless we have some justification like Slater's, we cannot assume in general that strong duality holds.

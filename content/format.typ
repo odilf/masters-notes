@@ -8,9 +8,8 @@
   set page(paper: "a4")
   set heading(numbering: "1.1)")
 
-  // set page(height: auto, width: 15cm, margin: 1cm)
-  set page(height: 50cm, width: 15cm, margin: 1cm)
-  set page(fill: oklch(23%, 2.5%, 260deg), numbering: "1")
+  set page(height: 50cm, width: 15cm, margin: 1cm, numbering: "1")
+  set page(fill: oklch(23%, 2.5%, 260deg))
   set text(fill: white)
   set table(stroke: white + 0.5pt)
 

@@ -951,3 +951,220 @@ $
 The idea to Feynman-Kac is that you have a parabolic equation $alpha u = (partial u)/(partial t)$ and you can find the solution at certain points by simulating random stochastic paths. Also, if you solve the equation you can get some nice expectations needed in stochastics.
 
 Professor says this is the best idea in math of the past 50 years, so it seems to be a big deal.
+
+= Options, Delta Hedging and Black-Scholes
+
+We assume that there is some interest rate $r$ with no risk.
+
+#definition[Shorting][
+  If you borrow $x$ you're _short_ of $x$, because you have to give it back. Conversely, if you're short on some stock it means that you are _borrowing_ that stock, and have to give it back.
+]
+
+If the price of the stock falls, you can make money by returning the stock.
+
+You can also short cash, which is taking money from a bank.
+
+#definition[Arbitrage][
+  They "eat free lunches". They take advantage of potential holes that make "free lunches".
+]
+
+Arbitrage makes it so that no free lunch exists. If there were, arbitrage takes advantage of it which makes it no longer have an advantage. #todo[badly explained.] Otherwise, the arbitragist would "rip you off".
+
+#definition[Call option][
+  An _option_ is a contract with two (highly asymmetrical) parts: the _underwriter_ and the _buyer_.
+
+  + The underwriter: Says that it is going to sell some amount of stock at some amount of price (the _strike_) at some date (called the _expiry date_).
+  + The buyer: Has the right to buy the specified stock of the underwriter at the given date.
+]
+
+#example[Iberdrola][
+  We have that the professor signed an option on March 24th saying he will sell one Iberdrola stock for 12€ on Dec 19th.
+
+  On March 24th the Iberdrola stock was 14€. On December 25th it turned out to be 18€ (but you didn't know that at the time).
+
+  As the buyer, you want to buy, since the professor is selling it for 12€, and you can immediately make 6€.
+
+  If the stock price ended at 13€, you also buy. The fact that the stock started at 14€ is not relevant for this. If the stock ended at 7€, you don't buy.
+]
+
+Let's call the value of the call option $C(T, S_T)$, where $T$ is the expiry date and $S_T$ is the price of the stock at $S_T$. The value of the contract on the expiry date $T$ is
+
+$
+  C(T, S_T) = max(S_T - K, 0) = (S_T - K)_+
+$
+
+where $K$ is the strike price. If the stock price is below $K$, then the contract value is not negative, since the buyer has no obligation to buy.
+
+And what is $C(0, S_0)$? The underwriter decides that, which is by how much they are going to sell the option for.
+
+*Remark*: The contract doesn't specify the buyer, so the holder of the option can *sell* the option to some other person.
+
+#example[Iberdrola continued][
+  Say the price of the option at August 25th is 17€. Should the buyer sell the option? You could sell the option for, say, 2€.
+
+  Imagine instead that the stock price is 6€. You wouldn't find anybody that would pay one euro for that. But, the option has some value greater than $0$. You wouldn't give it out for free, since Iberdrola could eventually recover (maybe something like 10 cents).
+]
+
+Note: There are other types of options. For instance, in _put options_ there is some right to buy instead of selling. Also we look at European options, but there are also American options that can be realized at any moment, not only at the expiry date.
+
+== Call-put parity
+
+Let $C(t, S)$ and $P(t,S)$ be call and put options over $S_t$ with same strike and expiry. Then, we can build the portfolio
+
+$
+  Pi_t = S_t + underbrace(P(t, S_t), "long") - underbrace(C(t, S_t), "short")
+$
+
+So we long on the underlying and the put, and shorting the call.
+
+The value of $Pi_t$ at $T$ is one of $ Pi_T = cases(
+  S_T + 0 - (S_T - K) quad & "if" S_T >= K,
+  S_T + K - S_T quad & "if" S_T < K,
+) $
+
+But, if you notice, the value of the portfolio at the maturity is going to be exactly $K$. So, the fair value of this stock is $K$ adjusted for inflation, so
+
+$
+  Pi_t = K e^(-r(T - t))
+$
+
+which in turn relates call and put option fair prices:
+
+$
+  C(t, S_t) + K e^(-r(T -t )) = P(t, S_t) + S_t
+$
+
+== Who uses options
+
+There are two categories:
+
++ *Holders/buyers*: Here you buy options either to
+  - Hedge: You can buy insurance of stock prices #todo[I didn't get this part]
+
+  - Speculate: If you think the price of the stock will increase, say, by $x$, then for an investment $I$ you get a $I(x - 1)$ return. However, if you buy call options with strike price of the current stock price, but the option might be worth way less than the stock. Therefore, you can buy way more options than stocks, but each one gives the same return.
+
+    Of course, the problem here is that with regular stock purchase you can only lose up to your investment, but for options the loss can be arbitrarily big.
+
++ *Underwriters/sellers*: For the underwriter, the loss is also unlimited, so why would anybody sell options? Because they sell it at the fair price + some fee, and even though sometimes they will lose money, the fee raises the expected gain to be more than $0$.
+
+Fun fact: There are option strategies. You can also buy a put and a call option for different strikes so that if the stock goes low _or_ high enough you get profit. This is because Black-Scholes is linear and these strategies are linear combinations of options.
+
+== Delta Hedging
+
+Underwriters offer options at the fair price + a premium. The underwriter wants to use law of large numbers to the benefit of the premium with a very very high probability.
+
+Delta hedging is a process where you take the replicating portfolio of an option and you keep rebalancing it.
+
+In more detail, when you sell a call option, the underwriter has to:
+
+#let pnl = $P\&L$
++ *Construct the replicating portfolio*:
+
+  We sell the call at a price $C_0$ #todo[or the fair price?]. We buy some amount $Delta_0$ stocks at price $S_0$. Therefore, we are short on the call and long on $Delta_0$ stocks. The replicating portfolio at $t=0$ is:
+
+  $ Pi_0 = -C_0 + Delta_0 S_0 $
+
+  The initial cashflow is $+C_0$ from the buyer and $-Delta_0 S_0$ to buy the stocks. So, the profit and loss is $pnl(t_0) = +C_0 - Delta_0 S_0$. Generally, $pnl(t_0) < 0$, so we have to borrow it at some compound interest rate $r$.
+
++ *Open a P&L bank account to manage cash flows*
+
+
++ *Rebalance the portfolio as often as possible*:
+  Let the time of rebalancing be $t_1$. The stock price has moved stochastically to some $S_1$, the call option value to $C_1$, and the replicating portfolio's price is $Pi_1 = -C_1 + Delta_0 S_1$. So, we had to choose $Delta_0$ to compensate for this change, but this is not going to be exact. Therefore, we rebalance the portfolio to $Pi_1 = -C_1 + Delta_1 S_1$.
+
+  The $Delta_i$s should approximate the "derivative" of the stock price at each point. At each rebalancing step you calculate what this "derivative" is, and buy/sell stocks to reach the new value.
+
+This makes it so that $Pi_0 approx Pi_1 approx ... approx Pi_(n-1) approx Pi_n$ which a very high probability, so you cash in the premium at a very high probability.
+
+The most important idea in financial mathematics is this: The fair price of the option (and derivative in general) at $t=0$ (riskfree interest rate-discounted) is the cost of setting up and rebalnacing a replicating portfolio.
+
+Since there is price to rebalancing, that's why you can't rebalance every 5 seconds.
+
+The underwriter adds their premium to this price.
+
+Specifically, the class flow at $t_1$ is $pnl(t_0) (e^(r(t_1 - t_0)) - 1) + S_1(Delta_0 - Delta_1)$, since you have to buy the new stocks. As the number of intermediate steps goes to infinity, the problem becomes an ODE.
+
+== Black-Scholes
+
+So we have the replicating portfolio that looks like $ Pi_t = Delta S_t - V_t. $
+
+Now, we are also going to assume that stock prices follow GBM, so
+
+$
+  dif S_t = mu S_t dif t + sigma S_t dif W_t
+$
+
+with some initial $S_0$.
+
+We define that $0$ is the moment than an option is solds and $T$ the expiry date date of the option.
+
+If we try to write what an increment of $Pi$ looks like, we get
+$
+  dif Pi_t = Delta dif S_t - dif V_t
+$
+
+To get $dif V_t$, we can use Itô:
+
+$
+  dif V_t = ((partial V)/(partial t) + mu S_t (partial V)/(partial S) + (sigma^2 S^2)/2 (partial V)(partial S^2)) dif t + (partial V)/(partial S) sigma S dif W_t
+$
+
+and so,
+
+$
+  dif Pi_t = (Delta mu S - (partial V)/(partial t) - mu S (partial V)(partial S) - (sigma^2 S^2)/2 (partial V)/(partial S^2)) dif t \ + underbrace((Delta s S - (partial V)/(partial S) sigma s), sigma s (Delta - (partial V)/(partial S))) dif W_t
+$
+
+Given that $Delta = (partial V)/(partial S)$,
+
+$
+  dif Pi_t
+  & = (cancel((partial V)/(partial S) mu S) - (partial V)/(partial t) - cancel(mu S (partial V)/(partial S)) - (sigma^2 S^2)/2 (partial^2 V)/(partial S^2)) dif t \
+  & = -((partial V)/(partial t) + (sigma^2 S^2)/2 (partial^2 V)/(partial S^2)) dif t \
+$
+
+If we do delta-hedging then the above value is deterministic. This cannot earn more than risk free return, which is $r Pi$. So,
+
+$
+  dif Pi = r Pi dif t = (r V - r Delta S) dif t = (r V - r S (partial V)/(partial S)) dif t
+$
+
+Putting it all together,
+
+$
+  r V - r S (partial V)/(partial S) & = (partial V)/(partial t) + (sigma^2 S^2)/2 (partial^2 V)/(partial S^2)
+$
+
+And with this we get the PDE:
+
+#definition[Black-Scholes equation][
+  #todo[problem with signs]
+
+  The value of an option $V$ with expiry $T$ and strike $K$ satisfies
+
+
+  $
+    cases(
+      (partial V)/(partial t) + (sigma^2 S^2)/2 (partial^2 V)/(partial S^2) + r S (partial V)/(partial S) - r V = 0,
+      V(T, S) = psi(S),
+    )
+  $
+
+  where $P$ is a stock with price that follows GBM with volatility $sigma$, and $r$ is the risk-free interest rate.
+
+  $psi(S)$ is the payoff of the option which is also the solution to the PDE.
+]
+
+We still need boundary conditions. We have a terminal condition (given by the strike price), which we can convert to an initial condition by inverting all signs time. We also need boundary conditions at $S=0$ and $S=oo$. The actual boundary condition expressions are very ugly, look at the slides. But with this we can calculate $Delta = (partial V)/(partial S)$ in an exact way, useful for delta-hedging in practice.
+
+Notice that in this equation, the drift of the underlying (which is the stock price) does _not_ appear anywhere! This implies that the fair price of the option only depends on the volatility, not if the stock goes up or down. Intuitively, delta-hedging compensates for stock price, and the only problem is the volatility of the stock.
+
+Of course this has a lot of idealistic assumptions, such that the delta-hedging is risk-free and that the market is completely liquid. So, in pracitce, the Black-Scholes equation gives you a _lower bound_ for the fair price.
+
+Notice that the fair price of the option is _not_ the expected value at time $T$, it is the price of the delta-hedging.
+
+The solution $V(t, S)$ always depends only on $T - t$ instead of $t$. This is because $V(t, S)$ is the _fair price_ of the option at time $t$ with given stock price $S$ at time $t$.
+
+We can model dividiens in a similar way.
+
+= Stochastic simulation
