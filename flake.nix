@@ -33,6 +33,9 @@
               pkgs.pnpm_9
               pkgs.nodejs_24
 
+              pkgs.python314
+              pkgs.uv
+
               # Latest not in nixpkgs
               # pkgs.pandoc
             ];

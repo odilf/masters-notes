@@ -887,3 +887,152 @@ Strong duality only holds with _Slater's condition_.
 ]
 
 Note: unless we have some justification like Slater's, we cannot assume in general that strong duality holds.
+
+
+== A few problems
+
+This is exam content.
+
+#example[Dual problem][
+  Find the dual of
+
+  $
+    min c^T x \
+    "s.t." quad A x = b, x >= 0
+  $
+
+  *Solution*: We write the Lagrangian:
+
+  $
+    cal(L)(x; lambda, nu) & = c^T x - lambda^T x + nu^T (A x - b) \
+                          & = (c^T - lambda^T + nu^T A) x - nu^T b,
+  $
+
+  take the dual function:
+
+  $
+    g(lambda, nu) = inf_(x>=0) cal(L) (x; lambda, nu) = cases(
+      -nu^T b quad & "if" c^T - lambda^T + nu^T A = 0,
+      oo #todo[??] & "otherwise"
+    )
+  $
+
+  and we read out the dual:
+
+  $
+    max -nu^T b \
+    "s.t." quad c^T - lambda^T + nu^T A = 0, lambda >= 0
+  $
+
+  for $y = -nu$:
+
+  $
+    max y^T b \
+    "s.t." quad c^T <= y^T A
+  $
+]
+
+#let diag = [diag]
+#example[Dual of two-way partition problem][
+  Imagine we have a graph that has a "cost" of two students being together in class (e.g., because they're disruptive). Let $W$ be the adjencency matrix of the graph.
+
+  We want to minimize the problem, i.e.,
+
+  $
+    min x^T W x \
+    "s.t." quad x_i^2 = 1
+  $
+
+  We want to find the dual.
+
+  *Solution*: Take the Lagrangian
+
+  $
+    cal(L) (x; nu) & = x^T W x + sum nu_i (x_i^2 - 1) \
+                   & = x^T W x + x^T diag(nu) x \
+                   & = x^T (W + diag(v)) x - nu^T bb(1)
+  $
+
+  and the dual function:
+
+  $
+    g(nu) & = inf_x cal(L) (x; v) \
+          & = inf_x (x^T (W + diag(v)) x - nu^T bb(1)) \
+          & = cases(
+              -nu^T bb(1) quad & "if" W + diag(v) succ 0,
+              -oo & "otherwise"
+            )
+  $
+
+  So the dual problem is:
+
+  $
+    max -nu^T bb(1) \
+    "s.t." quad W + diag(v) succ 0
+  $
+
+  *Remark*: This is an SDP (semi-definite program) for which there are efficient algorithms, as opposed to the primal. However, strong duality doesn't hold for integer problems, so *this just gives a lower bound*.
+]
+
+#example[Least norm solution for linear equations][
+  Let $A in RR^(m times n)$.  Find the dual of
+
+  $
+    min x^T x \
+    "s.t." quad A x = b \
+  $
+
+  We take lagrangian:
+
+  $
+    cal(L)(x; lambda) & = x^T x + lambda^T (A x - b) \
+                      & = (x^T + lambda^T A) x - lambda^T b \
+  $
+
+  and dual function:
+
+  #todo[I have photo of the end of this and another one.]
+]
+
+= Cercanías problem
+
+We want to find the waiting time of the train. Let's say we have a set of waiting times $T = {t_i}$. Naively, we could say that the probability of waiting $x$ minutes is $abs({ t_i | t_i = x }) / abs(T)$. However, this is kind of bad.
+
+We could fit a Poisson, but let's try to use less assumptions to try to _conclude_ that the distribution is Poisson.
+
+#let avg(x) = $chevron.l #x chevron.r$
+We are going to use the average waiting time $avg(t)$. There are a lot of probability distributions that respect the mean. What if we try to maximize _uncertainty_?
+
+Let's define uncertainty. We are going to use _entropy_, but first we need to define _information_:
+
+#definition[Information][
+  The _information content_ of an outcome $x$ from a random variable $X$ with probability distribution $PP$ is
+
+  $ -log_2 PP(x) $
+]
+
+#definition[Entropy][
+  The (Shannon)  entropy of a random variable $X$ is
+
+  $
+    H(X) = -sum_x PP(x) log_2 PP(x)
+  $
+
+  if it's discrete, or
+
+  $
+    H(X) = -integral PP(x) log_2 PP(x)
+  $
+
+  if it's continuous.
+]
+
+Shannon entropy is essentially the amount of information of a variable.
+
+So what is the distribution that maximizes entropy, given a mean? The problem is
+
+$
+        max H & = -sum_i P(x_i) log P(x_i) \
+  "s.t." quad & g_1 : sum_i x_i P(x_i) = avg(x) \
+              & g_2 : sum_i P(x_i) = 1 \
+$

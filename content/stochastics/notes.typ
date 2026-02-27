@@ -898,59 +898,7 @@ The weak error is more often used, especially in things like finance.
 
 We know that for Euler-Maruyama has linear weak error.
 
-= Feynman-Kac formula
 
-Given, $phi, c : RR^2 -> RR$ and
-$
-  I_t = phi(t, X_t) e^(integral_0^t c(s, X_s) dif s)
-$
-
-and SDE
-
-$
-  dif X_t = b(t, X_t) dif t + a(t, X_t) dif W_t
-$
-
-we want to find a function such that
-
-$
-  I_t = f(t, X_t)
-$
-
-We could think that we can use
-
-$
-  f(t, y) = phi(t, y) e^(integral_0^t c(s, y) dif s) quad "(WRONG)"
-$
-
-but this is incorrect, since for $y = X_t$, the integrand of the exponential has a $X_t$ instead of a $X_s$!
-
-Ok, so let's do it properly. We start with
-
-$
-  cal(Z)_t & = integral_0^t c(s, X_s) dif s \
-  =>^"Leibniz's" quad dif cal(Z)_t & = c(t, X_t) dif t \
-  =>^"Ito" quad Y_t & = e^(integral_0^t c(s, X_s) dif s) \
-  & = e^(cal(Z)_t) quad "for" quad f(t, z) = e^z \
-  dif Y_t & = (0 + e^(cal(Z)_t) c(t, X_t) + 0) dif t + 0 dif W_t \
-  & = c(t, X_t) e^(integral_0^t c(s, X_s) dif s) dif t
-$
-
-Now let's try to get $dif I_t$:
-
-$
-          I_t & = phi(t, X_t) e^(cal(Z)_t) Y_t \
-      dif I_t & = Y_t dif phi + phi dif Y_z \
-  phi dif Y_z & = e^(integral_0^t c(s, X_s) dif s) phi(t, X_t) c(t, X_t) \
-  Y_t dif phi & = e^(integral_0^t c(s, X_s) dif s) (#todo[a shit ton of terms]) \
-      dif I_t & = e^integral (
-                  ((partial phi)/(partial t) + b (partial phi)/(partial x) + a^2/2 (partial phi)/(partial x^2) + phi c) dif t + ( ... ) dif W_t
-                )
-$
-
-The idea to Feynman-Kac is that you have a parabolic equation $alpha u = (partial u)/(partial t)$ and you can find the solution at certain points by simulating random stochastic paths. Also, if you solve the equation you can get some nice expectations needed in stochastics.
-
-Professor says this is the best idea in math of the past 50 years, so it seems to be a big deal.
 
 = Options, Delta Hedging and Black-Scholes
 
@@ -1167,4 +1115,218 @@ The solution $V(t, S)$ always depends only on $T - t$ instead of $t$. This is be
 
 We can model dividiens in a similar way.
 
+
+
 = Stochastic simulation
+
+== Feynman-Kac formula
+
+There are two sides. On one side, we have PDE with terminal condition:
+
+$
+  (partial u(t, x))/(partial t) + (a^2(t, x))/2 (partial^2 u(t, x))/(partial x^2) + b(t, x) (partial u)/(partial x)(t, x) + c(t, x) u(t, x) + f(t, x) = 0 \
+  u(t=T, x) = g(x) quad (t, x) in [0, T] times RR
+$
+
+It is important to have the equation in canonical form!
+
+On the other side, we have an SDE:
+
+$
+  dif X_s = b(s, X_s) dif s + a (s, X_s) dif W_s \
+  X_t = x med cases(x in RR, 0 <= t <= s <= T)
+$
+
+It's a good idea to use different letters for the time on the SDE and on the PDE.
+Notice that the drift of the SDE is the appears in the first derivative term of the PDE. The diffusion of the SDE is also closely related to the second derivative term of the PDE.
+
+The two sides are related in the following way:
+
+#theorem[
+  Given $u$ as the solution of the PDE above and $X_s$ as the solution to the SDE, the following relation holds:
+
+  $
+    u(t, x) = EE[g(X_t) e^(integral_t^T c(s, X_s) dif s) + integral_t^T f(s, X_s) e^(integral_t^s c(s', X_s') dif s') dif s]
+  $
+]
+
+This is useful in two ways: to compute the expectation of the stochastic process by solving the PDE or to find a solution to the PDE by solving the SDE.
+
+#example[
+  Take PDE
+
+  $
+    (partial u)/(partial t) + (t^2 y^2)/2 (partial^2 u)/(partial y^2) = 0 \ u(T, y) = log y
+  $
+
+  In this form we can read what the Feynman-Kac coefficients are:
+
+  $
+    a^2/2 = (t^2 y^2)/2 => a = t y \
+    b = 1 \
+    c = 0 \
+    f = 0
+  $
+
+  Therefore we can write the corresponding stochastic process:
+
+  $
+    dif X_s = s X_s dif W_s \ X_t = y
+  $
+
+  Note the different variable names for the time!!! $0 <= t <= s <= T$. The point at which they are related is where we can get the expectation:
+
+  $
+    u(t, y) = EE[log(X_T) e^0 + integral_t^T 0 dif s] = EE[log(X_T)]
+  $
+
+  Note that $X_t$ is *not* GBM, so we can't just use that. We have to go the long way round:
+  $
+       & Y_s = log(X_s) \
+    => & dif Y_s = -s^2/2 dif s + s dif W_s \
+    => & Y_t = log y - integral_t^T s^2/2 dif s + integral_t^T s dif W_s \
+    => & EE[Y_t] = log y - (T^3 - t^3)/6 + 0
+  $
+
+  So the solution is
+
+  $
+    u(t, y) = log y - (T^3 - t^3)/6.
+  $
+]
+
+#example[
+  Let's try the other direction. Assume underlying $X_s$ as in the SDE above.
+
+  $
+    I = integral_t^T c(s, X_s) dif s &=>med && dif I_s = c(s, X_s) dif s \
+    cal(Z) = exp(integral_t^T c(s, X_s) dif s) &=>&& dif Z_s = e^I c(s, X_s) dif s \
+    J = v(s, X_s) e^(integral_t^T c(s, X_s) dif s)
+  $
+
+  And now the fun part. Let's calculate $dif J_s$. First, we have to find out the product rule and that the cross differential of drift-diffusion processes cancel, so if $Z = X Y$ are DDPs, $dif Z = X dif Y + Y dif X$. Then,
+
+  $
+    dif J_s & = v(s, X_s) dif cal(Z)_s + cal(Z)_s dif v (s, X_s) \
+            & = v(s, X_s) cal(Z)_s c(s, X_s) dif s + cal(Z)_s dif v(s, X_s)
+  $
+
+  $v$ is a diffusion process and we can write Itô for it:
+
+  $
+    dif v = ((partial v)/(partial s) + (partial v)/(partial x) b + a^2/2 (partial^2 v)/(partial x^2))lr(|, size: #300%)_((s, X_s)) dif s + a(s, X_s) (dif v)/(partial x)(s, X_s) dif W_s
+  $
+
+  and finally, with everything evaluated at $(s, X_s)$,
+
+  $
+    dif J_s = cal(Z)_s (v c + (partial v)/(partial s) + b (partial v)/(partial x) + a^2/2 (partial^2 v)/(partial x^2)) dif s + cal(Z)_s a (partial v)/(partial x) dif W_s
+  $
+
+  Now, if $v$ satisfies the PDE, then the entire term in parenthesis is exactly $f(t, x)$. Let's do the case $f = 0$, so the term is $0$. Then, we can see that the expression for the expectation indeed evaluates to:
+
+  $
+    EE[J_T] = EE[v(T, X_T) e^(integral_t^T c(s, X_s) dif s)] = EE[J_t] = EE[v(t, X_t) e^(integral_t^t ... dif s)] = v(t, x)
+  $
+
+  For nonzero $f$, we can eventually reach the same conclusion.
+]
+
+#faint[
+  === Old version
+
+  #faint[We saw this in one class and left it abandoned, apparently.]
+
+  Given, $phi, c : RR^2 -> RR$ and
+  $
+    I_t = phi(t, X_t) e^(integral_0^t c(s, X_s) dif s)
+  $
+
+  and SDE
+
+  $
+    dif X_t = b(t, X_t) dif t + a(t, X_t) dif W_t
+  $
+
+  we want to find a function such that
+
+  $
+    I_t = f(t, X_t)
+  $
+
+  We could think that we can use
+
+  $
+    f(t, y) = phi(t, y) e^(integral_0^t c(s, y) dif s) quad "(WRONG)"
+  $
+
+  but this is incorrect, since for $y = X_t$, the integrand of the exponential has a $X_t$ instead of a $X_s$!
+
+  Ok, so let's do it properly. We start with
+
+  $
+    cal(Z)_t & = integral_0^t c(s, X_s) dif s \
+    =>^"Leibniz's" quad dif cal(Z)_t & = c(t, X_t) dif t \
+    =>^"Ito" quad Y_t & = e^(integral_0^t c(s, X_s) dif s) \
+    & = e^(cal(Z)_t) quad "for" quad f(t, z) = e^z \
+    dif Y_t & = (0 + e^(cal(Z)_t) c(t, X_t) + 0) dif t + 0 dif W_t \
+    & = c(t, X_t) e^(integral_0^t c(s, X_s) dif s) dif t
+  $
+
+  Now let's try to get $dif I_t$:
+
+  $
+            I_t & = phi(t, X_t) e^(cal(Z)_t) Y_t \
+        dif I_t & = Y_t dif phi + phi dif Y_z \
+    phi dif Y_z & = e^(integral_0^t c(s, X_s) dif s) phi(t, X_t) c(t, X_t) \
+    Y_t dif phi & = e^(integral_0^t c(s, X_s) dif s) (#todo[a shit ton of terms]) \
+        dif I_t & = e^integral (
+                    ((partial phi)/(partial t) + b (partial phi)/(partial x) + a^2/2 (partial phi)/(partial x^2) + phi c) dif t + ( ... ) dif W_t
+                  )
+  $
+
+  The idea to Feynman-Kac is that you have a parabolic equation $alpha u = (partial u)/(partial t)$ and you can find the solution at certain points by simulating random stochastic paths. Also, if you solve the equation you can get some nice expectations needed in stochastics.
+
+  Professor says this is the best idea in math of the past 50 years, so it seems to be a big deal.
+]
+
+== Feynman-Kac to solve Black-Scholes
+
+Black-Scholes is
+
+$
+  (partial V)/(partial t) + (sigma^2 s^2)/2 (partial^2 V)/(partial s^2) + r s (partial V)/(partial s) - r V = 0 \
+  V(T, S) = max(0, K - S) + "BCs"
+$
+
+This is almost Feynman-Kac except that it has boundary conditions. But we can use the transformation $Z = log(S)$ to remove them. #todo[Calculations]. Eventually we get
+
+$
+  (partial V (t, z))/(partial t) + sigma^2/2 (partial^2 V)/(partial Z^2) + (r - sigma^2/2) (partial V)/(partial z) - r V = 0 \
+  V(T, Z) = max(0, K - e^Z), Z in RR
+$
+
+We can read the Feynman-Kac coefficients,
+
+$
+  a = sigma \
+  b = r - sigma^2/2 \
+  c = -r \
+  f = 0
+$
+
+Which gives us the corresponding FK SDE:
+
+$
+  dif cal(Z)_s = (r - sigma^2/2) dif s + sigma dif W_s \
+  cal(Z)_t = log(S_t), 0 <= t <= s <= T
+$
+
+and so, using the FK theorem:
+
+$
+  V(t, log S_t) & = EE[max(0, K - Z_t) e^(integral_t^T -r dif s) + integral_t^T 0 dif s ] \
+  & = e^(-r (T - t)) underbrace(EE[max(0, K - Z_T)], "expected payoff") \
+$
+
+yay!
