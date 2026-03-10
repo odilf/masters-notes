@@ -3,15 +3,18 @@
 #import "@preview/lilaq:0.5.0" as lq
 
 #let preview-args = json(bytes(sys.inputs.at("x-preview", default: "{}")))
+#let dark-theme = sys.inputs.at("DARK_THEME", default: "false") == "true";
 
 #let common-show-rules = it => {
   set page(paper: "a4")
   set heading(numbering: "1.1)")
 
   set page(height: 50cm, width: 15cm, margin: 1cm, numbering: "1")
-  set page(fill: oklch(23%, 2.5%, 260deg))
-  set text(fill: white)
-  set table(stroke: white + 0.5pt)
+  if dark-theme {
+    set page(fill: oklch(23%, 2.5%, 260deg))
+    set text(fill: white)
+    set table(stroke: white + 0.5pt)
+  }
 
   // https://github.com/typst/typst/discussions/2883
   show link: it => {
@@ -27,8 +30,9 @@
   // Theorems
   show: thmrules.with(qed-symbol: $square$)
 
-  // Lilaq dark mode
-  show: lq.theme.moon
+  if dark-theme {
+    show: lq.theme.moon
+  }
   show: lq.set-diagram(width: 100%, height: 6cm)
 
   it
@@ -40,10 +44,12 @@
   show outline.entry.where(
     level: 1,
   ): set block(above: 1.5em)
-  set outline.entry(fill: line(
-    length: 100%,
-    stroke: white.transparentize(50%) + 0.5pt,
-  ))
+  if dark-theme {
+    set outline.entry(fill: line(
+      length: 100%,
+      stroke: white.transparentize(50%) + 0.5pt,
+    ))
+  }
   show outline.entry: it => link(
     it.element.location(),
     it.indented(it.prefix(), it.inner()),
@@ -72,6 +78,7 @@
   v(10cm)
 }
 
+#let lm = if dark-theme { 0 } else { 1 }
 #let exercises(title) = it => {
   show: common-show-rules
 
@@ -92,7 +99,7 @@
 
   [#metadata("Exercise start") <exercise-start>]
   rect(
-    fill: oklch(30%, 10%, 310deg, 30%),
+    fill: oklch(30% + lm * 40%, 10%, 310deg, 30%),
     radius: 2pt,
     inset: 10pt,
     stroke: white.transparentize(80%),
@@ -109,7 +116,11 @@
 
 #set enum(numbering: "(i)")
 #let theorem(..args) = {
-  thmbox("theorem", "Theorem", fill: oklch(30%, 23%, 310deg))(..args)
+  thmbox("theorem", "Theorem", fill: oklch(
+    30% + lm * 60%,
+    23%,
+    310deg,
+  ))(..args)
 }
 #let corollary = thmplain(
   "corollary",
@@ -120,12 +131,16 @@
 #let definition = (..args) => {
   set enum(numbering: "(i)")
   thmbox("definition", "Definition", inset: (x: 1.2em, y: 1em), fill: oklch(
-    30%,
+    30% + lm * 55%,
     23%,
     280deg,
   ))(..args)
 }
-#let example = thmbox("example", "Example", fill: oklch(20%, 0%, 270deg)).with(
+#let example = thmbox("example", "Example", fill: oklch(
+  20% + lm * 70%,
+  0%,
+  270deg,
+)).with(
   numbering: none,
 )
 #let proof = thmproof("proof", "Proof")
@@ -140,7 +155,7 @@
 
 // Convenience math definitions
 #let dx = $dif x$
-#let innerproduct(x, y) = $lr(angle.l #x, #y angle.r)$
+#let innerproduct(x, y) = $lr(chevron.l #x, #y chevron.r)$
 
 
 #show: exercises[]
