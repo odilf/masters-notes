@@ -98,9 +98,9 @@ Let's look at the example in more detail knowing this.
 Real quick:
 
 #definition[
-  When adding floats, we use $plus.circle$ since they're limited precision.
+  When adding floats, we use $plus.o$ since they're limited precision.
 
-  That is, $x + y$ becomes $fl(x) plus.circle fl(y)$
+  That is, $x + y$ becomes $fl(x) plus.o fl(y)$
 ]
 
 Generally, we don't care about exact results such as the above because, as we see, it's inaccurate. We care about order of magnitude.
@@ -110,11 +110,11 @@ Generally, we don't care about exact results such as the above because, as we se
 === Computational cost
 
 #definition[
-  We measure the computational cost of a procedure in the number of operations, or _flops_, represented by $ast.circle$.
+  We measure the computational cost of a procedure in the number of operations, or _flops_, represented by $ast.op.o$.
 
-  Let $x, y$ be floating point numbers, then $x ast.circle y = (x ast y)(1 + delta)$ where $|delta| <= emach$.
+  Let $x, y$ be floating point numbers, then $x ast.o y = (x ast y)(1 + delta)$ where $|delta| <= emach$.
 
-  Meanwhile, for real numbers $x, y in RR$ then we get $fl(x) ast.circle fl(y) = (x(1 + delta_1) ast y(1 + delta_2))(1 + delta_3)$, again with $|delta_n| <= emach$.
+  Meanwhile, for real numbers $x, y in RR$ then we get $fl(x) ast.o fl(y) = (x(1 + delta_1) ast y(1 + delta_2))(1 + delta_3)$, again with $|delta_n| <= emach$.
 ]
 
 #example[Cost of inner product and solving system][
@@ -150,9 +150,9 @@ Generally, we don't care about exact results such as the above because, as we se
   We get
 
   $
-    x_(1,2) &= -b plus.circle sqrt(b^2 - 4a c) div.circle 2a
-    \ &= -b plus.circle (overbrace(sqrt(b^2 - 4a c), s) (1 + epsilon_1)) div.circle 2a
-    \ &= (-b plus.minus (s (1 + epsilon_1))) (1 + epsilon_2) div.circle 2a
+    x_(1,2) &= -b plus.o sqrt(b^2 - 4a c) div.o 2a
+    \ &= -b plus.o (overbrace(sqrt(b^2 - 4a c), s) (1 + epsilon_1)) div.o 2a
+    \ &= (-b plus.minus (s (1 + epsilon_1))) (1 + epsilon_2) div.o 2a
     \ &= ((-b plus.minus (s (1 + epsilon_1))) (1 + epsilon_2)) / (2a)(1 + epsilon_3)
     \ &= (-b plus.minus s + s epsilon_1 - b epsilon_2 plus.minus s epsilon_2 + cancel(s epsilon_1 epsilon_2)) / (2a) (1 + epsilon_3)
   $
@@ -317,7 +317,7 @@ $ kappa_f^"abs" = norm(J_f) $
   The absolute conditioning number is
 
   $
-    kappa_infinity^"abs" = norm(J_f)_infinity = norm(mat((diff f)/(diff x), (diff f)/(diff y)))_infinity = norm(mat(1, -1))_infinity = |1| + |-1| = 2
+    kappa_infinity^"abs" = norm(J_f)_infinity = norm(mat((partial f)/(partial x), (partial f)/(partial y)))_infinity = norm(mat(1, -1))_infinity = |1| + |-1| = 2
   $
 
   $ kappa_1^"abs" = norm(J_f)_1 = max(|1|, |-1|) = 1 $

@@ -1495,9 +1495,9 @@ Let's now focus on characterizing the best approximations.
 
   If $f in C[a, b]$ then $Z(f) = f^(-1)({ 0 })$ is compact.
 
-  In particular, the boundary of $Z(f)$ is contained in $Z(f)$ (i.e., $diff Z(f) subset Z(f)$).
+  In particular, the boundary of $Z(f)$ is contained in $Z(f)$ (i.e., $partial Z(f) subset Z(f)$).
 
-  If $f(x) = cases(1 quad x in RR \\ QQ, 0 quad QQ)$ then $Z(f) = QQ$ but $diff Z(f) = RR subset.not QQ$
+  If $f(x) = cases(1 quad x in RR \\ QQ, 0 quad QQ)$ then $Z(f) = QQ$ but $partial Z(f) = RR subset.not QQ$
 ]
 
 #definition[
@@ -1640,7 +1640,7 @@ Now, on to the proof we wanted.
 ]
 
 Now, a few consequences/corollaries of @theorem-characterization-l1:
-+ Let $f in C[a, b]$ and suppose $g in A$ satisfies that the boundary $diff Z (f - g)$ has Lebesgue measure $0$. Then, $g$ is a best approximant in $A$ iff
++ Let $f in C[a, b]$ and suppose $g in A$ satisfies that the boundary $partial Z (f - g)$ has Lebesgue measure $0$. Then, $g$ is a best approximant in $A$ iff
   $
     abs(integral_[a, b] sign(f - g) tilde(g) w dif m) <= integral_Z(f -g) abs(tilde(g)(x)) h(x) dif m (x)
   $

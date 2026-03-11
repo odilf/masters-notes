@@ -2648,7 +2648,7 @@ Then, $m = n_1 - n_2 = 2n_1 - n$ so we can rewrite $n_1 = (m + n)/2$ and $n_1 = 
 
 $ P_n (m) = 1/2^n mat(n; n_1) = 1/2^n mat(n; (m+n)/2) $
 
-#let mean(x) = $angle.l #x angle.r$
+#let mean(x) = $chevron.l #x chevron.r$
 
 We can take averages and expected values. We want to calculate $mean(n_1)$. If we say that $p$ is the probability of going to the right and $q = 1 - p$ of going to the left, then
 
@@ -3620,8 +3620,8 @@ The equations we now get are
 
 $
   cases(
-    C U' & = V (1 - U - V) + D U'' \
-    C V' & = a V (U - b) + V'' \
+    C U' & = V (1 - U - V) + D U'',
+    C V' & = a V (U - b) + V''
   )
 $
 
@@ -3629,9 +3629,9 @@ We are going to have $D_1 << D_2$, $D << 1$ and actually just $D = 0$. So we get
 
 $
   cases(
-    U' = 1/C U (1 - U - V) \
-    V' = W \
-    W' = C W - a V(U - b)
+    U' = 1/C U (1 - U - V),
+    V' = W,
+    W' = C W - a V(U - b),
   )
 $
 

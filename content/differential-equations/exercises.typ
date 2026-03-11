@@ -105,10 +105,10 @@ where $C$ is some constant.
 
 #faint[== Exercise 2]
 
-We have that $u_p = sin(p pi x)$ are eigenfunction of $diff^2/(diff x^2)$ with eigenvalues $lambda_p = -p^2 pi^2$. That is,
+We have that $u_p = sin(p pi x)$ are eigenfunction of $partial^2/(partial x^2)$ with eigenvalues $lambda_p = -p^2 pi^2$. That is,
 
 $
-  (diff^2 u_p)/(diff x^2) = -p^2 pi^2 u_p = lambda_p u_p
+  (partial^2 u_p)/(partial x^2) = -p^2 pi^2 u_p = lambda_p u_p
 $
 
 The analogous for the discrete case is that
@@ -150,7 +150,7 @@ Problems of the type
 
 $
   laplace u = f, overline(x) in Omega \
-  u|_(diff Omega) = g
+  u|_(partial Omega) = g
 $
 
 We can solve this using the 5-point Laplacian:
@@ -227,7 +227,7 @@ We want to solve using BE + FD2.
 Backward Euler is
 $
   "Backward Euler:" quad & (U^(n+1) - U^n)/k = F(U^(n+1), t_(n+1)) \
-  "FD2:" quad & (U_(i-1) - 2U_i + U_(i+1))/h^2 approx (diff^2 u)/(diff x^2)vbar_(x_i) \
+  "FD2:" quad & (U_(i-1) - 2U_i + U_(i+1))/h^2 approx (partial^2 u)/(partial x^2)vbar_(x_i) \
   => & (U_i^(n+1) - U_i^n)/k = beta ((U_(i+1)^n - 2U_i^(n+1) + U_(i-1)^(n+1))/h^2)
 $
 

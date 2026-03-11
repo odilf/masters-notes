@@ -62,7 +62,7 @@ $
 
 and innerproduct
 
-#let innerproduct(f, g) = math.lr($angle.l #f, #g angle.r$)
+#let innerproduct(f, g) = math.lr($chevron.l #f, #g chevron.r$)
 
 $
   innerproduct(f, g) = integral_(-oo)^oo integral_(-oo)^oo f(x + i y) overline(g(x + i y)) e^(-x^2 - y^2) dif x dif y
