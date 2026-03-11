@@ -1027,12 +1027,59 @@ Let's define uncertainty. We are going to use _entropy_, but first we need to de
   if it's continuous.
 ]
 
-Shannon entropy is essentially the amount of information of a variable.
+Shannon entropy is essentially the amount of information of a variable. It can also be thought of as the number of bits needed in average to represent an outcome.
 
 So what is the distribution that maximizes entropy, given a mean? The problem is
 
 $
         max H & = -sum_i P(x_i) log P(x_i) \
-  "s.t." quad & g_1 : sum_i x_i P(x_i) = avg(x) \
+  "s.t." quad & g_1 : sum_i x_i P(x_i) = mu \
               & g_2 : sum_i P(x_i) = 1 \
 $
+
+We can take the Lagrangian function:
+
+$
+  cal(L)(P; lambda_1, lambda_2) = -sum_i P(x_i) log(x_i) + lambda_1 (mu - sum_i x_i P(x_i)) + lambda_2 (1 - sum_i P(x_i))
+$
+
+We can find the critical points analytically:
+
+$
+  (partial cal(L))/(partial P_i) = -(1 + log(P_i)) - lambda_1 x_i - lambda_2 = 0 \
+  => P(x_i) = e^(-lambda_2 - 1 - lambda_1 x_i) = e^(-lambda_1 x_i)/Z, med Z = e^(lambda_2 + 1)
+$
+
+Now, we need to find the values of $lambda_1$ and $lambda_2$, which generally we do via minimization, but we can use the normalization constraint first:
+
+$
+  sum P(x_i) = 1 => 1/Z sum e^(-lambda_1 x_1) =>^"geom. series" Z = 1/(1 - e^(-lambda_1)) \
+  => 1/(1 - e^(-lambda_1)) = e^(lambda_2 + 1)
+$
+
+and then we use the mean constraints:
+
+$
+  avg(x) = sum_i x_i p(x_i) => 1/Z sum_i x_i e^(-lambda_1 x_i)
+$
+
+we can get from the initial normalization constraint that
+
+$
+  Z = sum_i e^(-lambda_1 x_i) => (partial Z)/(partial lambda_1) & = sum_i -lambda_1 e^(-lambda_1 x_i) \
+  & = (e^(-lambda_1))/((1 - e^(-lambda_1))^2)
+$
+
+and substitute it in:
+
+$
+  avg(x) = -1/Z (partial Z)/(partial lambda_1) = (e^(-lambda_1)) / (1 - e^(-lambda_1))
+$
+
+and finally, we can retrieve the probability distribution:
+
+$
+  P(x_i) = (e^(-lambda_1 x_i))/Z prop e^(-lambda_1 x_i)
+$
+
+this is an exponential distribution with expected value $avg(x_i) = 1/lambda_1$

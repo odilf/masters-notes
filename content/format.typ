@@ -9,7 +9,7 @@
   set page(paper: "a4")
   set heading(numbering: "1.1)")
 
-  set page(height: 50cm, width: 15cm, margin: 1cm, numbering: "1")
+  // set page(height: 50cm, width: 15cm, margin: 1cm, numbering: "1")
   if dark-theme {
     set page(fill: oklch(23%, 2.5%, 260deg))
     set text(fill: white)
@@ -151,7 +151,10 @@
 
 // Convenience functions
 #let todo = body => text(fill: red)[*#sym.chevron.l #body #sym.chevron.r*]
-#let faint(..args) = text(fill: white.transparentize(50%), ..args)
+#let faint(..args) = text(
+  fill: if dark-theme { white } else { black }.transparentize(50%),
+  ..args,
+)
 
 // Convenience math definitions
 #let dx = $dif x$

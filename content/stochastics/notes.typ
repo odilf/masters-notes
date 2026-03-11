@@ -1117,9 +1117,7 @@ We can model dividiens in a similar way.
 
 
 
-= Stochastic simulation
-
-== Feynman-Kac formula
+= Feynman-Kac formula
 
 There are two sides. On one side, we have PDE with terminal condition:
 
@@ -1146,7 +1144,7 @@ The two sides are related in the following way:
   Given $u$ as the solution of the PDE above and $X_s$ as the solution to the SDE, the following relation holds:
 
   $
-    u(t, x) = EE[g(X_t) e^(integral_t^T c(s, X_s) dif s) + integral_t^T f(s, X_s) e^(integral_t^s c(s', X_s') dif s') dif s]
+    u(t, x) = EE[g(X_T) e^(integral_t^T c(s, X_s) dif s) + integral_t^T f(s, X_s) e^(integral_t^s c(s', X_s') dif s') dif s]
   $
 ]
 
@@ -1329,4 +1327,247 @@ $
   & = e^(-r (T - t)) underbrace(EE[max(0, K - Z_T)], "expected payoff") \
 $
 
+#todo[I think the $K-Z_T$ should be $Z_T - K$ for call options... Since the payoff is $(K - S)_+$, but we have it the other way around.]
+
 yay!
+
+=== Important note (from next class)
+
+We have the call option value from Feynman-Kac:
+
+$
+  V(t, S_0) = S_0 e^(-r(T-t)) EE[(hat(S)_T - K)_+]
+$
+
+where $hat(S)$ is defined as
+
+$
+  dif hat(S) & = r hat(S)_t dif t + sigma hat(S)_t dif W_t \
+     dif S_t & = mu S_t dif T + sigma S_t dif W_t \
+             & quad quad hat(S)_0 = S_0 // lol-alignment
+$
+
+the point is that with Feynman-Kac we see very clearly that the drift of the stock price stops being important, since $hat(S)$ replaces the drift of the stock with the risk-free market rate.
+
+This is not simply a curiosity, it is extremely important (according to prof.). Modern finance starts here, and with martingales.
+
+The trick is in the expectation expression. In textbooks, you won't find the expectation as written here, but rather
+
+$
+  V(t, S_0) = S_0 e^(-r(T - t)) EE_QQ [(S-K)_+]
+$
+
+there is a strange-looking $QQ$ in $EE_QQ$. This is because expectations are taken in respect to probability spaces (in this case it would be in respect to the "filtration" of the stochastic process). The difference is that there exists a $EE_PP$ which is the "physical measure", and then the $EE_QQ$ is taking a different space (?) $hat(S)$. This is the modern approach, of only changing the _measure_.
+
+#faint[According to prof, this is "incomprehensible" and the explanation is "completely inadequate".]
+
+= More market observables
+
+We've only seen one market observable so far, which is that the GBM of the stock prices result in log-normal distributions. Let's look at more.
+
+== Implicit volatility
+
+The solution of Black-Scholes has shape
+
+$
+  V_c (t, S) = S(t) F_(cal(N)(0, 1))(d_1) - K e^(-r(T - t)) F_(cal(N)(0, 1))(d_2)
+$
+
+with $d_1$ and $d_2$ being annoying expressions that, crucially, depend on $sigma$, which is the _historic volatility_ of the stock.
+
+Now, there is a different concept, which we call _implicit volatility_ (or _implied volatility_), denoted by $sigma^*$. This is, essentially, the volatility that would lead to a certain option price. That is, in the wild, the price of an option is probably not exactly the "fair" price you expect, even because you can compute historical volatility in different ways, and they might not have used Black-Scholes at all. So, $sigma^*$ is the volatility that would lead to the option price you see in practice as calculated with Black-Scholes.
+
+In fact, giving $sigma^*$ and the option price is the same (as long as payoff is convex, which for european calls and puts they are). Often, in practice, they quote you the $sigma^*$ as a percentage (but it's not really a percentage).
+
+== :)
+
+If we believe that Black-Scholes is accurate to real life, we expect that the implied volaticity would stay the same throughout time. However, in 87 stocks crashed, which means that the risk was being underestimated. #faint[Some people say this is because Russians started being involved and had way better models.]
+
+In practice, we see that the volatility surface is not flat as predicted by Black-Scholes. It depends on the strike price and the time to expiry. Specifically, it is convex, or smiley.
+
+There are two main reasons:
++ *Risk aversion*:
+  - Stocks do not follow GBM with fixed volatility, they tend to have jumps (and generally downwards).
+  - Market fears if stock prices decreases, which increases volatility
+  -
++ *Levarage effect*: companies have equity but also debt, and if the share falls, the ratio of debt to equity (which is called _levarge_, $D/E$) goes up, which makes the company riskier.
+
+Another thing to take into account is that stock prices are autocorrelated, but not very far in time. Also, GBM is a very decent approximation when it works, but when it fails it fails catastrophically. It underestimates big movements.
+
+== The Heston Model
+
+The Heston Model is based on modifying the volatility to depend on time. Specifically:
+
+#definition[Heston model][
+  The Heston model is
+
+  $
+    dif S_t = mu S_t dif t + sqrt(nu_t) S_t dif W_t^((S)) \
+    dif nu_t = kappa(theta - nu_t) dif t + xi sqrt(nu_t) dif W_t^((nu)) \
+    dif W_t^((S)) dot dif W_t^((nu)) = rho dif t
+  $
+
+  where $nu_t$ is _instantaneous variance_, $sqrt(nu_t)$ is volatility of the asset, $theta$ is long-term equilibrium, $kappa$ is the mean-reversion rate,  $xi$ is a random constant and $rho$ is correlation between price and volatility.
+]
+
+This model is essentially UO, but preserves positivity.
+
+This is a _two-factor_ model, because it depends on two processes. These two processes are not independent.
+
+The Heston model provides a nicer implied volatility surface that is also smiley, but is smoother and where it's simpler
+
+
+= Biological applications
+
+We have this model:
+
+$
+  dif X_t = theta_1 X_t dif t + sqrt(theta_2 X_t) dif W_t
+$
+
+this model is not Heston. The diffusion term is not a problem but the drift term is, if anything, a mean regression to 0. However, Heston's solution needs to be positive, so it doesn't really make sense.
+
+== Calibration
+
+In biology, calibration is not only important, but it is in fact the whole point.
+Given a system of equations, you can get some results. #todo[prof doesn't understand, look at slides.]
+
+#todo[Continue looking at slides.]
+
+
+== Logistic model
+
+#todo[I don't know the context]
+
+$
+  dif N_t = r N_t (1 - N_t/K) dif t
+$
+
+We have that  $dif N_t = 0$ at eexactly $N_t = 0$ or $N_t = K$, so either when the population is dead or when the populatiion has reached the _carrying capacity_.
+
+Now, we're going to add a stochastic term
+
+$
+  dif N_t = r N_t (1 - N_t/K) dif t + sigma(N_t) dif W_t
+$
+
+Now, we have a few options for the variance. Namely:
+- $sigma(N_t) = sigma$
+- $sigma(N_t) = sigma N_t$
+- $sigma(N_t) = sigma sqrt(N_t)$
+
+we'll see that the last one is generally the most sensible one.
+
+Let's try to solve it now.
+
+$
+  integral_0^T 1/(r N_t (1 - N_t/K)) dif N_t & = integral_0^T dif t \
+  K/r integral_0^T 1/(N_t (K - N_t)) dif N_t & =
+                                               #todo[Here he did something]
+$
+
+== SIS (susceptible-infected-susceptible)
+
+This is a model for diseases where the is no cure and you can get infected again (like STDs). Let's start again with the deterministic model:
+
+$
+  N & = I(t) + S(t) \
+  dif I & = -underbrace(gamma I(t) dif t, "got cured") + underbrace(I(t) S(t)/N beta, "got infected")
+$
+
+
+Notice that is a logistic equation again!
+$
+  dif I &= (beta(1 - I(t)/N) - gamma) I(t) dif t \
+  dif I &= underbrace((beta - gamma), "growth rate") I(t) (1 - I(t)/(N (1 - gamma/beta))) dif t
+$
+
+Essentially we have a constant $R_0 = beta/gamma$ which is the reproduction rate for this model. The value $I_* = N(1 - gamma/beta)$ is the _endemic equilibrium_, which is a fixed point for the system.
+
+Now we stochastify it:
+
+$
+  dif I = (beta - gamma) I_t (1 - I_t/(N(1 - gamma/beta))) dif t
+$
+
+We say $Delta I$ is the change of number of infected people in the shortest amount of time possible. So, clearly, $Delta I$ has only three possible values:
+
+$
+  Delta I = cases(
+    +1 quad & "with prob." p_+,
+    -1 quad & "with prob." p_-,
+    0 quad & "with prob." 1 - (p_+ + p_-),
+  )
+$
+
+And the probabilities are:
+
+$
+  p_+ & = beta I_t S_t/N dif t \
+  p_- & = gamma I_t dif t
+$
+
+Then, the expectation and variance of $Delta I$ are
+
+$
+  EE[Delta I] & = +1 dot p_+ + (-1) dot p_- + 0 dot p_0 \
+              & = I_t (beta (1 - I_t/N) - gamma)
+$
+
+$
+  VV[Delta I] &= EE[(Delta I)^2] - underbrace(EE^2[Delta I], "order of" dif t^2\,\ "negligible") \
+  &= +1^2 dot p_+ + (-1)^2 dot p_+ + 0^2 dot p_0 \
+  &= I_t (beta(1 - I_t/N) + gamma) dif t
+$
+
+from this we can reconstruct the SDE (assuming time increments are normal):
+
+$
+  dif I_t = (beta(1 - I_t/N) - gamma) I_t dif t + sqrt((beta (1 - I_t/N) + gamma)I_t) dif W_t
+$
+
+notice that one gamma is subtracted and the other added.
+
+This SDE is annoying because both drift and diffusion are nonlinear. Instead of trying to find analytical solutions, we have to discretize and use something like Euler Maruyama (@sec-euler-maruyama).
+
+$
+  I_(k+1) = I_k + (beta (1 - I_k/N) - gamma) I_k h + sqrt((b (1 - I_k/N) + gamma) I_k) sqrt(h) eta_k\
+  eta_k tilde cal(N)[0, 1]
+$
+
+If we have some distribution for the initial condition, we can just sample the distribution to get different initial guesses distributed accordingly. But there is another method.
+
+=== Fokker-Plank
+
+Maybe we just care about how the distribution advances.
+
+Assume we have soome SDE
+
+$
+  dif X_t & = f dif t + g dif W_t, quad F(X_t), \
+  dif F & = (f (partial F)/(partial x) + g^2/2 (partial^2 F)/(partial x^2)) dif t + g (partial F)/(partial x) dif W_t \
+  EE[dif F] & = EE[(f (partial F)/(partial x) + g^2/2 (partial^2 F)/(partial x^2)) dif t] \
+  dif/(dif t) EE[F] & = EE[f (partial F)/(partial x) + g^2/2 (partial^2 F)/(partial x^2)] \
+  integral_(-oo)^oo partial/(partial t) (P F) dif x
+  & = integral_(-oo)^oo P (f (partial F)/(partial x) + g^2/2 (partial^2 F)/(partial x^2)) dif x \
+  cancel(P (partial F)/(partial t)) + F (partial P)/(partial t) & = integral_(-oo)^oo P (f (partial F)/(partial x) + g^2/2 (partial^2 F)/(partial x^2)) dif x \
+  & dots.v \
+  integral_(-oo)^oo F (partial P)/(partial t) dif x & = integral_(-oo)^oo F (1/2 (partial^2)/(partial x^2) (g^2 P) - partial/(partial x) - partial/(partial x) (f P)) dif x \
+  (partial p)/(partial t) & = 1/2 (partial^2)/(partial x^2) (g^2 p) - (partial(f p))/(partial x)
+$
+
+In short,
+
+#theorem[Fokker-Planck][
+  For an SDE
+
+  $
+    dif X_t = f dif t + g dif W_t
+  $
+
+  with probability density $p$, and a function $F$, we have that
+
+  $
+    (partial p)/(partial t) & = 1/2 (partial^2)/(partial x^2) (g^2 p) - (partial(f p))/(partial x)
+  $
+]

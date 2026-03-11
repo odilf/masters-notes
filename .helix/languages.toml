@@ -10,8 +10,8 @@ language-servers = ["typos", "marksman"]
 outputPath = "$root/build/$dir/$name"
 exportPdf = "onSave"
 lint.enabled = true
-preview.background.args = [ "--data-plane-host=127.0.0.1:23635" ]
-preview.background.enabled = true
+# preview.background.args = [ "--data-plane-host=127.0.0.1:23635" ]
+# preview.background.enabled = true
 syntaxOnly = true
 
 
