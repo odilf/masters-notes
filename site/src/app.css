@@ -2,5 +2,5 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-	--font-mono: IosvekaTerm Nerd Font;
+	--font-mono: Iosevka, monospace;
 }
