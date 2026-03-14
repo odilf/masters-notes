@@ -33,7 +33,7 @@
 	] as Record<string, Record<string, string>>[];
 </script>
 
-<main class="mx-auto max-w-3xl py-8 font-mono">
+<main class="mx-auto max-w-3xl p-8 font-mono">
 	<p class="text-2xl">Notes for</p>
 	<h1 class="mb-4 text-5xl font-black tracking-tight">
 		Master's in Computational and Applied Mathematics
