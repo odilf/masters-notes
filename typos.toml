@@ -1,0 +1,5 @@
+[default]
+
+[default.extend-words]
+Ody = "Ody"
+thm = "thm"

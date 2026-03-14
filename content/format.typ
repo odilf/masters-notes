@@ -26,6 +26,7 @@
   }
 
   show math.equation.where(block: false): set text(bottom-edge: "bounds")
+  show math.equation: set block(breakable: true)
 
   // Theorems
   show: thmrules.with(qed-symbol: $square$)
@@ -136,12 +137,13 @@
     280deg,
   ))(..args)
 }
-#let example = thmbox("example", "Example", fill: oklch(
+#let example = thmplain("example", "Example", fill: oklch(
   20% + lm * 70%,
   0%,
   270deg,
 )).with(
   numbering: none,
+  inset: 5mm,
 )
 #let proof = thmproof("proof", "Proof")
 #let lemma = thmbox("lemma", "Lemma")

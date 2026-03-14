@@ -104,7 +104,7 @@ In other words, the adjecency matrix counts the number of edges between any two 
   so, yes, we are defining two functions via the same symbol...
 ]
 
-#definition[Measure spaces #todo[is this rigorous?]][
+#definition[Normed spaces][
   Given a weighted graph $(G, m)$, we can restrict functions that act on vertices or edges of our graph to an equivalent of an $ell_p$ space (in practice, almost always $ell_2$) as:
 
   $
@@ -165,11 +165,11 @@ Note that $ell_2(V, 1) tilde CC^abs(V)$ and $ell_2 (E, 1) tilde CC^abs(E)$ (by w
   The _adjoint_ of the derivative operator $dif^*: ell_2(E, m) -> ell_2(V, m)$ is the discrete analogue to the _divergence_ and is defined as the only operator that satisfies
 
   $
-    innerproduct(dif phi, eta) = innerproduct(e, dif^* eta).
+    innerproduct(dif phi, eta) = innerproduct(phi, dif^* eta).
   $
 ]
 
-#theorem[  The adjoint $dif^*$ of a function $eta: ell_2 (E, m)$ is given explicitly by
+#theorem[The adjoint $dif^*$ of a function $eta: ell_2 (E, m)$ is given explicitly by
 
   $
     (dif^* eta)(v) = 1/m(v) sum_(e in E_v) arrow(eta_e)(v) m(e)
@@ -180,10 +180,40 @@ Note that $ell_2(V, 1) tilde CC^abs(V)$ and $ell_2 (E, 1) tilde CC^abs(E)$ (by w
   Equivalently,
 
   $
-    (dif^* eta) (v) = 1/m(v) (sum_(e in E_v^+) eta(v) m(e) - sum_(e in E_v^-) eta(v) m(e))
+    (dif^* eta) (v) = 1/m(v) (sum_(e in E_v^+) eta(e) m(e) - sum_(e in E_v^-) eta(e) m(e))
   $
 
   which tracks with the intuitive understanding of the divergence.
+]
+
+#proof[
+  The adjoint has to satisfy
+
+  $
+    innerproduct(dif phi, eta) & = innerproduct(phi, dif^* eta)
+  $
+  We can rewrite the left innerproduct as
+  $
+    innerproduct(dif phi, eta) &= sum_(e in E) dif phi(e) eta(e) m(e) \
+    &= sum_(e in E) (phi(endpoint e) - phi(origin e)) eta(e) m(e) \
+    &= sum_(e in E) phi(endpoint e) eta(e) m(e) - sum_(e in E) phi(origin e) eta(e) m(e) \
+    &= sum_(v in V) phi(v) sum_(e in E_v) eta(e) m(e) - sum_(v in V) phi(v) sum_(e in E_v) eta(e) m(e) \
+    &= sum_(v in V) phi(v) (sum_(e in E_v) eta(e) m(e) - sum_(e in E_v) eta(e) m(e)) \
+  $
+
+  Then,
+
+  $
+    innerproduct(dif phi, eta) & = innerproduct(phi, dif^* eta) \
+    sum_(v in V) phi(v) (sum_(e in E_v) eta(e) m(e) - sum_(e in E_v) eta(e) m(e)) & = sum_(v in V) phi(v) dif^* eta(v) m(v) \
+    sum_(e in E_v) eta(e) m(e) - sum_(e in E_v) eta(e) m(e) & = dif^* eta(v) m(v) \
+  $
+
+  And so, finally
+
+  $
+    dif^* eta(v) = 1/m(v) (sum_(e in E_v) eta(e) m(e) - sum_(e in E_v) eta(e) m(e)) \
+  $
 ]
 
 #lemma[
@@ -196,7 +226,7 @@ Note that $ell_2(V, 1) tilde CC^abs(V)$ and $ell_2 (E, 1) tilde CC^abs(E)$ (by w
   Given a weighted pseudograph $(G, m)$, we define the _laplacion operator_ $Delta: ell_2(V, e) -> ell_2(V, e)$ as
 
   $
-    Delta = dif^* d
+    Delta = dif^* dif
   $
 ]
 
@@ -216,7 +246,7 @@ Note that $ell_2(V, 1) tilde CC^abs(V)$ and $ell_2 (E, 1) tilde CC^abs(E)$ (by w
                                    & = innerproduct(dif phi, dif phi)   & >= 0
     $
 
-  + *$Delta$ is bounded by $2rho_oo = 2 sup_(v in V) rel_m (v)$* #faint[sometimes its $delta(v)$ instead of $rel_m (v)$] as in that $abs(innerproduct(Delta phi, phi)) <= 2 rho_oo$.
+  + *$Delta$ is bounded by $2rho_oo = 2 sup_(v in V) rel_m (v)$*#footnote[sometimes its $delta(v)$ instead of $rel_m (v)$, but I think that's just when using the combinatorial weight, where $rel_m = delta$.] as in that $abs(innerproduct(Delta phi, phi)) <= 2 rho_oo$.
     This also implies that any eigenvalue of $Delta$ is at most $2 rho_oo$. Note that $phi$ is an eigenfunction of $Delta$ with eigenvalue $lambda$ iff $Delta phi = lambda phi$.
 ]
 
@@ -232,7 +262,6 @@ Note that $ell_2(V, 1) tilde CC^abs(V)$ and $ell_2 (E, 1) tilde CC^abs(E)$ (by w
     & = 2 sum_(v in V) abs(phi(v))^2 sum_(e in E) m(e) \
     & = 2 sum_(v in V) abs(phi(v))^2 rel_m (v) m(v) \
     & <= 2 sup_(v in V) rel_m (v) sum_(v in V) abs(phi(v))^2 m(v) \
-    & = 2 sup_(v in V) delta (v) sum_(v in V) abs(phi(v))^2 m(v) \
     & = 2 rho_oo norm(phi)^2.
   $
 
@@ -362,19 +391,43 @@ Note: Since $Delta^"comb"$ and $Delta^"std"$ are similar, Sylvester's inertia th
 
 == Connectedness and spectrum of the Laplacian
 
-Recall that $0$ is always an eigenvalue of the Laplacian (even for infinite graphs),  since for $phi = 1$ we have that $(Delta phi)(v) = delta(v) - sum_(e in E_v 1) = delta(v) - delta(v) = 0$.
+Recall that $0$ is always an eigenvalue of the Laplacian (even for infinite graphs),  since for $phi = 1$ we have that $(Delta phi)(v) = delta(v) - sum_(e in E_v) 1 = delta(v) - delta(v) = 0$.
 
 #theorem[
   Let $G$ be an oriented finite graph. The number of connected of components of $G$ is equal to the multiplicity of the $0$ eigenvalue of $Delta^"comb"$.
 
   In particular, if $0$ is a simple eigenvalue, $G$ is connected.
-]
+] <thm-connectedness-eigenvals>
 
 This theorem holds for infinite graphs, but the proof is much more technical. It also holds for the Laplacian using any arbitrary weight (for instance, by Sylvester and the similarity to $Delta^"std"$, it clearly holds for $Delta^"std"$ too).
 
-#proof[
-  + $==>$ #todo[Exercise for me]
-  + $<==$ #todo[Exercise for me]
+#proof[of particular case][
+  + $==>$
+
+    We are going to do the contrapositive, so assuming that $G$ is disconnected, we are going to show that $0$ is not a simple eigenvalue. Specifically, since constant $phi$ is always a 0-eigenvector, we have to find a non-constant vector $psi$ that has eigenvalue $0$. Let $G_1$ be one of the connected components of $G$. An example of such a vector can be contracted as
+
+    $
+      psi(v) = cases(1 quad &"if" v in G_1, 2 &"if" v in.not G_1)
+    $
+
+    If we evaluate the Laplacian, we find that
+
+    $
+      Delta psi(v) & = delta(v) psi(v) - sum_(e in E_v) psi(v_e) \
+                   & = cases(
+                       delta(v) - delta(v) = 0 quad & "if" v in G_1,
+                       2delta(v) - 2delta(v) = 0 & "if" v in.not G_1
+                     )
+    $
+
+    which is given since if $v in G_1$ then $v_e in G_1$ by the definition of connected components.
+
+
+  + $<==$
+
+    Assume $G$ is connected. We know that $bb(1) = mat(1; 1; dots.v; 1)$ is a $0$-eigenvalue of $Delta$. Suppose we have some other eigenvector $phi$ with eigenvalue $0$. Then, for any $v_0 in V$, consider the set $V_0 = { v in V : phi(v) = phi(v_0)}$. We know that $Delta phi = 0$, so $norm(dif phi)^2 = innerproduct(Delta phi, phi) = innerproduct(0, phi) = 0$. So, $dif phi(e) = endpoint e - origin e = 0$ for all $e in E$, so $endpoint e = origin e$. Since the graph is connected, this implies that $phi$ on the entire graph has to be constant! Therefore, any $0$-eigenvector is proportional to $bb(1)$, which means that the $0$ eigenvalue has multiplicity $1$.
+
+  The expansion to the generao case is relatively straightforward: If you have $k$ connected components, you can have the eigenvector have $k$-piecewise constant segments, which gives you exactly $k$ degrees of freedom and so $k$ multiplicity of the $0$ eigenvalue.
 ]
 
 When a graph is not connected, the eigenvectors $phi$ of $0$ are "piecewise constant", in the sense that for each vertex of each connected component $G_k$ they have a constant value $alpha_k$.
@@ -386,13 +439,15 @@ In principle, you cannot just read out whether a matrix is connected from the ad
 ]
 
 #theorem[
-  An $r$-regular graph $(G, m)$ has always eigenvalue $r$.
+  The adjecency matrix $A^G$ of an $r$-regular graph $(G, m)$ has always eigenvalue $r$.
 
   Moreover, the number of connected components of $G$ equals the multiplicity of the eigenvalue $r$. In particular, $G$ is connected iff $r$ is a simple eigenvalue.
 ]
 
 #proof[
-  #todo[Exercise for me.]
+  For an $r$-regular graph, the diagonal degree matrix is just $r I$, where $I$ is the identity matrix, so $Delta = D - A = r I - A$. The characteristic polynomial of $A$ is $det(A - lambda I)$ which for $lambda = r$ equals $det(-Delta) = 0$, so $r$ is an eigenvalue of $A$.
+
+  In fact, the characteristic polynomial of $A$ is the same as the one for $G$ but for $lambda_A = r + lambda_G$, so the second part follows directly from @thm-connectedness-eigenvals with $lambda_G = 0$ and $lambda_A = r$.
 ]
 
 == Bipartiteness and the adjecency matrix
@@ -400,7 +455,7 @@ In principle, you cannot just read out whether a matrix is connected from the ad
 We first need some prerequisites.
 
 #definition[Irreducible matrix][
-  A matrix $A$ is _irreducible_ if $exists k in NN$ such that $(A^k)_(i j) != 0$ for all entries of $A$.
+  A matrix $A$ is _irreducible_ if $exists k in NN$ such that some power $A^k$ is entrywise nonzero.
 ]
 
 #lemma[
@@ -409,7 +464,7 @@ We first need some prerequisites.
 
 #theorem[Perron-Frobenius][
   Given an irreducible entrywise nonnegative matrix $A in RR^(n times n)$, the eigenvalue with largest absolute value $lambda$ of $A$ is positive, simple and has an entrywise positive eigenvector.
-]
+] <thm-perron-frobenius>
 
 #theorem[Min-max principle][
   Given a Hermitian matrix $M in CC^(n times n)$ which has real eigenvalues $sigma(M) = { lambda_1, lambda_2, ..., lambda_n }$ (labelled in increasing order),
@@ -433,25 +488,90 @@ We first need some prerequisites.
   $
 
   #faint[Note: $innerproduct(M x, x) / innerproduct(x, x)$ is called the _Rayleight quotient_.]
-]
+] <thm-min-max>
 
 The above theorem provides a complete description of every eigenvalue!
 
-#proof[
-  #todo[Exercise for me]
+And now we can get to the relevnat theorems:
+
+#theorem[
+  Given a $k$-regular connected graph $G = (V, E)$, if $2k$ is an eigenvalue of the laplacian $Delta$, then $G$ is bipartite.
 ]
 
-And now we can get to the main theorem:
+#proof[
+  In a $k$-regular graph, $rho_oo = sup_(v in V) rel_m (v) = k$ for the combinatorial weight. Therefore, $sigma(Delta^"comb") subset [0, 2rho_oo = 2k]$.
+
+  By Cauchy-Young on $phi(partial_plus.minus e)$, we have that $norm(dif phi) <= sqrt(2k) norm(phi)$, but for the $2k$-eigenvector we must have exactly that $norm(dif psi) = sqrt(2k) norm(psi)$ since $innerproduct(Delta psi, psi) = norm(dif psi)^2$ but also $innerproduct(Delta psi, psi) = innerproduct(2k psi, psi) = 2k norm(psi)^2$.
+
+  Therefore, we need to saturate Cauchy-Young, which happens when $a = -b$, which in our case implies
+
+  $
+    psi(endpoint e) = -psi(origin e).
+  $
+
+  With this, we can construct two sets, $V_+$ and $V_-$ which contain the vertices where $psi$ evaluates to the corresponding sign. That is, $ V_plus.minus = { v in V | plus.minus psi(v) > 0 }. $
+
+  There is no edge that connects any vertex of $V_+$ to $V_-$, since if it were, they would need to have opposite signs. Therefore, the graph is bipartite.
+]
+
+This theorem is nice, but it can be further generalized to non-regular graphs.
 
 #theorem[
   Given a directed pseudograph $G = (V, E)$ with adjecency matrix $A^G = A$,
-  + If $G$ is connected, given the largest eigenvalue $m_1$ of $A$, if $-mu_1$ is an eigenvalue of $A$, then $G$ is bipartite.
-  + For a finite grapg $abs(V) < oo$ and the spectrum $sigma(A)$, the following are equivalent:
+  + If $G$ is connected, given the largest eigenvalue $mu_1$ of $A$, if $-mu_1$ is an eigenvalue of $A$, then $G$ is bipartite.
+  + For a finite graph $abs(V) < oo$ and the spectrum $sigma(A)$, the following are equivalent:
+    #set enum(numbering: "(i)")
     + $G$ is bipartite
     + $sigma(A)$ is symmetric (i.e., $mu in sigma(A) <=> -mu in sigma(A)$)
     + $mu_k = -mu_(n - k + 1)$ for $k = 1, ..., n$ (in particular, $0 in sigma(A)$ if $n$ is odd).
 ]
 
 #proof[
-  #todo[Exercise for me]
+  + By Perron Frobenius, since the adjecency matrix is irreducible and entrywise nonnegative, the eigenvector associated with the largest eigenvalue $mu_1$ is entrywise positive. That is, there is some positive $psi^+$ where $A psi^+ = mu_1 psi^+$ and $psi^+$ is normalized. Then, if $-mu_1$ is also an eigenvalue of $A$, we have some $psi^-$ where $A psi^- = -mu psi^-$. Now, if we consider $abs(psi)$, we have that
+
+    $
+        mu_1 = abs(-mu_1) & = abs(innerproduct(A psi^-, psi^-)) \
+                          & = abs(sum_(i j) A_(i j) psi^-_i psi^-_j) \
+                          & <= sum_(i j) A_(i j) abs(psi^-_i) abs(psi^-_j) \
+                          & = innerproduct(A abs(psi^-), abs(psi^-)) \
+      "(by min-max)" quad & <= mu_1
+    $
+
+    which sandwiches $abs(psi_-)$ to be exactly an eigenvector of $mu_1$. That is, $psi_+ = abs(psi_-)$. This shows that, in particular, $psi_- != 0$ for all entries.
+
+    By the sandwich, we also find that
+
+    $
+      abs(sum_(i j) A_(i j) psi^-_i psi^-_j) = sum_(i j) A_(i j) abs(psi^-_i) abs(psi^-_j)
+    $
+
+    which, for every edge where $A_(i j) != 0$, forces $psi^-_i$ and $psi^-_j$ to either be both positive or negative, otherwise this would not be an equality. Therefore, we can do the partition $ V^(plus.minus) = { plus.minus psi^-(v) > 0 | v in V } $ which is a bipartition, since if an edge where to connect the two sets, it would break the equality above.
+
+  + Clearly, (ii) and (iii) are equivalent. We are going to show $"(i)" <=> "(ii)"$. By 1., if the largest eigenvalue of $A$ is symmetric, then $A$ is bipartite, so (ii) immplies (i). Then, we need to show that if $G$ is bipartite, the spectrum of $A$ is symmetric
+
+    First, $G$ is not necessarily connected, but if all of the connected components of a graph are bipartite, then the disconnected graph is also bipartite, so we can just consider connected graphs without loss of generality.
+
+    So, assume $G$ is bipartite, with bipartition $V = V_+ union.sq V_-$. Now, consider $T: ell_2(V) -> ell_2(V)$ defined as
+
+    $
+      (T phi)(v) = cases(&phi(v) quad &"if" v in V_+, -&phi(v) quad &"if" v in V_-)
+    $
+
+    Notice that $T A = - A T$, because
+
+    $
+      (T A phi)(v) &=
+      cases(&(A phi)(v) quad &"if" v in V_+, -&(A phi)(v) quad &"if" v in V_-) &=
+      cases(&sum_(e in E_v) phi(v_e) quad &"if" v in V_+, -&sum_(e in E_v) phi(v_e) quad &"if" v in V_-) \
+      (A T phi)(v) &= sum_(e in E_v) (T phi) (v_e) &=
+      cases(&sum_(e in E_v) phi(v_e) quad &"if" v_e in V_+, -&sum_(e in E_v) phi(v_e) quad &"if" v_e in V_-)
+    $
+
+    and since $v in V_plus.minus <=> v_e in V_minus.plus$, these two are exactly opposite.
+
+    If $phi$ is an eigenvector of $mu$, then $T phi$ is a nonzero eigenvector of $-mu$, since
+
+    $
+      A (T phi) = - T A phi = -T mu phi = -mu (T phi).
+    $
 ]
