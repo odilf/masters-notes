@@ -40,11 +40,14 @@
 	</h1>
 	<p class="mb-8 text-xl font-light opacity-50">At Carlos III University of Madrid</p>
 
-	<p class="opacity-70">
+	<p class="opacity-80 mb-4">
 		The following are my personal notes I took at my Master's. These are provided with <b>
 			no warrany of any kind
 		</b> including but not limited to accuracy or correctness. Many notes are incomplete.
 	</p>
+	<p class="opacity-80">
+		Source is available <a href="https://github.com/odilf/masters-notes" class="text-blue-200 underline"> here </a>.
+		</p>
 
 	<ul class="grid grid-cols-2 gap-4">
 		{#each documents as semester, i (i)}
