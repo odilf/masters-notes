@@ -6,7 +6,7 @@
 #let dark-theme = sys.inputs.at("DARK_THEME", default: "false") == "true";
 
 #let common-show-rules = it => {
-  set page(paper: "a4")
+  set page(paper: "a4", numbering: "1")
   set heading(numbering: "1.1)")
 
   // set page(height: 50cm, width: 15cm, margin: 1cm, numbering: "1")
@@ -83,7 +83,7 @@
 #let exercises(title) = it => {
   show: common-show-rules
 
-  set heading(numbering: none)
+  text(size: 2em, [*#title*])
 
   it
 }
