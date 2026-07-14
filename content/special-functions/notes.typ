@@ -245,3 +245,19 @@ by residue analysis #todo[I think??], and so $lim_(s -> 1) (s - 1) zeta(s) = 1$,
 
   defines a function analytic in $CC \\ {1}$, with a simple pole at $1$.
 ]
+
+#todo[Missed a day]
+
+= Separation of variables
+
+Many equations appear after separating variables of the Helmholtz equation:
+
+#definition[The helmholtz equation][
+  $ Delta u + k^2 u = 0 $
+
+  where $u = u(x, y, z)$ (i.e., it depends on 3 variables).
+]
+
+#example[
+  
+]
